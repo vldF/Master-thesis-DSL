@@ -1,8 +1,7 @@
 namespace me.vldf.jsa.dsl.ast.nodes;
 
 public class FileAstNode(
-    IReadOnlyCollection<AstNode> topLevelDeclarations
-) : AstNode
+    IReadOnlyCollection<AstNode> topLevelDeclarations) : AstNode
 {
     public IReadOnlyCollection<AstNode> TopLevelDeclarations { get; } = topLevelDeclarations;
 
