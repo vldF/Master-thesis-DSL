@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Library</OutputType>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <RootNamespace>me.vldf.jsa.dsl.parser</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Antlr4.Runtime.Standard" Version="4.13.1" />
+        <PackageReference Include="Antlr4BuildTasks" Version="12.8.0"  PrivateAssets="all"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Antlr4 Include="JSADSL.g4">
+            <Listener>false</Listener>
+            <Visitor>true</Visitor>
+            <Package>me.vldf.jsa.dsl.parser</Package>
+            <Error>true</Error>
+            <JavaExec>PATH</JavaExec>
+        </Antlr4>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\ast\ast.csproj" />
+    </ItemGroup>
+
+</Project>
