@@ -1,8 +1,8 @@
-using System.Diagnostics;
+using Ast.Builder.utils;
 using me.vldf.jsa.dsl.ast.nodes;
-using me.vldf.jsa.dsl.parser.ast.utils;
+using me.vldf.jsa.dsl.parser;
 
-namespace me.vldf.jsa.dsl.parser.ast.builder;
+namespace Ast.Builder.builder;
 
 public class TopLevelVisitor : JSADSLBaseVisitor<AstNode>
 {
@@ -16,7 +16,7 @@ public class TopLevelVisitor : JSADSLBaseVisitor<AstNode>
     public override FunctionAstNode VisitFuncDecl(JSADSLParser.FuncDeclContext context)
     {
         var name = context.name.Text;
-        var children = context.funcBody().children?.SelectNotNull(Visit).ToList()!;
+        var children = context.statementsBlock().children?.SelectNotNull(Visit).ToList()!;
 
         return new FunctionAstNode(name, children);
     }

@@ -1,6 +1,6 @@
 using Antlr4.Runtime;
 
-namespace me.vldf.jsa.dsl.parser.ast.builder;
+namespace Ast.Builder.builder;
 
 public class ErrorListener<TS> : ConsoleErrorListener<TS>
 {

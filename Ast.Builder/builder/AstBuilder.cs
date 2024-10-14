@@ -1,7 +1,8 @@
 using Antlr4.Runtime;
 using me.vldf.jsa.dsl.ast.nodes;
+using me.vldf.jsa.dsl.parser;
 
-namespace me.vldf.jsa.dsl.parser.ast.builder;
+namespace Ast.Builder.builder;
 
 public class AstBuilder
 {
