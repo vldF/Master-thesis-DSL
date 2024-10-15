@@ -1,8 +1,8 @@
 using me.vldf.jsa.dsl.ast.nodes.expressions;
 
-namespace me.vldf.jsa.dsl.ast.nodes;
+namespace me.vldf.jsa.dsl.ast.nodes.statements;
 
-public class IfStatement(
+public class IfStatementAstNode(
     ExpressionAstNode cond,
     StatementsBlockAstNode mainBlock,
     AstNode? elseNode) : AstNode

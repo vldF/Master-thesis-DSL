@@ -10,6 +10,8 @@ class Program
                    func TestFunc(arg1: Type1, arg2: Type2): ReturnType {
                         arg1 = arg2;
                         arg2 = arg2;
+                        
+                        return arg1;
                    }
                    
                    object MyObject {

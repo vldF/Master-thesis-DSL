@@ -4,6 +4,7 @@ using me.vldf.jsa.dsl.ast.context;
 using me.vldf.jsa.dsl.ast.nodes;
 using me.vldf.jsa.dsl.ast.nodes.declarations;
 using me.vldf.jsa.dsl.ast.nodes.expressions;
+using me.vldf.jsa.dsl.ast.nodes.statements;
 using me.vldf.jsa.dsl.parser;
 
 namespace Ast.Builder.builder;
@@ -72,7 +73,7 @@ public class BaseBuilderVisitor(AstContext astContext) : JSADSLBaseVisitor<AstNo
             elseStatement = newVisitor.VisitStatementsBlock(context.@else);
         }
 
-        return new IfStatement(cond, mainBlock, elseStatement);
+        return new IfStatementAstNode(cond, mainBlock, elseStatement);
     }
 
     public override StatementsBlockAstNode VisitStatementsBlock(JSADSLParser.StatementsBlockContext context)
@@ -90,6 +91,18 @@ public class BaseBuilderVisitor(AstContext astContext) : JSADSLBaseVisitor<AstNo
         var value = _expessionBuilderVisitor.VisitExpression(context.expression());
 
         return new VarAssignmentAstNode(varDecl, value);
+    }
+
+    public override AstNode VisitReturnStatement(JSADSLParser.ReturnStatementContext context)
+    {
+        var expressionContext = context.expression();
+        if (expressionContext == null)
+        {
+            return new ReturnStatementAstNode(null);
+        }
+
+        var expression = VisitExpression(expressionContext);
+        return new ReturnStatementAstNode(expression);
     }
 
 

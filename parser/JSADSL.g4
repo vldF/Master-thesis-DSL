@@ -12,11 +12,13 @@ arg : name=ID (COLON type=ID)?;
 
 statementsBlock : (statement SEMI_COLON)*;
 
-statement : ifStatement | varAssignmentStatement;
+statement : ifStatement | varAssignmentStatement | returnStatement;
 
 varAssignmentStatement : varName=ID EQ expression;
 
 ifStatement : IF_KW L_PAREN cond=expression R_PAREN mainBlock=statementsBlock L_BRACE ((ELSE_KW else_if=ifStatement) | (ELSE_KW else=statementsBlock));
+
+returnStatement : RETURN_KW (expression);
 
 expression : variableExpression;
 
@@ -31,6 +33,7 @@ OBJECT_KW: 'object';
 IF_KW : 'if';
 ELSE_KW : 'else';
 VAR_KW : 'var';
+RETURN_KW : 'return';
 
 L_PAREN : '(';
 R_PAREN : ')';
