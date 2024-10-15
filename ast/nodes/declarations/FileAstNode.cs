@@ -1,4 +1,4 @@
-namespace me.vldf.jsa.dsl.ast.nodes;
+namespace me.vldf.jsa.dsl.ast.nodes.declarations;
 
 public class FileAstNode(
     IReadOnlyCollection<AstNode> topLevelDeclarations) : AstNode

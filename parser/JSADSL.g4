@@ -8,17 +8,19 @@ funcDecl : FUNC_KW name=ID L_PAREN (args) R_PAREN (COLON ID)? L_BRACE statements
 
 args : arg? (COMMA arg)* COMMA?;
 
-arg : ID (COLON ID)?;
+arg : name=ID (COLON type=ID)?;
 
 statementsBlock : (statement SEMI_COLON)*;
 
-statement : ifStatement; // todo
+statement : ifStatement | varAssignmentStatement;
 
-varAssignmentStatement : VAR_KW ID EQ expression;
+varAssignmentStatement : varName=ID EQ expression;
 
-ifStatement : IF_KW L_PAREN expression R_PAREN statementsBlock L_BRACE ((ELSE_KW else_if=ifStatement) | (ELSE_KW else=statementsBlock));
+ifStatement : IF_KW L_PAREN cond=expression R_PAREN mainBlock=statementsBlock L_BRACE ((ELSE_KW else_if=ifStatement) | (ELSE_KW else=statementsBlock));
 
-expression : ID;
+expression : variableExpression;
+
+variableExpression : name=ID;
 
 objectDecl : OBJECT_KW name=ID L_BRACE objectBody R_BRACE;
 

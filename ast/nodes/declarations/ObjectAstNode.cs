@@ -1,6 +1,6 @@
-namespace me.vldf.jsa.dsl.ast.nodes;
+namespace me.vldf.jsa.dsl.ast.nodes.declarations;
 
-public class FunctionAstNode(
+public class ObjectAstNode(
     string name,
     IReadOnlyCollection<AstNode> children) : AstNode
 {

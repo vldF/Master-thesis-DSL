@@ -8,16 +8,15 @@ class Program
     {
         var code = """
                    func TestFunc(arg1: Type1, arg2: Type2): ReturnType {
-                        expr; expr;
-                        expr; expr;
+                        arg1 = arg2;
+                        arg2 = arg2;
                    }
                    
                    object MyObject {
                         func InnerFunc(arg1: Type) {
-                            expr;
                         }
                         
-                        func InnerFunc2() { expr; }
+                        func InnerFunc2() { }
                    }
                    
                    """;
