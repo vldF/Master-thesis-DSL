@@ -1,4 +1,5 @@
 using me.vldf.jsa.dsl.ast.nodes.declarations;
+using me.vldf.jsa.dsl.ast.types;
 using Type = me.vldf.jsa.dsl.ast.types.Type;
 
 namespace me.vldf.jsa.dsl.ast.context;
@@ -9,6 +10,8 @@ public class AstContext(AstContext? parent)
     private readonly Dictionary<string, FunctionAstNode> _funcs = new ();
     private readonly Dictionary<string, ObjectAstNode> _objects = new ();
     private readonly Dictionary<string, Type> _types = new();
+
+    public readonly Type AnyType = new SimpleType("any");
 
     public void SaveNewVar(VarDeclAstNode node)
     {

@@ -5,6 +5,7 @@ using me.vldf.jsa.dsl.ast.nodes;
 using me.vldf.jsa.dsl.ast.nodes.declarations;
 using me.vldf.jsa.dsl.ast.nodes.expressions;
 using me.vldf.jsa.dsl.ast.nodes.statements;
+using me.vldf.jsa.dsl.ast.types;
 using me.vldf.jsa.dsl.parser;
 
 namespace Ast.Builder.builder;
@@ -27,16 +28,26 @@ public class BaseBuilderVisitor(AstContext astContext) : JSADSLBaseVisitor<AstNo
         var newContext = new AstContext(astContext);
         var newVisitor = new BaseBuilderVisitor(newContext);
 
+        var args = new List<FunctionArgAstNode>();
         foreach (var argContext in context.args().arg())
         {
             var argName = argContext.name.Text;
-            var argType = argContext.type?.Text;
-            var arg = new FunctionArgFakeDeclAstNode(argName, argType);
+            var argTypeName = argContext.type?.Text;
+            var argType = argTypeName == null ? astContext.AnyType : astContext.ResolveType(argTypeName);
+            if (argType == null)
+            {
+                throw new UnresolvedVariableException(argTypeName!);
+            }
+            var arg = new FunctionArgAstNode(argName, argType);
 
+            args.Add(arg);
             newContext.SaveNewVar(arg);
         }
 
-        return new FunctionAstNode(name, newVisitor.VisitStatementsBlock(context.statementsBlock()));
+        return new FunctionAstNode(
+            name,
+            args,
+            newVisitor.VisitStatementsBlock(context.statementsBlock()));
     }
 
     public override AstNode VisitObjectDecl(JSADSLParser.ObjectDeclContext context)
@@ -47,7 +58,12 @@ public class BaseBuilderVisitor(AstContext astContext) : JSADSLBaseVisitor<AstNo
         var name = context.name.Text;
         var children = context.objectBody().children?.SelectNotNull(c => newVisitor.Visit(c)).ToList()!;
 
-        return new ObjectAstNode(name, children);
+        var result = new ObjectAstNode(name, children);
+
+        var type = new ObjectType(result);
+        astContext.SaveNewType(type);
+
+        return result;
     }
 
     public override AstNode VisitIfStatement(JSADSLParser.IfStatementContext context)

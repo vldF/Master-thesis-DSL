@@ -7,6 +7,10 @@ class Program
     public static void Main()
     {
         var code = """
+                   object Type1 {}
+                   object Type2 {}
+                   object ReturnType {}
+                   
                    func TestFunc(arg1: Type1, arg2: Type2): ReturnType {
                         arg1 = arg2;
                         arg2 = arg2;
@@ -15,12 +19,11 @@ class Program
                    }
                    
                    object MyObject {
-                        func InnerFunc(arg1: Type) {
+                        func InnerFunc(arg1: Type1) {
                         }
                         
                         func InnerFunc2() { }
                    }
-                   
                    """;
         var astBuilder = new AstBuilder();
         var file = astBuilder.FromString(code);

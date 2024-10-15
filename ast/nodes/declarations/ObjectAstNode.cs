@@ -6,7 +6,7 @@ public class ObjectAstNode(
 {
     public string Name { get; } = name;
 
-    public IReadOnlyCollection<AstNode> Children { get; } = children;
+    public IReadOnlyCollection<AstNode> Children { get; } = children ?? [];
 
     public override string String()
     {

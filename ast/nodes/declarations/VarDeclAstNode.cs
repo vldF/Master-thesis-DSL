@@ -4,19 +4,19 @@ namespace me.vldf.jsa.dsl.ast.nodes.declarations;
 
 public class VarDeclAstNode(
     string name,
-    string? type,
+    types.Type type,
     ExpressionAstNode? init) : AstNode
 {
     public string Name { get; } = name;
-    public string Type { get; } = type;
+    public types.Type Type { get; } = type;
 
     public override string String()
     {
         if (init != null)
         {
-            return $"{name}: {type} = {init.String()}";
+            return $"{Name}: {Type.String()} = {init.String()}";
         }
 
-        return $"{name}: {type}";
+        return $"{Name}: {Type.String()}";
     }
 }
