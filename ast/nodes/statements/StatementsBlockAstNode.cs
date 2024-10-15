@@ -6,7 +6,7 @@ public class StatementsBlockAstNode(IReadOnlyCollection<AstNode> children) : Ast
 
     public override string String()
     {
-        var content = string.Join("\n\n", Children.Select(x => x.String()));
+        var content = string.Join("\n", Children.Select(x => x.String()));
         return $$"""
                  {
                  {{AddIndent(content)}}
