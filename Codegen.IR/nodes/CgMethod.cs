@@ -9,12 +9,12 @@ public class CgMethod : ICgStatement, ICgStatementsContainer
     public ICgType ReturnType { get; }
 
     private readonly Dictionary<string, ICgExpression> _args = new();
-    private Dictionary<string, ICgType> _argTypes;
+    public Dictionary<string, ICgType> ArgTypes;
 
     public CgMethod(string name, Dictionary<string, ICgType> args, ICgType returnType)
     {
         Name = name;
-        _argTypes = args;
+        ArgTypes = args;
         ReturnType = returnType;
 
         foreach (var (argName, _) in args)

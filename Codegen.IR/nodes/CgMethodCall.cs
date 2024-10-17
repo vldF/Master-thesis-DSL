@@ -2,7 +2,7 @@ using Codegen.IR.nodes.expressions;
 
 namespace Codegen.IR.nodes;
 
-public class CgMethodCall(
+public record CgMethodCall(
     ICgExpression Reciever,
     string Name,
-    IReadOnlyCollection<ICgExpression> args) : ICgStatement, ICgExpression;
+    IReadOnlyCollection<ICgExpression> Args) : ICgStatement, ICgExpression;

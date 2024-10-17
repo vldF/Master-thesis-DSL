@@ -7,8 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Codegen.IR\Codegen.IR.csproj" />
-        <ProjectReference Include="..\Codegen.Synthesizer\Codegen.Synthesizer.csproj" />
+      <ProjectReference Include="..\Codegen.IR\Codegen.IR.csproj" />
     </ItemGroup>
 
 </Project>
