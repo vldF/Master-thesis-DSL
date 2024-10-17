@@ -1,4 +1,6 @@
 using Codegen.IR.nodes;
+using Codegen.IR.nodes.expressions;
+using Codegen.IR.nodes.statements;
 using Codegen.IR.nodes.types;
 
 namespace Codegen.IR.Builder;
@@ -16,5 +18,28 @@ public static class CodegenIrBuilder
         file.Statements.Add(method);
 
         return method;
+    }
+
+    public static CgVarDeclStatement AddVarDecl(this CgMethod method, string name, ICgType? type = null, ICgExpression? init = null)
+    {
+        var varDecl = new CgVarDeclStatement(name, type, init);
+        method.Statements.Add(varDecl);
+        return varDecl;
+    }
+
+    public static CgAssignmentStatement AddAssignment(this CgMethod method, ICgExpression left, ICgExpression right)
+    {
+        var statement = new CgAssignmentStatement(left, right);
+        method.Statements.Add(statement);
+
+        return statement;
+    }
+
+    public static CgReturnStatement AddReturn(this CgMethod method, ICgExpression? expression = null)
+    {
+        var statement = new CgReturnStatement(expression);
+        method.Statements.Add(statement);
+
+        return statement;
     }
 }
