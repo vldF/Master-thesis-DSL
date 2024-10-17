@@ -8,6 +8,12 @@ namespace Codegen.IR.Synthesizer.Tests;
 
 public class Tests : AbstractCodegenTest
 {
+    public Tests()
+    {
+        // set it to 'true' to override all expected test data to the actual ones
+        UpdateTests = false;
+    }
+
     [Test]
     public void SimpleTest()
     {
@@ -28,11 +34,5 @@ public class Tests : AbstractCodegenTest
         method.AddReturn(testVarWithVarType.AsValue());
 
         Validate(file);
-    }
-
-    [Test]
-    public void Test1()
-    {
-        Assert.Pass();
     }
 }

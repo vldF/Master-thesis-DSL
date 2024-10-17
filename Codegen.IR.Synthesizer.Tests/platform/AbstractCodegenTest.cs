@@ -1,6 +1,6 @@
+using System.Text;
 using Codegen.IR.nodes;
 using Codegen.Synthesizer;
-using DiffPlex;
 using DiffPlex.DiffBuilder;
 using DiffPlex.DiffBuilder.Model;
 using NUnit.Framework;
@@ -10,6 +10,8 @@ namespace Codegen.IR.Synthesizer.Tests.platform;
 public abstract class AbstractCodegenTest
 {
     private readonly ExpectedCodeProvider _expectedCodeProvider = new();
+
+    protected bool UpdateTests = false;
 
     protected void Validate(CgFile cgFile)
     {
@@ -22,6 +24,16 @@ public abstract class AbstractCodegenTest
 
         if (expected == actual)
         {
+            return;
+        }
+
+        if (UpdateTests)
+        {
+            var physicalTestDataPath = "../../../testdata/expected/" + testName + ".csx";
+            var file = File.Open(physicalTestDataPath, FileMode.Create);
+            file.Write(Encoding.UTF8.GetBytes(actual));
+            file.Close();
+
             return;
         }
 
