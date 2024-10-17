@@ -6,4 +6,5 @@ public class SimpleType(string name) : ICgType
 
     public static SimpleType IntType = new("int");
     public static SimpleType StringType = new("string");
+    public static SimpleType VoidType = new("void");
 }

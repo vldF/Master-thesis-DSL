@@ -1,0 +1,7 @@
+public void testMethod(int arg1, int arg2, )
+{
+    int testVarOfInt;
+    var testVarWithVarType = testVarOfInt + 123
+    ;
+    return testVarWithVarType;
+}

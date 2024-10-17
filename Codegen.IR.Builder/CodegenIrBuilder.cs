@@ -12,9 +12,9 @@ public static class CodegenIrBuilder
         return new CgFile(name);
     }
 
-    public static CgMethod CreateMethod(this CgFile file, string name, Dictionary<string, ICgType> args, ICgType returnType)
+    public static CgMethod CreateMethod(this CgFile file, string name, Dictionary<string, ICgType> args, ICgType? returnType = null)
     {
-        var method = new CgMethod(name, args, returnType);
+        var method = new CgMethod(name, args, returnType ?? SimpleType.VoidType);
         file.Statements.Add(method);
 
         return method;
