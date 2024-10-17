@@ -7,7 +7,7 @@ namespace Codegen.IR.Builder;
 
 public static class CodegenIrBuilder
 {
-    public static CgFile CreateFile(string name)
+    public static CgFile CreateFile(string name = "")
     {
         return new CgFile(name);
     }

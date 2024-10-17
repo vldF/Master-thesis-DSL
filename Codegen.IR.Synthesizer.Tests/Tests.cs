@@ -8,12 +8,10 @@ namespace Codegen.IR.Synthesizer.Tests;
 
 public class Tests : AbstractCodegenTest
 {
-    [SetUp]
-    public void Setup()
+    [Test]
+    public void SimpleTest()
     {
-        var testCaseName = "simpleTest";
-
-        var file = CodegenIrBuilder.CreateFile(testCaseName);
+        var file = CodegenIrBuilder.CreateFile();
         var methodArgs = new Dictionary<string, ICgType>
         {
             {"arg1", SimpleType.IntType},
@@ -29,7 +27,7 @@ public class Tests : AbstractCodegenTest
 
         method.AddReturn(testVarWithVarType.AsValue());
 
-        Validate(file, testCaseName);
+        Validate(file);
     }
 
     [Test]

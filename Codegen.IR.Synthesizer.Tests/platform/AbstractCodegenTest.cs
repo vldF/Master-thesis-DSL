@@ -11,8 +11,9 @@ public abstract class AbstractCodegenTest
 {
     private readonly ExpectedCodeProvider _expectedCodeProvider = new();
 
-    protected void Validate(CgFile cgFile, string testName)
+    protected void Validate(CgFile cgFile)
     {
+        var testName = TestContext.CurrentContext.Test.Name;
         var expected = _expectedCodeProvider.GetExpectedCodeForTest(testName)?.EnsureTrailingNewLine();
         Assert.That(expected, Is.Not.Null, $"can't find expected sources for test {testName}");
 
