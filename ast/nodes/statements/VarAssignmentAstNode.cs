@@ -5,9 +5,9 @@ namespace me.vldf.jsa.dsl.ast.nodes.statements;
 
 public class VarAssignmentAstNode(
     VarDeclAstNode variable,
-    ExpressionAstNode value) : AstNode
+    IExpressionAstNode value) : IStatementAstNode
 {
-    public override string String()
+    public string String()
     {
         return $"{variable.Name} = {value.String()}";
     }

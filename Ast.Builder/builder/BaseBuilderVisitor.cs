@@ -10,7 +10,7 @@ using me.vldf.jsa.dsl.parser;
 
 namespace Ast.Builder.builder;
 
-public class BaseBuilderVisitor(AstContext astContext) : JSADSLBaseVisitor<AstNode>
+public class BaseBuilderVisitor(AstContext astContext) : JSADSLBaseVisitor<IAstNode>
 {
     private readonly ExpressionBuilderVisitor _expessionBuilderVisitor = new(astContext);
 
@@ -50,7 +50,7 @@ public class BaseBuilderVisitor(AstContext astContext) : JSADSLBaseVisitor<AstNo
             newVisitor.VisitStatementsBlock(context.statementsBlock()));
     }
 
-    public override AstNode VisitObjectDecl(JSADSLParser.ObjectDeclContext context)
+    public override IAstNode VisitObjectDecl(JSADSLParser.ObjectDeclContext context)
     {
         var newContext = new AstContext(astContext);
         var newVisitor = new BaseBuilderVisitor(newContext);
@@ -66,14 +66,14 @@ public class BaseBuilderVisitor(AstContext astContext) : JSADSLBaseVisitor<AstNo
         return result;
     }
 
-    public override AstNode VisitIfStatement(JSADSLParser.IfStatementContext context)
+    public override IAstNode VisitIfStatement(JSADSLParser.IfStatementContext context)
     {
         var cond = VisitExpression(context.cond);
         var mainBlockContext = new AstContext(astContext);
         var mainBlockVisitor = new BaseBuilderVisitor(mainBlockContext);
 
         var mainBlock = mainBlockVisitor.VisitStatementsBlock(context.mainBlock);
-        AstNode? elseStatement = null;
+        IAstNode? elseStatement = null;
 
         if (context.else_if != null)
         {
@@ -99,7 +99,7 @@ public class BaseBuilderVisitor(AstContext astContext) : JSADSLBaseVisitor<AstNo
         return new StatementsBlockAstNode(children);
     }
 
-    public override AstNode VisitVarAssignmentStatement(JSADSLParser.VarAssignmentStatementContext context)
+    public override IAstNode VisitVarAssignmentStatement(JSADSLParser.VarAssignmentStatementContext context)
     {
         var varName = context.varName.Text;
         var varDecl = astContext.ResolveVar(varName) ?? throw new UnresolvedVariableException(varName);
@@ -109,7 +109,7 @@ public class BaseBuilderVisitor(AstContext astContext) : JSADSLBaseVisitor<AstNo
         return new VarAssignmentAstNode(varDecl, value);
     }
 
-    public override AstNode VisitReturnStatement(JSADSLParser.ReturnStatementContext context)
+    public override IAstNode VisitReturnStatement(JSADSLParser.ReturnStatementContext context)
     {
         var expressionContext = context.expression();
         if (expressionContext == null)
@@ -122,7 +122,7 @@ public class BaseBuilderVisitor(AstContext astContext) : JSADSLBaseVisitor<AstNo
     }
 
 
-    public override ExpressionAstNode VisitExpression(JSADSLParser.ExpressionContext context)
+    public override IExpressionAstNode VisitExpression(JSADSLParser.ExpressionContext context)
     {
         return _expessionBuilderVisitor.VisitExpression(context);
     }

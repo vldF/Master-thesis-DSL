@@ -1,11 +1,11 @@
 namespace me.vldf.jsa.dsl.ast.nodes.declarations;
 
 public class FileAstNode(
-    IReadOnlyCollection<AstNode> topLevelDeclarations) : AstNode
+    IReadOnlyCollection<IAstNode> topLevelDeclarations) : IAstNode
 {
-    public IReadOnlyCollection<AstNode> TopLevelDeclarations { get; } = topLevelDeclarations;
+    public IReadOnlyCollection<IAstNode> TopLevelDeclarations { get; } = topLevelDeclarations;
 
-    public override string String()
+    public string String()
     {
         var childrenAsString = string.Join("\n\n", TopLevelDeclarations.Select(x => x.String()));
         return $"""

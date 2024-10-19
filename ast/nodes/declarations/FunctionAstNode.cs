@@ -5,14 +5,14 @@ namespace me.vldf.jsa.dsl.ast.nodes.declarations;
 public class FunctionAstNode(
     string name,
     IReadOnlyCollection<FunctionArgAstNode> args,
-    StatementsBlockAstNode body) : AstNode
+    StatementsBlockAstNode body) : IAstNode
 {
     public string Name { get; } = name;
 
     public StatementsBlockAstNode Body { get; } = body;
     public IReadOnlyCollection<FunctionArgAstNode> Args { get; } = args;
 
-    public override string String()
+    public string String()
     {
         var argsAsString = string.Join(", ", Args.Select(x => x.String()));
         return $"""

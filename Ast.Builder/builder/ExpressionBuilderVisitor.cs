@@ -5,9 +5,9 @@ using me.vldf.jsa.dsl.parser;
 
 namespace Ast.Builder.builder;
 
-public class ExpressionBuilderVisitor(AstContext astContext) : JSADSLBaseVisitor<ExpressionAstNode>
+public class ExpressionBuilderVisitor(AstContext astContext) : JSADSLBaseVisitor<IExpressionAstNode>
 {
-    public override ExpressionAstNode VisitVariableExpression(JSADSLParser.VariableExpressionContext context)
+    public override IExpressionAstNode VisitVariableExpression(JSADSLParser.VariableExpressionContext context)
     {
         var name = context.name.Text;
         var variableDecl = astContext.ResolveVar(name) ?? throw new UnresolvedVariableException(name);

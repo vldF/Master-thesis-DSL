@@ -2,9 +2,9 @@ using me.vldf.jsa.dsl.ast.nodes.expressions;
 
 namespace me.vldf.jsa.dsl.ast.nodes.statements;
 
-public class ReturnStatementAstNode(ExpressionAstNode? expression) : AstNode
+public class ReturnStatementAstNode(IExpressionAstNode? expression) : IStatementAstNode
 {
-    public override string String()
+    public string String()
     {
         if (expression == null)
         {

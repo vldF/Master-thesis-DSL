@@ -1,10 +1,10 @@
 namespace me.vldf.jsa.dsl.ast.nodes.statements;
 
-public class StatementsBlockAstNode(IReadOnlyCollection<AstNode> children) : AstNode
+public class StatementsBlockAstNode(IReadOnlyCollection<IAstNode> children) : IStatementAstNode
 {
-    public IReadOnlyCollection<AstNode> Children { get; } = children;
+    public IReadOnlyCollection<IAstNode> Children { get; } = children;
 
-    public override string String()
+    public string String()
     {
         var content = string.Join("\n", Children.Select(x => x.String()));
         return $$"""

@@ -5,12 +5,12 @@ namespace me.vldf.jsa.dsl.ast.nodes.declarations;
 public class VarDeclAstNode(
     string name,
     types.Type type,
-    ExpressionAstNode? init) : AstNode
+    IExpressionAstNode? init) : IAstNode
 {
     public string Name { get; } = name;
     public types.Type Type { get; } = type;
 
-    public override string String()
+    public virtual string String()
     {
         if (init != null)
         {
