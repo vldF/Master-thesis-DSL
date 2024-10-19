@@ -92,12 +92,20 @@ public class CodegenSynthesizer : AbstractTextSynthesizer
         Append(method.Name);
         Append("(");
 
-        foreach (var (argName, argType) in method.ArgTypes)
+        var lastMethodArg = method.ArgTypes.LastOrDefault();
+        foreach (var (argName, argType) in method.ArgTypes.SkipLast(1))
         {
             SynthTypeRef(argType);
             AppendSpace();
             Append(argName);
             Append(", ");
+        }
+
+        if (method.ArgTypes.Count > 0)
+        {
+            SynthTypeRef(lastMethodArg.Value);
+            AppendSpace();
+            Append(lastMethodArg.Key);
         }
 
         AppendLine(")");
@@ -204,10 +212,16 @@ public class CodegenSynthesizer : AbstractTextSynthesizer
         Append(methodCall.Name);
         Append("(");
 
-        foreach (var methodCallArg in methodCall.Args)
+        var lastArg = methodCall.Args.LastOrDefault();
+        foreach (var methodCallArg in methodCall.Args.SkipLast(1))
         {
             SynthExpression(methodCallArg);
             Append(", ");
+        }
+
+        if (lastArg != null)
+        {
+            SynthExpression(lastArg);
         }
 
         Append(")");
