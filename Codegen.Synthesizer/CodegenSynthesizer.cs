@@ -174,7 +174,7 @@ public class CodegenSynthesizer : AbstractTextSynthesizer
                 SynthBinExpression(cgBinExpression);
                 break;
             case CgBoolLiteral cgBoolExpression:
-                Append(cgBoolExpression.Value.ToString());
+                Append(cgBoolExpression.Value ? "true" : "false");
                 break;
             case CgIntLiteral cgIntExpression:
                 Append(cgIntExpression.Value.ToString());
