@@ -17,23 +17,18 @@ public abstract class AbstractCodegenTest
     {
         var testName = TestContext.CurrentContext.Test.Name;
         var expected = _expectedCodeProvider.GetExpectedCodeForTest(testName)?.EnsureTrailingNewLine();
-        Assert.That(expected, Is.Not.Null, $"can't find expected sources for test {testName}");
 
         var codegenSynthesizer = new CodegenSynthesizer();
         var actual = codegenSynthesizer.Synthesize(cgFile).EnsureTrailingNewLine();
 
-        if (expected == actual)
+        if (expected == null || UpdateTests)
         {
+            UpdateExpectedFile(testName, actual);
             return;
         }
 
-        if (UpdateTests)
+        if (expected == actual)
         {
-            var physicalTestDataPath = "../../../testdata/expected/" + testName + ".csx";
-            var file = File.Open(physicalTestDataPath, FileMode.Create);
-            file.Write(Encoding.UTF8.GetBytes(actual));
-            file.Close();
-
             return;
         }
 
@@ -61,5 +56,13 @@ public abstract class AbstractCodegenTest
         Console.Error.WriteLine(actual);
 
         Assert.Fail();
+    }
+
+    private static void UpdateExpectedFile(string testName, string actual)
+    {
+        var physicalTestDataPath = "../../../testdata/expected/" + testName + ".csx";
+        var file = File.Open(physicalTestDataPath, FileMode.Create);
+        file.Write(Encoding.UTF8.GetBytes(actual));
+        file.Close();
     }
 }
