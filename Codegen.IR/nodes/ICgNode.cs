@@ -1,3 +1,3 @@
 namespace Codegen.IR.nodes;
 
-public interface ICgNode { }
+public interface ICgNode;

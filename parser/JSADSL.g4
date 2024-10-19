@@ -4,7 +4,7 @@ file : topLevelDecl*;
 
 topLevelDecl : funcDecl | objectDecl;
 
-funcDecl : FUNC_KW name=ID L_PAREN (args) R_PAREN (COLON ID)? L_BRACE statementsBlock R_BRACE;
+funcDecl : FUNC_KW name=ID L_PAREN (args) R_PAREN (COLON resultType=ID)? L_BRACE statementsBlock R_BRACE;
 
 args : arg? (COMMA arg)* COMMA?;
 

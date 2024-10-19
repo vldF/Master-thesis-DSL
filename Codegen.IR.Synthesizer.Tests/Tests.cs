@@ -20,12 +20,12 @@ public class Tests : AbstractCodegenTest
         var file = CodegenIrBuilder.CreateFile();
         var methodArgs = new Dictionary<string, ICgType>
         {
-            {"arg1", SimpleType.IntType},
-            {"arg2", SimpleType.IntType},
+            {"arg1", CgSimpleType.IntType},
+            {"arg2", CgSimpleType.IntType},
         };
 
         var method = file.CreateMethod("testMethod", methodArgs);
-        var testVarOfInt = method.AddVarDecl("testVarOfInt", SimpleType.IntType);
+        var testVarOfInt = method.AddVarDecl("testVarOfInt", CgSimpleType.IntType);
 
         var intExpression = new CgIntLiteral(123);
         var initValue = new CgBinExpression(testVarOfInt, intExpression, CgBinExpression.BinOp.Plus);

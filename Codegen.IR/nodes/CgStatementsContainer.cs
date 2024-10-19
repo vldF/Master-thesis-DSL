@@ -1,11 +1,7 @@
 namespace Codegen.IR.nodes;
 
 
-public class CgStatementsContainer : ICgStatementsContainer
+public class CgStatementsContainer(List<ICgStatement>? statements = null) : ICgStatementsContainer
 {
-    public List<ICgStatement> Statements { get; }
-
-    public CgStatementsContainer(IReadOnlyCollection<ICgStatement>? statements = null)
-    {
-    }
+    public List<ICgStatement> Statements { get; } = statements ?? [];
 }

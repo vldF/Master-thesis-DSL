@@ -17,17 +17,17 @@ public class Program
             "myMethod",
             new Dictionary<string, ICgType>
             {
-                {"arg1", SimpleType.IntType},
-                {"arg2", SimpleType.IntType},
+                {"arg1", CgSimpleType.IntType},
+                {"arg2", CgSimpleType.IntType},
             },
-            SimpleType.IntType);
+            CgSimpleType.IntType);
 
         var expression1 = new CgBinExpression(
             method.GetArgument("arg1"),
             method.GetArgument("arg2"),
             CgBinExpression.BinOp.Plus);
 
-        var varTestVar = method.AddVarDecl("testVar", SimpleType.IntType);
+        var varTestVar = method.AddVarDecl("testVar", CgSimpleType.IntType);
 
         method.AddAssignment(varTestVar.AsValue(), expression1);
         var expression2 = new CgBinExpression(

@@ -16,7 +16,12 @@ public class BaseBuilderVisitor(AstContext astContext) : JSADSLBaseVisitor<IAstN
 
     public override FileAstNode VisitFile(JSADSLParser.FileContext context)
     {
-        var result = context.topLevelDecl().Select(Visit).ToList();
+        var result = context
+            .topLevelDecl()
+            .Select(Visit)
+            .Where(x => x is IStatementAstNode)
+            .Cast<IStatementAstNode>()
+            .ToList();
 
         return new FileAstNode(result);
     }
@@ -44,9 +49,20 @@ public class BaseBuilderVisitor(AstContext astContext) : JSADSLBaseVisitor<IAstN
             newContext.SaveNewVar(arg);
         }
 
+        var resultTypeName = context.resultType?.Text;
+        var resultType = resultTypeName != null
+            ? astContext.ResolveType(resultTypeName)
+            : astContext.AnyType;
+
+        if (resultType == null)
+        {
+            throw new UnresolvedTypeException(resultTypeName!);
+        }
+
         return new FunctionAstNode(
             name,
             args,
+            resultType,
             newVisitor.VisitStatementsBlock(context.statementsBlock()));
     }
 
@@ -60,7 +76,7 @@ public class BaseBuilderVisitor(AstContext astContext) : JSADSLBaseVisitor<IAstN
 
         var result = new ObjectAstNode(name, children);
 
-        var type = new ObjectType(result);
+        var type = new ObjectAstType(result);
         astContext.SaveNewType(type);
 
         return result;

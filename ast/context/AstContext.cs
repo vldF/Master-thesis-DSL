@@ -1,6 +1,5 @@
 using me.vldf.jsa.dsl.ast.nodes.declarations;
 using me.vldf.jsa.dsl.ast.types;
-using Type = me.vldf.jsa.dsl.ast.types.Type;
 
 namespace me.vldf.jsa.dsl.ast.context;
 
@@ -9,9 +8,9 @@ public class AstContext(AstContext? parent)
     private readonly Dictionary<string, VarDeclAstNode> _vars = new ();
     private readonly Dictionary<string, FunctionAstNode> _funcs = new ();
     private readonly Dictionary<string, ObjectAstNode> _objects = new ();
-    private readonly Dictionary<string, Type> _types = new();
+    private readonly Dictionary<string, AstType> _types = new();
 
-    public readonly Type AnyType = new SimpleType("any");
+    public readonly AstType AnyType = new SimpleAstType("any");
 
     public void SaveNewVar(VarDeclAstNode node)
     {
@@ -28,9 +27,9 @@ public class AstContext(AstContext? parent)
         _objects[node.Name] = node;
     }
 
-    public void SaveNewType(Type type)
+    public void SaveNewType(AstType astType)
     {
-        _types[type.Name] = type;
+        _types[astType.Name] = astType;
     }
 
 
@@ -49,7 +48,7 @@ public class AstContext(AstContext? parent)
         return _objects.GetValueOrDefault(name) ?? parent?.ResolveObject(name);
     }
 
-    public Type? ResolveType(string name)
+    public AstType? ResolveType(string name)
     {
         return _types.GetValueOrDefault(name) ?? parent?.ResolveType(name);
     }

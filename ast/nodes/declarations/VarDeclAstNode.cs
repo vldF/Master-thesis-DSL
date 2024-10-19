@@ -1,14 +1,16 @@
 using me.vldf.jsa.dsl.ast.nodes.expressions;
+using me.vldf.jsa.dsl.ast.nodes.statements;
+using me.vldf.jsa.dsl.ast.types;
 
 namespace me.vldf.jsa.dsl.ast.nodes.declarations;
 
 public class VarDeclAstNode(
     string name,
-    types.Type type,
-    IExpressionAstNode? init) : IAstNode
+    AstType type,
+    IExpressionAstNode? init) : IStatementAstNode
 {
     public string Name { get; } = name;
-    public types.Type Type { get; } = type;
+    public AstType Type { get; } = type;
 
     public virtual string String()
     {

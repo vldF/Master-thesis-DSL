@@ -125,7 +125,7 @@ public class CodegenSynthesizer : AbstractTextSynthesizer
     {
         switch (type)
         {
-            case SimpleType simpleType:
+            case CgSimpleType simpleType:
                 Append(simpleType.Name);
                 break;
             default:
@@ -207,8 +207,11 @@ public class CodegenSynthesizer : AbstractTextSynthesizer
 
     private void SynthMethodCall(CgMethodCall methodCall)
     {
-        SynthExpression(methodCall.Reciever);
-        Append(".");
+        if (methodCall.Reciever != null)
+        {
+            SynthExpression(methodCall.Reciever);
+            Append(".");
+        }
         Append(methodCall.Name);
         Append("(");
 

@@ -1,6 +1,6 @@
 namespace me.vldf.jsa.dsl.ast.types;
 
-public class SimpleType(string name) : Type
+public class SimpleAstType(string name) : AstType
 {
     public override string Name { get; } = name;
 

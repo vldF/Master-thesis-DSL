@@ -1,3 +1,6 @@
 namespace Codegen.IR.nodes.expressions;
 
-public record CgStringExpression(string Value) : ICgExpression;
+public class CgStringExpression(string value) : ICgExpression
+{
+    public string Value { get; } = "\"" + value + "\"";
+}

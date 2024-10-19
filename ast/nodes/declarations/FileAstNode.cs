@@ -1,9 +1,11 @@
+using me.vldf.jsa.dsl.ast.nodes.statements;
+
 namespace me.vldf.jsa.dsl.ast.nodes.declarations;
 
 public class FileAstNode(
-    IReadOnlyCollection<IAstNode> topLevelDeclarations) : IAstNode
+    IReadOnlyCollection<IStatementAstNode> topLevelDeclarations) : IAstNode
 {
-    public IReadOnlyCollection<IAstNode> TopLevelDeclarations { get; } = topLevelDeclarations;
+    public IReadOnlyCollection<IStatementAstNode> TopLevelDeclarations { get; } = topLevelDeclarations;
 
     public string String()
     {

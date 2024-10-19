@@ -1,4 +1,6 @@
 ﻿using Ast.Builder.builder;
+using Codegen.Synthesizer;
+using Semantics.Ast2CgIrTranslator;
 
 namespace Launcher;
 
@@ -25,8 +27,18 @@ class Program
                         func InnerFunc2() { }
                    }
                    """;
+
         var astBuilder = new AstBuilder();
         var file = astBuilder.FromString(code);
         Console.WriteLine(file.String());
+
+        var translator = new Ast2IrTranslator();
+        var cgFile = translator.Translate(file);
+
+        var synth = new CodegenSynthesizer();
+        var result = synth.Synthesize(cgFile);
+
+        Console.WriteLine("=======");
+        Console.WriteLine(result);
     }
 }
