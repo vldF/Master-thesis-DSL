@@ -26,4 +26,8 @@
       <EmbeddedResource Include="testdata\**" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="testdata\expected\" />
+    </ItemGroup>
+
 </Project>
