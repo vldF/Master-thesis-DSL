@@ -27,12 +27,25 @@ public class Tests : AbstractCodegenTest
         var method = file.CreateMethod("testMethod", methodArgs);
         var testVarOfInt = method.AddVarDecl("testVarOfInt", SimpleType.IntType);
 
-        var intExpression = new CgIntExpression(123);
+        var intExpression = new CgIntLiteral(123);
         var initValue = new CgBinExpression(testVarOfInt, intExpression, CgBinExpression.BinOp.Plus);
         var testVarWithVarType = method.AddVarDecl("testVarWithVarType", init: initValue);
 
         method.AddReturn(testVarWithVarType.AsValue());
 
+        Validate(file);
+    }
+
+    [Test]
+    public void GenerateBuilderTest()
+    {
+        var file = CodegenIrBuilder.CreateFile();
+        var methodBuilder = new CgVarExpression("Builder")
+            .CallMethod("NewBuilder")
+            .CallMethod("SetValue1", [CgIntLiteral.Const1])
+            .CallMethod("SetValue2", [CgBoolLiteral.False]);
+
+        file.Statements.Add(methodBuilder);
         Validate(file);
     }
 }

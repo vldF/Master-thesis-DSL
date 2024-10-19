@@ -42,4 +42,11 @@ public static class CodegenIrBuilder
 
         return statement;
     }
+
+    public static CgMethodCall CallMethod(this ICgExpression reciever,
+        string methodName,
+        IReadOnlyCollection<ICgExpression>? args = null)
+    {
+        return new CgMethodCall(reciever, methodName, args ?? []);
+    }
 }
