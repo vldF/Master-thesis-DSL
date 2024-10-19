@@ -166,13 +166,13 @@ public class CodegenSynthesizer : AbstractTextSynthesizer
                 SynthBinExpression(cgBinExpression);
                 break;
             case CgBoolExpression cgBoolExpression:
-                AppendLine(cgBoolExpression.Value.ToString());
+                Append(cgBoolExpression.Value.ToString());
                 break;
             case CgIntExpression cgIntExpression:
-                AppendLine(cgIntExpression.Value.ToString());
+                Append(cgIntExpression.Value.ToString());
                 break;
             case CgStringExpression cgStringExpression:
-                AppendLine(cgStringExpression.Value);
+                Append(cgStringExpression.Value);
                 break;
             case CgVarExpression cgVarExpression:
                 SynthVarExpression(cgVarExpression);
