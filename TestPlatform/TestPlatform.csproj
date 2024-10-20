@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Codegen.IR\Codegen.IR.csproj" />
+      <ProjectReference Include="..\Codegen.Synthesizer\Codegen.Synthesizer.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="DiffPlex" Version="1.7.2" />
+      <PackageReference Include="NUnit" Version="3.13.3" />
+    </ItemGroup>
+
+</Project>

@@ -18,6 +18,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Codegen.IR.Synthesizer.Test
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Semantics.Ast2CgIrTranslator", "Semantics.Ast2CgIrTranslator\Semantics.Ast2CgIrTranslator.csproj", "{8055DC34-F5B8-4336-8B25-AD0981B33BE7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Semantics.Ast2CgIrTranslator.Tests", "Semantics.Ast2CgIrTranslator.Tests\Semantics.Ast2CgIrTranslator.Tests.csproj", "{EA916C36-2F08-4E2E-BA83-9D8075C87E52}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestPlatform", "TestPlatform\TestPlatform.csproj", "{0CD0FFEC-7273-47ED-9167-889278FBE05B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -60,5 +64,13 @@ Global
 		{8055DC34-F5B8-4336-8B25-AD0981B33BE7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8055DC34-F5B8-4336-8B25-AD0981B33BE7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8055DC34-F5B8-4336-8B25-AD0981B33BE7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EA916C36-2F08-4E2E-BA83-9D8075C87E52}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EA916C36-2F08-4E2E-BA83-9D8075C87E52}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EA916C36-2F08-4E2E-BA83-9D8075C87E52}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EA916C36-2F08-4E2E-BA83-9D8075C87E52}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0CD0FFEC-7273-47ED-9167-889278FBE05B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0CD0FFEC-7273-47ED-9167-889278FBE05B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0CD0FFEC-7273-47ED-9167-889278FBE05B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0CD0FFEC-7273-47ED-9167-889278FBE05B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

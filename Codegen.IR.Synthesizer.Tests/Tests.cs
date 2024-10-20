@@ -1,12 +1,13 @@
 using Codegen.IR.Builder;
 using Codegen.IR.nodes.expressions;
 using Codegen.IR.nodes.types;
-using Codegen.IR.Synthesizer.Tests.platform;
 using NUnit.Framework;
+using NUnit.Framework.Internal;
+using TestPlatform;
 
 namespace Codegen.IR.Synthesizer.Tests;
 
-public class Tests : AbstractCodegenTest
+public class Tests : BaseCodegenTest<Tests>
 {
     public Tests()
     {

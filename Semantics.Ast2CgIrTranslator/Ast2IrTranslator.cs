@@ -27,7 +27,7 @@ public class Ast2IrTranslator : IAstVisitor
 
     public void VisitFileAstNode(FileAstNode node)
     {
-        _file = CreateFile("file.csx");
+        _file = CreateFile("file.jsadsl");
 
         foreach (var nodeTopLevelDeclaration in node.TopLevelDeclarations)
         {

@@ -85,7 +85,6 @@ public class CodegenSynthesizer : AbstractTextSynthesizer
 
     private void SynthMethodDecl(CgMethod method)
     {
-        Append("public ");
         SynthTypeRef(method.ReturnType);
 
         AppendSpace();

@@ -1,0 +1,13 @@
+PythonTypes.CreateClass("Type1");
+PythonTypes.CreateClass("Type2");
+PythonTypes.CreateClass("ReturnType");
+CallHandlerResult TestFuncHandler(Location location, FunctionCall functionCall)
+{
+}
+CallHandlerResult InnerFuncHandler(Location location, FunctionCall functionCall)
+{
+}
+CallHandlerResult InnerFunc2Handler(Location location, FunctionCall functionCall)
+{
+}
+PythonTypes.CreateClass("MyObject").WithMethod("InnerFunc", InnerFuncHandler).WithMethod("InnerFunc2", InnerFunc2Handler);

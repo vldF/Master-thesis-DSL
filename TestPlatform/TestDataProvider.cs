@@ -1,14 +1,29 @@
 using System.Reflection;
 
-namespace Codegen.IR.Synthesizer.Tests.platform;
+namespace TestPlatform;
 
-public class ExpectedCodeProvider
+public class TestDataProvider<T>
 {
-    private const string BasePath = "testdata/expected/";
+    private const string BasePath = "testdata/";
+    private const string ExpectedDirPath = BasePath + "expected/";
+    private const string InputDirPath = BasePath + "input/";
 
     public string? GetExpectedCodeForTest(string testName)
     {
-        var testFilePath = BasePath + testName + ".csx";
+        var testFilePath = ExpectedDirPath + testName + ".jsa";
+        var testFileAsStream = GetResourceStream(testFilePath);
+        if (testFileAsStream == null)
+        {
+            return null;
+        }
+
+        var reader = new StreamReader(testFileAsStream);
+        return reader.ReadToEnd();
+    }
+
+    public string? GetInputCodeForTest(string testName)
+    {
+        var testFilePath = InputDirPath + testName + ".jsadsl";
         var testFileAsStream = GetResourceStream(testFilePath);
         if (testFileAsStream == null)
         {
@@ -21,7 +36,7 @@ public class ExpectedCodeProvider
 
     private static Stream? GetResourceStream(string resName)
     {
-        var assembly = Assembly.GetExecutingAssembly();
+        var assembly = Assembly.GetAssembly(typeof(T));
         var allResources = assembly.GetManifestResourceNames();
         var convertedResourceName = resName.Replace("/", ".");
 

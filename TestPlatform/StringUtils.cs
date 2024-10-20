@@ -1,4 +1,4 @@
-namespace Codegen.IR.Synthesizer.Tests.platform;
+namespace TestPlatform;
 
 public static class StringUtils
 {

@@ -5,18 +5,18 @@ using DiffPlex.DiffBuilder;
 using DiffPlex.DiffBuilder.Model;
 using NUnit.Framework;
 
-namespace Codegen.IR.Synthesizer.Tests.platform;
+namespace TestPlatform;
 
-public abstract class AbstractCodegenTest
+public abstract class BaseCodegenTest<T>
 {
-    private readonly ExpectedCodeProvider _expectedCodeProvider = new();
+    protected readonly TestDataProvider<T> _testDataProvider = new();
 
     protected bool UpdateTests = false;
 
     protected void Validate(CgFile cgFile)
     {
         var testName = TestContext.CurrentContext.Test.Name;
-        var expected = _expectedCodeProvider.GetExpectedCodeForTest(testName)?.EnsureTrailingNewLine();
+        var expected = _testDataProvider.GetExpectedCodeForTest(testName)?.EnsureTrailingNewLine();
 
         var codegenSynthesizer = new CodegenSynthesizer();
         var actual = codegenSynthesizer.Synthesize(cgFile).EnsureTrailingNewLine();
@@ -60,7 +60,7 @@ public abstract class AbstractCodegenTest
 
     private static void UpdateExpectedFile(string testName, string actual)
     {
-        var physicalTestDataPath = "../../../testdata/expected/" + testName + ".csx";
+        var physicalTestDataPath = "../../../testdata/expected/" + testName + ".jsadsl";
         var file = File.Open(physicalTestDataPath, FileMode.Create);
         file.Write(Encoding.UTF8.GetBytes(actual));
         file.Close();
