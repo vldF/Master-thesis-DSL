@@ -52,9 +52,9 @@ public class BaseBuilderVisitor(AstContext astContext) : JSADSLBaseVisitor<IAstN
         var resultTypeName = context.resultType?.Text;
         var resultType = resultTypeName != null
             ? astContext.ResolveType(resultTypeName)
-            : astContext.AnyType;
+            : null;
 
-        if (resultType == null)
+        if (resultTypeName != null && resultType == null)
         {
             throw new UnresolvedTypeException(resultTypeName!);
         }

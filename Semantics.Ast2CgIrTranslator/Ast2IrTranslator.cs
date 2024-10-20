@@ -1,12 +1,9 @@
-using Codegen.IR.Builder;
 using Codegen.IR.nodes;
 using Codegen.IR.nodes.expressions;
-using Codegen.IR.nodes.statements;
 using Codegen.IR.nodes.types;
 using me.vldf.jsa.dsl.ast.nodes.declarations;
 using me.vldf.jsa.dsl.ast.nodes.expressions;
 using me.vldf.jsa.dsl.ast.nodes.statements;
-using me.vldf.jsa.dsl.ast.types;
 using me.vldf.jsa.dsl.ast.visitors;
 using static Codegen.IR.Builder.CodegenIrBuilder;
 
@@ -17,6 +14,7 @@ public class Ast2IrTranslator : IAstVisitor
 #pragma warning disable CS8618
     private CgFile _file;
     private ICgExpression _currentBuilder;
+    private CgMethod _handlerMethod;
 #pragma warning restore CS8618
 
     public CgFile Translate(FileAstNode node)
@@ -59,12 +57,16 @@ public class Ast2IrTranslator : IAstVisitor
 
         var returnType = new CgSimpleType("CallHandlerResult");
 
-        _file.CreateMethod(node.GetHandlerName(), args, returnType);
+        _handlerMethod = _file.CreateMethod(node.GetHandlerName(), args, returnType);
 
         foreach (var bodyChild in node.Body.Children)
         {
             ((IAstVisitor)this).Visit(bodyChild);
         }
+
+        _handlerMethod.AddReturn(
+            new CgVarExpression("CallHandlerResult")
+                .CallMethod("Processed", [new CgVarExpression("SemanticsApi").Property("None")]));
     }
 
     public void VisitObjectAstNode(ObjectAstNode node)

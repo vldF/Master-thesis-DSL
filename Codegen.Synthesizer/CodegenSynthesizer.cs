@@ -184,9 +184,19 @@ public class CodegenSynthesizer : AbstractTextSynthesizer
             case CgVarExpression cgVarExpression:
                 SynthVarExpression(cgVarExpression);
                 break;
+            case CgValueWithReciever cgValueWithReciever:
+                SynthValueWithReciever(cgValueWithReciever);
+                break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(expression));
         }
+    }
+
+    private void SynthValueWithReciever(CgValueWithReciever cgValueWithReciever)
+    {
+        SynthExpression(cgValueWithReciever.Reciever);
+        Append(".");
+        Append(cgValueWithReciever.Name);
     }
 
     private void SynthArrayExpression(CgArrayIndexExpression cgArrayIndexExpression)

@@ -50,6 +50,12 @@ public static class CodegenIrBuilder
         return new CgMethodCall(reciever, methodName, args ?? []);
     }
 
+    public static CgValueWithReciever Property(this ICgExpression reciever,
+        string propertyName)
+    {
+        return new CgValueWithReciever(reciever, propertyName);
+    }
+
     public static ICgExpression VarDeclaration(
         this CgFile file,
         string name,
