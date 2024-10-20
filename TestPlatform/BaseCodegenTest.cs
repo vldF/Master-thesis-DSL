@@ -49,6 +49,9 @@ public abstract class BaseCodegenTest<T>
                 case ChangeType.Modified:
                     Console.Error.WriteLine("~{0}", diffPice.Text);
                     break;
+                case ChangeType.Unchanged:
+                    Console.Error.WriteLine(" {0}", diffPice.Text);
+                    break;
             }
         }
 

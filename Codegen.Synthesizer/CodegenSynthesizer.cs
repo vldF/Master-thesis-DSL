@@ -8,11 +8,8 @@ namespace Codegen.Synthesizer;
 
 public class CodegenSynthesizer : AbstractTextSynthesizer
 {
-    private StringBuilder _stringBuilder = new();
-
     public string Synthesize(CgFile file)
     {
-        _stringBuilder = new();
         SynthFile(file);
 
         return ToString();

@@ -12,25 +12,36 @@ public static class CodegenIrBuilder
         return new CgFile(name);
     }
 
-    public static CgMethod CreateMethod(this CgFile file, string name, Dictionary<string, ICgType> args, ICgType? returnType = null)
+    public static CgMethod CreateMethod(
+        this ICgStatementsContainer statementsContainer,
+        string name,
+        Dictionary<string, ICgType> args,
+        ICgType? returnType = null)
     {
         var method = new CgMethod(name, args, returnType ?? CgSimpleType.VoidType);
-        file.Statements.Add(method);
+        statementsContainer.Statements.Add(method);
 
         return method;
     }
 
-    public static CgVarDeclStatement AddVarDecl(this CgMethod method, string name, ICgType? type = null, ICgExpression? init = null)
+    public static CgVarDeclStatement AddVarDecl(
+        this ICgStatementsContainer statementsContainer,
+        string name,
+        ICgType? type = null,
+        ICgExpression? init = null)
     {
         var varDecl = new CgVarDeclStatement(name, type, init);
-        method.Statements.Add(varDecl);
+        statementsContainer.Statements.Add(varDecl);
         return varDecl;
     }
 
-    public static CgAssignmentStatement AddAssignment(this CgMethod method, ICgExpression left, ICgExpression right)
+    public static CgAssignmentStatement AddAssignment(
+        this ICgStatementsContainer statementsContainer,
+        ICgExpression left,
+        ICgExpression right)
     {
         var statement = new CgAssignmentStatement(left, right);
-        method.Statements.Add(statement);
+        statementsContainer.Statements.Add(statement);
 
         return statement;
     }
@@ -57,13 +68,13 @@ public static class CodegenIrBuilder
     }
 
     public static ICgExpression VarDeclaration(
-        this CgFile file,
+        ICgStatementsContainer statementsContainer,
         string name,
         ICgType? type = null,
         ICgExpression? init = null)
     {
-        var globalVar = new CgVarDeclStatement(name, Type: null, Init: init);
-        file.Statements.Add(globalVar);
+        var globalVar = new CgVarDeclStatement(name, Type: type, Init: init);
+        statementsContainer.Statements.Add(globalVar);
 
         return globalVar.AsValue();
     }

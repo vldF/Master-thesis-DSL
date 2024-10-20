@@ -80,7 +80,7 @@ public class Ast2IrTranslator : IAstVisitor
             ((IAstVisitor)this).Visit(child);
         }
 
-        _file.Statements.Add((ICgStatement)_currentBuilder);
+        _file.AddVarDecl(node.GetDescriptionVarName(), init: _currentBuilder);
     }
 
     public void VisitVarDeclAstNode(VarDeclAstNode node)
