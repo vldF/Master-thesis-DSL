@@ -1,9 +1,6 @@
 PythonTypes.CreateClass("Type1");
 PythonTypes.CreateClass("Type2");
 PythonTypes.CreateClass("ReturnType");
-CallHandlerResult TestFuncHandler(Location location, FunctionCall functionCall)
-{
-}
 CallHandlerResult InnerFuncHandler(Location location, FunctionCall functionCall)
 {
 }

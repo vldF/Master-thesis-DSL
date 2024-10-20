@@ -10,7 +10,7 @@ public class TestDataProvider<T>
 
     public string? GetExpectedCodeForTest(string testName)
     {
-        var testFilePath = ExpectedDirPath + testName + ".jsa";
+        var testFilePath = ExpectedDirPath + testName + ".jsadsl";
         var testFileAsStream = GetResourceStream(testFilePath);
         if (testFileAsStream == null)
         {
@@ -23,7 +23,7 @@ public class TestDataProvider<T>
 
     public string? GetInputCodeForTest(string testName)
     {
-        var testFilePath = InputDirPath + testName + ".jsadsl";
+        var testFilePath = InputDirPath + testName + ".jsa";
         var testFileAsStream = GetResourceStream(testFilePath);
         if (testFileAsStream == null)
         {
