@@ -18,7 +18,7 @@ varAssignmentStatement : varName=ID EQ expression;
 
 ifStatement : IF_KW L_PAREN cond=expression R_PAREN mainBlock=statementsBlock L_BRACE ((ELSE_KW else_if=ifStatement) | (ELSE_KW else=statementsBlock));
 
-returnStatement : RETURN_KW (expression);
+returnStatement : RETURN_KW expression?;
 
 expression :
     variableExpression

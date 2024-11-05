@@ -4,6 +4,7 @@ object ReturnType {}
 
 object MyObject {
     func InnerFunc(arg1: Type1) {
+        return;
     }
 
     func InnerFunc2() { }
