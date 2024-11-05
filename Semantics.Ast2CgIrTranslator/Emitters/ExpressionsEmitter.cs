@@ -19,6 +19,6 @@ public class ExpressionsEmitter(TranslatorContext ctx)
     {
         var descriptor = ctx.ClassDescriptorVariables[newAstNode.objectName];
         var args = newAstNode.args.Select(EmitExpression);
-        return ctx.SemanticTypes.CreateInstance(newAstNode.objectName, descriptor, args);
+        return ctx.Semantics.CreateInstance(newAstNode.objectName, descriptor, args);
     }
 }

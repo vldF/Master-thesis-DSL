@@ -1,5 +1,6 @@
 using Codegen.IR.Builder;
 using Codegen.IR.nodes.expressions;
+using Codegen.IR.nodes.statements;
 using Codegen.IR.nodes.types;
 using me.vldf.jsa.dsl.ast.nodes;
 using me.vldf.jsa.dsl.ast.nodes.declarations;
@@ -36,6 +37,11 @@ public class MethodEmitter(TranslatorContext ctx)
 
         ctx.HandlerMethod = ctx.File.CreateMethod(func.GetHandlerName(), args, returnType);
 
+        foreach (var arg in func.Args)
+        {
+            EmitArg(arg);
+        }
+
         foreach (var bodyChild in func.Body.Children)
         {
             if (bodyChild is IStatementAstNode statement)
@@ -43,6 +49,14 @@ public class MethodEmitter(TranslatorContext ctx)
                 EmitStatement(statement);
             }
         }
+    }
+
+    private void EmitArg(FunctionArgAstNode argNode)
+    {
+        // todo: desugar it in preprocessing stages
+        var initExpression = ctx.Semantics.GetArgument(argNode.Index);
+
+        VarDeclaration(ctx.HandlerMethod, argNode.Name, init: initExpression);
     }
 
     private void EmitStatement(IStatementAstNode bodyChild)
@@ -75,6 +89,6 @@ public class MethodEmitter(TranslatorContext ctx)
             result = null;
         }
 
-        ctx.HandlerMethod.AddReturn(ctx.SemanticTypes.Return(result));
+        ctx.HandlerMethod.AddReturn(ctx.Semantics.Return(result));
     }
 }

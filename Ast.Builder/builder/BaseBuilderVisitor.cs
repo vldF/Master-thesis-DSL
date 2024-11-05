@@ -34,6 +34,7 @@ public class BaseBuilderVisitor(AstContext astContext) : JSADSLBaseVisitor<IAstN
         var newVisitor = new BaseBuilderVisitor(newContext);
 
         var args = new List<FunctionArgAstNode>();
+        var argIndex = 0;
         foreach (var argContext in context.functionArgs().functionArg())
         {
             var argName = argContext.name.Text;
@@ -43,7 +44,7 @@ public class BaseBuilderVisitor(AstContext astContext) : JSADSLBaseVisitor<IAstN
             {
                 throw new UnresolvedVariableException(argTypeName!);
             }
-            var arg = new FunctionArgAstNode(argName, argType);
+            var arg = new FunctionArgAstNode(argName, argType, argIndex++);
 
             args.Add(arg);
             newContext.SaveNewVar(arg);

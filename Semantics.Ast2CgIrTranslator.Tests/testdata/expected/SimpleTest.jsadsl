@@ -3,10 +3,9 @@ var Type2ClassDescription = PythonTypes.CreateClass("Type2");
 var ReturnTypeClassDescription = PythonTypes.CreateClass("ReturnType");
 CallHandlerResult InnerFuncHandler(Location location, FunctionCall functionCall)
 {
-    return CallHandlerResult.Processed(SemanticsApi.None);
+    var arg1 = FunctionCall.Arguments[0];
 }
 CallHandlerResult InnerFunc2Handler(Location location, FunctionCall functionCall)
 {
-    return CallHandlerResult.Processed(SemanticsApi.None);
 }
 var MyObjectClassDescription = PythonTypes.CreateClass("MyObject").WithMethod("InnerFunc", InnerFuncHandler).WithMethod("InnerFunc2", InnerFunc2Handler);

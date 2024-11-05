@@ -67,6 +67,11 @@ public static class CodegenIrBuilder
         return new CgValueWithReciever(reciever, propertyName);
     }
 
+    public static CgValueWithIndex Index(this ICgExpression reciever, int idx)
+    {
+        return new CgValueWithIndex(reciever, idx);
+    }
+
     public static ICgExpression VarDeclaration(
         ICgStatementsContainer statementsContainer,
         string name,

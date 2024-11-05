@@ -11,7 +11,7 @@ public class TranslatorContext
     public ICgExpression CurrentBuilder;
     public CgMethod HandlerMethod;
 
-    public SemanticTypes SemanticTypes = new();
+    public Semantics.Semantics Semantics = new();
 
     public Dictionary<string, ICgExpression> ClassDescriptorVariables = new();
 }

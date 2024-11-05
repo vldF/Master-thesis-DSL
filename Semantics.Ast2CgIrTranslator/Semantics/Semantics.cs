@@ -4,12 +4,13 @@ using Codegen.IR.nodes.expressions;
 
 namespace Semantics.Ast2CgIrTranslator.Semantics;
 
-public class SemanticTypes
+public class Semantics
 {
     public CgVarExpression Types = new("PythonTypes");
     public CgVarExpression SemanticsApi = new("SemanticsApi");
 
     private CgVarExpression _location = new("Location");
+    private CgVarExpression _functionCall = new("FunctionCall");
 
     public ICgExpression CreateClass(string name)
     {
@@ -33,5 +34,10 @@ public class SemanticTypes
         var res = expression ?? SemanticsApi.Property("None");
 
         return new CgVarExpression("CallHandlerResult").CallMethod("Processed", [res]);
+    }
+
+    public ICgExpression GetArgument(int idx)
+    {
+        return _functionCall.Property("Arguments").Index(idx);
     }
 }

@@ -44,7 +44,7 @@ public class Ast2IrTranslator : IAstVisitor
 
     public void VisitObjectAstNode(ObjectAstNode node)
     {
-        _ctx.CurrentBuilder = _ctx.SemanticTypes.CreateClass(node.Name);
+        _ctx.CurrentBuilder = _ctx.Semantics.CreateClass(node.Name);
 
         foreach (var child in node.Children)
         {

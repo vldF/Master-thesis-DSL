@@ -184,9 +184,20 @@ public class CodegenSynthesizer : AbstractTextSynthesizer
             case CgValueWithReciever cgValueWithReciever:
                 SynthValueWithReciever(cgValueWithReciever);
                 break;
+            case CgValueWithIndex cgValueWithIndex:
+                SynthValueWithIndex(cgValueWithIndex);
+                break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(expression));
         }
+    }
+
+    private void SynthValueWithIndex(CgValueWithIndex cgValueWithIndex)
+    {
+        SynthExpression(cgValueWithIndex.Reciever);
+        Append("[");
+        Append(cgValueWithIndex.idx.ToString());
+        Append("]");
     }
 
     private void SynthValueWithReciever(CgValueWithReciever cgValueWithReciever)
