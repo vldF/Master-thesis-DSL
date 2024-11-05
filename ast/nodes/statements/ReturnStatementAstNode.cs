@@ -4,13 +4,15 @@ namespace me.vldf.jsa.dsl.ast.nodes.statements;
 
 public class ReturnStatementAstNode(IExpressionAstNode? expression) : IStatementAstNode
 {
+    public readonly IExpressionAstNode? Expression = expression;
+
     public string String()
     {
-        if (expression == null)
+        if (Expression == null)
         {
             return "return";
         }
 
-        return $"return {expression.String()}";
+        return $"return {Expression.String()}";
     }
 }

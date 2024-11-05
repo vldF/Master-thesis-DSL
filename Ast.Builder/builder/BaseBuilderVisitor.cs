@@ -34,7 +34,7 @@ public class BaseBuilderVisitor(AstContext astContext) : JSADSLBaseVisitor<IAstN
         var newVisitor = new BaseBuilderVisitor(newContext);
 
         var args = new List<FunctionArgAstNode>();
-        foreach (var argContext in context.args().arg())
+        foreach (var argContext in context.functionArgs().functionArg())
         {
             var argName = argContext.name.Text;
             var argTypeName = argContext.type?.Text;

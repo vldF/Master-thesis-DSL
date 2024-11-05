@@ -51,7 +51,11 @@ public class Ast2IrTranslator : IAstVisitor
             ((IAstVisitor)this).Visit(child);
         }
 
-        _ctx.File.AddVarDecl(node.GetDescriptionVarName(), init: _ctx.CurrentBuilder);
+        var classDescriptorVariable = _ctx.File.AddVarDecl(
+            node.GetDescriptionVarName(),
+            init: _ctx.CurrentBuilder);
+
+        _ctx.ClassDescriptorVariables[node.Name] = classDescriptorVariable.AsValue();
     }
 
     public void VisitVarDeclAstNode(VarDeclAstNode node)

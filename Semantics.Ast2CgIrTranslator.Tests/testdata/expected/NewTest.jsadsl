@@ -1,0 +1,6 @@
+var Type1ClassDescription = PythonTypes.CreateClass("Type1");
+CallHandlerResult InnerFuncHandler(Location location, FunctionCall functionCall)
+{
+    return CallHandlerResult.Processed(SemanticsApi.CreateObjectDescriptor(Location, Type1ClassDescription, "<Type1>", arg1));
+}
+var MyObjectClassDescription = PythonTypes.CreateClass("MyObject").WithMethod("InnerFunc", InnerFuncHandler);

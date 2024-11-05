@@ -12,4 +12,6 @@ public class TranslatorContext
     public CgMethod HandlerMethod;
 
     public SemanticTypes SemanticTypes = new();
+
+    public Dictionary<string, ICgExpression> ClassDescriptorVariables = new();
 }

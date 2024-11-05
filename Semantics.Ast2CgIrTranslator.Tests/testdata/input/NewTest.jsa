@@ -1,0 +1,7 @@
+object Type1 {}
+
+object MyObject {
+    func InnerFunc(arg1: Type1) {
+        return new Type1(arg1);
+    }
+}

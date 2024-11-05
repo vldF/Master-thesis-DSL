@@ -4,11 +4,11 @@ file : topLevelDecl*;
 
 topLevelDecl : funcDecl | objectDecl;
 
-funcDecl : FUNC_KW name=ID L_PAREN (args) R_PAREN (COLON resultType=ID)? L_BRACE statementsBlock R_BRACE;
+funcDecl : FUNC_KW name=ID L_PAREN (functionArgs) R_PAREN (COLON resultType=ID)? L_BRACE statementsBlock R_BRACE;
 
-args : arg? (COMMA arg)* COMMA?;
+functionArgs : functionArg? (COMMA functionArg)* COMMA?;
 
-arg : name=ID (COLON type=ID)?;
+functionArg : name=ID (COLON type=ID)?;
 
 statementsBlock : (statement SEMI_COLON)*;
 
@@ -20,9 +20,16 @@ ifStatement : IF_KW L_PAREN cond=expression R_PAREN mainBlock=statementsBlock L_
 
 returnStatement : RETURN_KW (expression);
 
-expression : variableExpression;
+expression :
+    variableExpression
+    | newExpression
+    ;
+
+expressionList : expression? (COMMA expression)* COMMA?;
 
 variableExpression : name=ID;
+
+newExpression : NEW_KW name=ID L_PAREN expressionList R_PAREN;
 
 objectDecl : OBJECT_KW name=ID L_BRACE objectBody R_BRACE;
 
@@ -34,6 +41,7 @@ IF_KW : 'if';
 ELSE_KW : 'else';
 VAR_KW : 'var';
 RETURN_KW : 'return';
+NEW_KW : 'new';
 
 L_PAREN : '(';
 R_PAREN : ')';
