@@ -15,7 +15,7 @@
        Interpreter.Assign(ModuleDescriptor, <name>, baseRequestClass.ClassDescriptor);
        ```
     2. Указание обработчиков методов (при объявлении класса)
-    3. Указание атрибутов (в конструкторе):
+    3. Указание значений полей объекта (в конструкторе):
        ```csharp
        PythonTypes.SetAttribute(location, <instance>, <name>, <value>);
        ```
@@ -30,13 +30,12 @@
            ```csharp
            functionCall.Arguments[<idx>]
            ```
-           Или по имени: (todo: уточнить)
+           Или по имени (приоритетный вариант):
            ```csharp
            ProcessorApi.ProcessKeywordArguments(functionCall)
            ```
            По первому индексу self (если метод в классе)
-        2. Аргументы — кондиционалы
-        3. Перегрузки функций по аргументам (по их количеству) 
+        2. Перегрузки функций по аргументам (не актуально для python) 
     4. Есть стейтменты
     5. Есть return (стейтмент)
        Возвращается или `CallHandlerResult.Unprocessed`, или `CallHandlerResult.Processed(<res>)`,
@@ -48,14 +47,12 @@
    4. Ассоциативные массивы с чтением значений из полей 
 5. Интринсики:
    1. `Detector.Detect(<location>, <value>, <vulnerability-type>, <argument-grammar>)`
-   2. Создание инстанса объекта
+   2. Создание инстанса объекта (`new`-expression)
       ```csharp
       <class>.CreateInstance(<location>)
       ```
    3. Вызов символьной функции
 6. Типы
    1. `any` — любой тип значения
-   2. `value<T>` — тип-обёртка для символьных значений. Появляется неявно у аргументов, есть инстринсик-
-      свойство `value<T>::Values`, которое позволяет получить все варианты кондиционала
-   3. `int`, `float`, `string`, `bool`
-   4. `Callable` — функциональный символьный тип
+   2. `int`, `float`, `string`, `bool`
+   3. `Callable` — функциональный символьный тип
