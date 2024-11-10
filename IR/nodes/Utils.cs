@@ -1,5 +1,5 @@
-global using static me.vldf.jsa.dsl.ast.nodes.Utils;
-namespace me.vldf.jsa.dsl.ast.nodes;
+global using static me.vldf.jsa.dsl.ir.nodes.Utils;
+namespace me.vldf.jsa.dsl.ir.nodes;
 
 public static class Utils
 {

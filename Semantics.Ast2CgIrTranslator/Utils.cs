@@ -1,4 +1,4 @@
-using me.vldf.jsa.dsl.ast.nodes.declarations;
+using me.vldf.jsa.dsl.ir.nodes.declarations;
 
 namespace Semantics.Ast2CgIrTranslator;
 

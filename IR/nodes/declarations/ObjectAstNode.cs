@@ -1,6 +1,6 @@
-using me.vldf.jsa.dsl.ast.nodes.statements;
+using me.vldf.jsa.dsl.ir.nodes.statements;
 
-namespace me.vldf.jsa.dsl.ast.nodes.declarations;
+namespace me.vldf.jsa.dsl.ir.nodes.declarations;
 
 public class ObjectAstNode(
     string name,
@@ -14,7 +14,7 @@ public class ObjectAstNode(
     {
         var childrenAsString = string.Join("\n\n", Children.Select(x => x.String()));
         return $"""
-                func {Name} (
+                object {Name} (
                 {AddIndent(childrenAsString)}
                 )
                 """;

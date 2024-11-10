@@ -1,7 +1,7 @@
-using me.vldf.jsa.dsl.ast.nodes.declarations;
-using me.vldf.jsa.dsl.ast.nodes.expressions;
+using me.vldf.jsa.dsl.ir.nodes.declarations;
+using me.vldf.jsa.dsl.ir.nodes.expressions;
 
-namespace me.vldf.jsa.dsl.ast.nodes.statements;
+namespace me.vldf.jsa.dsl.ir.nodes.statements;
 
 public class VarAssignmentAstNode(
     VarDeclAstNode variable,

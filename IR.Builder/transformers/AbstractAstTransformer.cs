@@ -1,8 +1,8 @@
 using System.Data;
-using me.vldf.jsa.dsl.ast.nodes;
-using me.vldf.jsa.dsl.ast.nodes.declarations;
-using me.vldf.jsa.dsl.ast.nodes.expressions;
-using me.vldf.jsa.dsl.ast.nodes.statements;
+using me.vldf.jsa.dsl.ir.nodes;
+using me.vldf.jsa.dsl.ir.nodes.declarations;
+using me.vldf.jsa.dsl.ir.nodes.expressions;
+using me.vldf.jsa.dsl.ir.nodes.statements;
 
 namespace me.vldf.jsa.dsl.ir.builder.transformers;
 

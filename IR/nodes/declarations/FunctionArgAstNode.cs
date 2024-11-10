@@ -1,15 +1,13 @@
-using me.vldf.jsa.dsl.ast.types;
+using me.vldf.jsa.dsl.ir.references;
 
-namespace me.vldf.jsa.dsl.ast.nodes.declarations;
+namespace me.vldf.jsa.dsl.ir.nodes.declarations;
 
- public class FunctionArgAstNode(string name, AstType type, int index) : VarDeclAstNode(name, type, null)
+ public class FunctionArgAstNode(string name, TypeReference typeRef, int index) : VarDeclAstNode(name, typeRef, null)
 {
-    public string Name { get; } = name;
-    public AstType Type { get; } = type;
     public int Index { get; } = index;
 
     public override string String()
     {
-        return $"arg {Name}: {Type.String()}";
+        return $"arg {Name}: @{TypeReference.Id}";
     }
 }

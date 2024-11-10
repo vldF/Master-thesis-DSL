@@ -1,3 +1,3 @@
-namespace me.vldf.jsa.dsl.ast.nodes.expressions;
+namespace me.vldf.jsa.dsl.ir.nodes.expressions;
 
 public interface IExpressionAstNode : IAstNode;

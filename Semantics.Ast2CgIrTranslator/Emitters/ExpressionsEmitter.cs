@@ -1,5 +1,5 @@
 using Codegen.IR.nodes.expressions;
-using me.vldf.jsa.dsl.ast.nodes.expressions;
+using me.vldf.jsa.dsl.ir.nodes.expressions;
 
 namespace Semantics.Ast2CgIrTranslator.Emitters;
 
@@ -17,8 +17,9 @@ public class ExpressionsEmitter(TranslatorContext ctx)
 
     private ICgExpression EmitNewNode(NewAstNode newAstNode)
     {
-        var descriptor = ctx.ClassDescriptorVariables[newAstNode.objectName];
+        var obj = newAstNode.typeReference.SealedValue!;
+        var descriptor = ctx.ClassDescriptorVariables[obj.Name];
         var args = newAstNode.args.Select(EmitExpression);
-        return ctx.Semantics.CreateInstance(newAstNode.objectName, descriptor, args);
+        return ctx.Semantics.CreateInstance(obj.Name, descriptor, args);
     }
 }

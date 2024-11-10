@@ -1,6 +1,6 @@
 using Antlr4.Runtime;
-using me.vldf.jsa.dsl.ast.context;
-using me.vldf.jsa.dsl.ast.nodes.declarations;
+using me.vldf.jsa.dsl.ir.context;
+using me.vldf.jsa.dsl.ir.nodes.declarations;
 using me.vldf.jsa.dsl.parser;
 
 namespace me.vldf.jsa.dsl.ir.builder.builder;
@@ -22,7 +22,7 @@ public class AstBuilder
         lexer.AddErrorListener(lexerErrorListener);
         parser.AddErrorListener(parserErrorListener);
 
-        var rootContext = new AstContext(null);
+        var rootContext = new IrContext(null);
 
         var fileContext = parser.file();
         var topLevelVisitor = new BaseBuilderVisitor(rootContext);

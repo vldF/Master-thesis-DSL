@@ -1,24 +1,24 @@
-using me.vldf.jsa.dsl.ast.nodes.expressions;
-using me.vldf.jsa.dsl.ast.nodes.statements;
-using me.vldf.jsa.dsl.ast.types;
+using me.vldf.jsa.dsl.ir.nodes.expressions;
+using me.vldf.jsa.dsl.ir.nodes.statements;
+using me.vldf.jsa.dsl.ir.references;
 
-namespace me.vldf.jsa.dsl.ast.nodes.declarations;
+namespace me.vldf.jsa.dsl.ir.nodes.declarations;
 
 public class VarDeclAstNode(
     string name,
-    AstType type,
+    TypeReference typeRef,
     IExpressionAstNode? init) : IStatementAstNode
 {
     public string Name { get; } = name;
-    public AstType Type { get; } = type;
+    public TypeReference TypeReference { get; } = typeRef;
 
     public virtual string String()
     {
         if (init != null)
         {
-            return $"{Name}: {Type.String()} = {init.String()}";
+            return $"{Name}: @{TypeReference.Id} = {init.String()}";
         }
 
-        return $"{Name}: {Type.String()}";
+        return $"{Name}: @{TypeReference.Id}";
     }
 }

@@ -1,10 +1,10 @@
 using Codegen.IR.nodes;
 using Codegen.IR.nodes.expressions;
 using Codegen.IR.nodes.types;
-using me.vldf.jsa.dsl.ast.nodes.declarations;
-using me.vldf.jsa.dsl.ast.nodes.expressions;
-using me.vldf.jsa.dsl.ast.nodes.statements;
 using me.vldf.jsa.dsl.ast.visitors;
+using me.vldf.jsa.dsl.ir.nodes.declarations;
+using me.vldf.jsa.dsl.ir.nodes.expressions;
+using me.vldf.jsa.dsl.ir.nodes.statements;
 using Semantics.Ast2CgIrTranslator.Emitters;
 
 namespace Semantics.Ast2CgIrTranslator;

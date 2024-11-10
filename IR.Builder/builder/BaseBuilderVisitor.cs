@@ -1,19 +1,20 @@
 using Ast.Builder.exceptions;
-using me.vldf.jsa.dsl.ast.context;
-using me.vldf.jsa.dsl.ast.nodes;
-using me.vldf.jsa.dsl.ast.nodes.declarations;
-using me.vldf.jsa.dsl.ast.nodes.expressions;
-using me.vldf.jsa.dsl.ast.nodes.statements;
 using me.vldf.jsa.dsl.ast.types;
 using me.vldf.jsa.dsl.ir.builder.exceptions;
 using me.vldf.jsa.dsl.ir.builder.utils;
+using me.vldf.jsa.dsl.ir.context;
+using me.vldf.jsa.dsl.ir.nodes;
+using me.vldf.jsa.dsl.ir.nodes.declarations;
+using me.vldf.jsa.dsl.ir.nodes.expressions;
+using me.vldf.jsa.dsl.ir.nodes.statements;
+using me.vldf.jsa.dsl.ir.references;
 using me.vldf.jsa.dsl.parser;
 
 namespace me.vldf.jsa.dsl.ir.builder.builder;
 
-public class BaseBuilderVisitor(AstContext astContext) : JSADSLBaseVisitor<IAstNode>
+public class BaseBuilderVisitor(IrContext irContext) : JSADSLBaseVisitor<IAstNode>
 {
-    private readonly ExpressionBuilderVisitor _expessionBuilderVisitor = new(astContext);
+    private readonly ExpressionBuilderVisitor _expessionBuilderVisitor = new(irContext);
 
     public override FileAstNode VisitFile(JSADSLParser.FileContext context)
     {
@@ -31,7 +32,7 @@ public class BaseBuilderVisitor(AstContext astContext) : JSADSLBaseVisitor<IAstN
     {
         var name = context.name.Text;
 
-        var newContext = new AstContext(astContext);
+        var newContext = new IrContext(irContext);
         var newVisitor = new BaseBuilderVisitor(newContext);
 
         var args = new List<FunctionArgAstNode>();
@@ -40,7 +41,7 @@ public class BaseBuilderVisitor(AstContext astContext) : JSADSLBaseVisitor<IAstN
         {
             var argName = argContext.name.Text;
             var argTypeName = argContext.type?.Text;
-            var argType = argTypeName == null ? astContext.AnyType : astContext.ResolveType(argTypeName);
+            var argType = argTypeName == null ? irContext.AnyTypeRef : new TypeReference(argTypeName);
             if (argType == null)
             {
                 throw new UnresolvedVariableException(argTypeName!);
@@ -52,11 +53,11 @@ public class BaseBuilderVisitor(AstContext astContext) : JSADSLBaseVisitor<IAstN
         }
 
         var resultTypeName = context.resultType?.Text;
-        var resultType = resultTypeName != null
-            ? astContext.ResolveType(resultTypeName)
-            : null;
+        var resultTypeRef = resultTypeName != null
+            ? new TypeReference(resultTypeName)
+            : irContext.AnyTypeRef;
 
-        if (resultTypeName != null && resultType == null)
+        if (resultTypeName != null && resultTypeRef == null)
         {
             throw new UnresolvedTypeException(resultTypeName!);
         }
@@ -64,13 +65,13 @@ public class BaseBuilderVisitor(AstContext astContext) : JSADSLBaseVisitor<IAstN
         return new FunctionAstNode(
             name,
             args,
-            resultType,
+            resultTypeRef,
             newVisitor.VisitStatementsBlock(context.statementsBlock()));
     }
 
     public override IAstNode VisitObjectDecl(JSADSLParser.ObjectDeclContext context)
     {
-        var newContext = new AstContext(astContext);
+        var newContext = new IrContext(irContext);
         var newVisitor = new BaseBuilderVisitor(newContext);
 
         var name = context.name.Text;
@@ -79,7 +80,7 @@ public class BaseBuilderVisitor(AstContext astContext) : JSADSLBaseVisitor<IAstN
         var result = new ObjectAstNode(name, children);
 
         var type = new ObjectAstType(result);
-        astContext.SaveNewType(type);
+        irContext.SaveNewType(type);
 
         return result;
     }
@@ -87,7 +88,7 @@ public class BaseBuilderVisitor(AstContext astContext) : JSADSLBaseVisitor<IAstN
     public override IAstNode VisitIfStatement(JSADSLParser.IfStatementContext context)
     {
         var cond = VisitExpression(context.cond);
-        var mainBlockContext = new AstContext(astContext);
+        var mainBlockContext = new IrContext(irContext);
         var mainBlockVisitor = new BaseBuilderVisitor(mainBlockContext);
 
         var mainBlock = mainBlockVisitor.VisitStatementsBlock(context.mainBlock);
@@ -95,13 +96,13 @@ public class BaseBuilderVisitor(AstContext astContext) : JSADSLBaseVisitor<IAstN
 
         if (context.else_if != null)
         {
-            var newContext = new AstContext(astContext);
+            var newContext = new IrContext(irContext);
             var newVisitor = new BaseBuilderVisitor(newContext);
 
             elseStatement = newVisitor.VisitIfStatement(context.else_if)!;
         } else if (context.@else != null)
         {
-            var newContext = new AstContext(astContext);
+            var newContext = new IrContext(irContext);
             var newVisitor = new BaseBuilderVisitor(newContext);
 
             elseStatement = newVisitor.VisitStatementsBlock(context.@else);
@@ -120,7 +121,8 @@ public class BaseBuilderVisitor(AstContext astContext) : JSADSLBaseVisitor<IAstN
     public override IAstNode VisitVarAssignmentStatement(JSADSLParser.VarAssignmentStatementContext context)
     {
         var varName = context.varName.Text;
-        var varDecl = astContext.ResolveVar(varName) ?? throw new UnresolvedVariableException(varName);
+        var varRef = new VariableReference(varName);
+        var varDecl = irContext.ResolveVar(varRef) ?? throw new UnresolvedVariableException(varName);
 
         var value = _expessionBuilderVisitor.VisitExpression(context.expression());
 

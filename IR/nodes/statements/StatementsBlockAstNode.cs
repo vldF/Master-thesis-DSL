@@ -1,4 +1,4 @@
-namespace me.vldf.jsa.dsl.ast.nodes.statements;
+namespace me.vldf.jsa.dsl.ir.nodes.statements;
 
 public class StatementsBlockAstNode(IReadOnlyCollection<IAstNode> children) : IStatementAstNode
 {

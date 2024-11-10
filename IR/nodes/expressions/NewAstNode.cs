@@ -1,12 +1,14 @@
-namespace me.vldf.jsa.dsl.ast.nodes.expressions;
+using me.vldf.jsa.dsl.ir.references;
+
+namespace me.vldf.jsa.dsl.ir.nodes.expressions;
 
 public record NewAstNode(
-    string objectName,
+    TypeReference typeReference,
     IReadOnlyCollection<IExpressionAstNode> args) : IExpressionAstNode
 {
     public string String()
     {
         var argsString = string.Join(", ", args.Select(a => a.String()));
-        return $"new {objectName}({argsString})";
+        return $"new @{typeReference.Id}({argsString})";
     }
 }

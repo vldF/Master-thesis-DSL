@@ -1,4 +1,4 @@
-namespace me.vldf.jsa.dsl.ast.nodes;
+namespace me.vldf.jsa.dsl.ir.nodes;
 
 public interface IAstNode
 {

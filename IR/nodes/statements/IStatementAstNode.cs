@@ -1,3 +1,3 @@
-namespace me.vldf.jsa.dsl.ast.nodes.statements;
+namespace me.vldf.jsa.dsl.ir.nodes.statements;
 
 public interface IStatementAstNode : IAstNode;

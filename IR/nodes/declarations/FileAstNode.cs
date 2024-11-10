@@ -1,6 +1,6 @@
-using me.vldf.jsa.dsl.ast.nodes.statements;
+using me.vldf.jsa.dsl.ir.nodes.statements;
 
-namespace me.vldf.jsa.dsl.ast.nodes.declarations;
+namespace me.vldf.jsa.dsl.ir.nodes.declarations;
 
 public class FileAstNode(
     IReadOnlyCollection<IStatementAstNode> topLevelDeclarations) : IAstNode
