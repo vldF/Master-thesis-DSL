@@ -1,4 +1,4 @@
-namespace Ast.Builder.utils;
+namespace me.vldf.jsa.dsl.ir.builder.utils;
 
 public static class Collections
 {

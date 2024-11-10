@@ -2,11 +2,11 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Parser", "Parser\Parser.csproj", "{9D6FADA9-B680-4717-B89C-2A24B9BD979D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ast", "Ast\Ast.csproj", "{BBB895A1-E07A-4A27-B30B-ED77764C4004}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IR", "IR\IR.csproj", "{BBB895A1-E07A-4A27-B30B-ED77764C4004}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Launcher", "Launcher\Launcher.csproj", "{9E9E1807-5968-4219-8D31-7FCF9BDA49EC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ast.Builder", "Ast.Builder\Ast.Builder.csproj", "{6AF1B5E2-B821-4C7C-8071-11121B74C9E3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IR.Builder", "IR.Builder\IR.Builder.csproj", "{6AF1B5E2-B821-4C7C-8071-11121B74C9E3}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Codegen.IR", "Codegen.IR\Codegen.IR.csproj", "{668DD44C-198F-4BF9-9AF3-A1AE8C2F994D}"
 EndProject

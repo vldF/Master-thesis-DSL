@@ -1,5 +1,5 @@
-﻿using Ast.Builder.builder;
-using Codegen.Synthesizer;
+﻿using Codegen.Synthesizer;
+using me.vldf.jsa.dsl.ir.builder.builder;
 using Semantics.Ast2CgIrTranslator;
 
 namespace Launcher;

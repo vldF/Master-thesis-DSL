@@ -4,10 +4,11 @@
         <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <RootNamespace>me.vldf.jsa.dsl.ir.builder</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Ast\Ast.csproj" />
+      <ProjectReference Include="..\IR\IR.csproj" />
       <ProjectReference Include="..\Parser\Parser.csproj" />
     </ItemGroup>
 

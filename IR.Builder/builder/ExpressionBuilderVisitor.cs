@@ -1,10 +1,9 @@
 using Ast.Builder.exceptions;
 using me.vldf.jsa.dsl.ast.context;
-using me.vldf.jsa.dsl.ast.nodes;
 using me.vldf.jsa.dsl.ast.nodes.expressions;
 using me.vldf.jsa.dsl.parser;
 
-namespace Ast.Builder.builder;
+namespace me.vldf.jsa.dsl.ir.builder.builder;
 
 public class ExpressionBuilderVisitor(AstContext astContext) : JSADSLBaseVisitor<IExpressionAstNode>
 {

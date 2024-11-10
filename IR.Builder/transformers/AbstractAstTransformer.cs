@@ -4,7 +4,7 @@ using me.vldf.jsa.dsl.ast.nodes.declarations;
 using me.vldf.jsa.dsl.ast.nodes.expressions;
 using me.vldf.jsa.dsl.ast.nodes.statements;
 
-namespace Ast.Builder.transformers;
+namespace me.vldf.jsa.dsl.ir.builder.transformers;
 
 public abstract class AbstractAstTransformer
 {

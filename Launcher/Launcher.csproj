@@ -8,7 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Ast.Builder\Ast.Builder.csproj" />
+      <ProjectReference Include="..\IR.Builder\IR.Builder.csproj" />
       <ProjectReference Include="..\parser\parser.csproj" />
       <ProjectReference Include="..\Semantics.Ast2CgIrTranslator\Semantics.Ast2CgIrTranslator.csproj" />
     </ItemGroup>

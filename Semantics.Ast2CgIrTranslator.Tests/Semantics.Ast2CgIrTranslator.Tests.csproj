@@ -18,7 +18,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Ast.Builder\Ast.Builder.csproj" />
+      <ProjectReference Include="..\IR.Builder\IR.Builder.csproj" />
       <ProjectReference Include="..\Semantics.Ast2CgIrTranslator\Semantics.Ast2CgIrTranslator.csproj" />
       <ProjectReference Include="..\TestPlatform\TestPlatform.csproj" PrivateAssets="All" />
     </ItemGroup>
