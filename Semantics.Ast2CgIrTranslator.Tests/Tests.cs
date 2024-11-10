@@ -42,4 +42,34 @@ public class Tests : BaseE2ETest<Tests>
 
         Validate(cgFile);
     }
+
+    [Test]
+    public void ForwardDeclaration1Test()
+    {
+        var input = GetInput();
+
+        var astBuilder = new AstBuilder();
+        var file = astBuilder.FromString(input);
+        Console.WriteLine(file.String());
+
+        var translator = new Ast2IrTranslator();
+        var cgFile = translator.Translate(file);
+
+        Validate(cgFile);
+    }
+
+    [Test]
+    public void ForwardDeclaration2Test()
+    {
+        var input = GetInput();
+
+        var astBuilder = new AstBuilder();
+        var file = astBuilder.FromString(input);
+        Console.WriteLine(file.String());
+
+        var translator = new Ast2IrTranslator();
+        var cgFile = translator.Translate(file);
+
+        Validate(cgFile);
+    }
 }

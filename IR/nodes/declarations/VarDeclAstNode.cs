@@ -10,15 +10,15 @@ public class VarDeclAstNode(
     IExpressionAstNode? init) : IStatementAstNode
 {
     public string Name { get; } = name;
-    public TypeReference TypeReference { get; } = typeRef;
+    public TypeReference TypeReference { get; set; } = typeRef;
 
     public virtual string String()
     {
         if (init != null)
         {
-            return $"{Name}: @{TypeReference.Id} = {init.String()}";
+            return $"{Name}: @{TypeReference.AsString()} = {init.String()}";
         }
 
-        return $"{Name}: @{TypeReference.Id}";
+        return $"{Name}: @{TypeReference.AsString()}";
     }
 }

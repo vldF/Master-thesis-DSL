@@ -25,9 +25,19 @@ public class Ast2IrTranslator : IAstVisitor
         return _ctx.File;
     }
 
+    // todo: extract a dedicated phase
     public void VisitFileAstNode(FileAstNode node)
     {
         _ctx.File = CreateFile("file.jsadsl");
+
+        var objectDeclarations = node.TopLevelDeclarations
+            .Where(decl => decl is ObjectAstNode);
+        foreach (var decl in objectDeclarations)
+        {
+            var objectDecl = decl as ObjectAstNode;
+
+            _ctx.ClassDescriptorVariables[objectDecl!.Name] = new CgVarExpression(objectDecl.GetDescriptionVarName());
+        }
 
         foreach (var nodeTopLevelDeclaration in node.TopLevelDeclarations)
         {

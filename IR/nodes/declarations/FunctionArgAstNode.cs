@@ -8,6 +8,6 @@ namespace me.vldf.jsa.dsl.ir.nodes.declarations;
 
     public override string String()
     {
-        return $"arg {Name}: @{TypeReference.Id}";
+        return $"arg {Name}: {TypeReference.AsString()}";
     }
 }

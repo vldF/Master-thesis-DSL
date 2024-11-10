@@ -1,14 +1,15 @@
 using me.vldf.jsa.dsl.ir.nodes.declarations;
+using me.vldf.jsa.dsl.ir.references;
 
 namespace me.vldf.jsa.dsl.ir.nodes.expressions;
 
 public class VarExpressionAstNode(
-    VarDeclAstNode variable) : IExpressionAstNode
+    VariableReference variableReference) : IExpressionAstNode
 {
-    public VarDeclAstNode Variable { get; } = variable;
+    public VariableReference VariableReference { get; } = variableReference;
 
     public string String()
     {
-        return $"var({Variable.Name})";
+        return $"var(@{VariableReference.AsString()})";
     }
 }

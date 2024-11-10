@@ -1,0 +1,11 @@
+object MyObject {
+    func InnerFunc(arg1: Type1) {
+        return;
+    }
+
+    func InnerFunc2() { }
+}
+
+object Type1 {}
+object Type2 {}
+object ReturnType {}

@@ -11,16 +11,14 @@ public class ExpressionBuilderVisitor(IrContext irContext) : JSADSLBaseVisitor<I
     public override IExpressionAstNode VisitVariableExpression(JSADSLParser.VariableExpressionContext context)
     {
         var name = context.name.Text;
-        var varRef = new VariableReference(name);
-        var variableDecl = irContext.ResolveVar(varRef) ?? throw new UnresolvedVariableException(name);
-
-        return new VarExpressionAstNode(variableDecl);
+        var varRef = new VariableReference(name, irContext);
+        return new VarExpressionAstNode(varRef);
     }
 
     public override IExpressionAstNode VisitNewExpression(JSADSLParser.NewExpressionContext context)
     {
         var typeName = context.name.Text;
-        var typeRef = new TypeReference(typeName);
+        var typeRef = new TypeReference(typeName, irContext);
         var args = context
             .expressionList()
             .expression()

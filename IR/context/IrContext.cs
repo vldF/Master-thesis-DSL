@@ -4,14 +4,21 @@ using me.vldf.jsa.dsl.ir.references;
 
 namespace me.vldf.jsa.dsl.ir.context;
 
-public class IrContext(IrContext? parent)
+public class IrContext
 {
+    private readonly IrContext? _parent;
     private readonly Dictionary<string, VarDeclAstNode> _vars = new ();
     private readonly Dictionary<string, FunctionAstNode> _funcs = new ();
     private readonly Dictionary<string, ObjectAstNode> _objects = new ();
     private readonly Dictionary<string, AstType> _types = new();
 
-    public readonly TypeReference AnyTypeRef = new("any");
+    public readonly TypeReference AnyTypeRef;
+
+    public IrContext(IrContext? parent)
+    {
+        _parent = parent;
+        AnyTypeRef = new TypeReference("any", this);
+    }
 
     public void SaveNewVar(VarDeclAstNode node)
     {
@@ -34,23 +41,23 @@ public class IrContext(IrContext? parent)
     }
 
 
-    public VarDeclAstNode? ResolveVar(VariableReference reference)
+    public VarDeclAstNode? ResolveVar(string id)
     {
-        return _vars.GetValueOrDefault(reference.Id) ?? parent?.ResolveVar(reference);
+        return _vars.GetValueOrDefault(id) ?? _parent?.ResolveVar(id);
     }
 
-    public FunctionAstNode? ResolveFunc(FunctionReference reference)
+    public FunctionAstNode? ResolveFunc(string id)
     {
-        return _funcs.GetValueOrDefault(reference.Id) ?? parent?.ResolveFunc(reference);
+        return _funcs.GetValueOrDefault(id) ?? _parent?.ResolveFunc(id);
     }
 
-    public ObjectAstNode? ResolveObject(ObjectReference reference)
+    public ObjectAstNode? ResolveObject(string id)
     {
-        return _objects.GetValueOrDefault(reference.Id) ?? parent?.ResolveObject(reference);
+        return _objects.GetValueOrDefault(id) ?? _parent?.ResolveObject(id);
     }
 
-    public AstType? ResolveType(TypeReference reference)
+    public AstType? ResolveType(string id)
     {
-        return _types.GetValueOrDefault(reference.Id) ?? parent?.ResolveType(reference);
+        return _types.GetValueOrDefault(id) ?? _parent?.ResolveType(id);
     }
 }

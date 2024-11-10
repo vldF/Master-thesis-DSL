@@ -1,4 +1,5 @@
 using Antlr4.Runtime;
+using me.vldf.jsa.dsl.ir.builder.transformers;
 using me.vldf.jsa.dsl.ir.context;
 using me.vldf.jsa.dsl.ir.nodes.declarations;
 using me.vldf.jsa.dsl.parser;
@@ -33,6 +34,7 @@ public class AstBuilder
             throw new Exception("error while lexing occurred!");
         }
 
-        return fileAstNode;
+        var transOrhestrator = new TransformersOrchestrator();
+        return (FileAstNode)transOrhestrator.Transform(fileAstNode);
     }
 }

@@ -8,7 +8,7 @@ public class ObjectAstNode(
 {
     public string Name { get; } = name;
 
-    public IReadOnlyCollection<IAstNode> Children { get; } = children ?? [];
+    public IReadOnlyCollection<IAstNode> Children { get; set; } = children ?? [];
 
     public string String()
     {

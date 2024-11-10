@@ -2,7 +2,7 @@ namespace me.vldf.jsa.dsl.ir.nodes.statements;
 
 public class StatementsBlockAstNode(IReadOnlyCollection<IAstNode> children) : IStatementAstNode
 {
-    public IReadOnlyCollection<IAstNode> Children { get; } = children;
+    public IReadOnlyCollection<IAstNode> Children { get; set; } = children;
 
     public string String()
     {

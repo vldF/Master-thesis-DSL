@@ -9,16 +9,16 @@ public class FunctionAstNode(
     TypeReference returnTypeRef,
     StatementsBlockAstNode body) : IStatementAstNode
 {
-    public string Name { get; } = name;
+    public string Name { get; set; } = name;
 
-    public StatementsBlockAstNode Body { get; } = body;
-    public List<FunctionArgAstNode> Args { get; } = args.ToList();
-    public TypeReference? ReturnTypeRef { get; } = returnTypeRef;
+    public StatementsBlockAstNode Body { get; set; } = body;
+    public List<FunctionArgAstNode> Args { get; set; } = args.ToList();
+    public TypeReference? ReturnTypeRef { get; set; } = returnTypeRef;
 
     public string String()
     {
         var argsAsString = string.Join(", ", Args.Select(x => x.String()));
-        var returnTypeAsStr = ReturnTypeRef != null ? ": @" + ReturnTypeRef.Id : "";
+        var returnTypeAsStr = ReturnTypeRef != null ? ": " + ReturnTypeRef.AsString() : "";
         return $"""
                 func {Name} ({argsAsString}) {returnTypeAsStr} (
                 {AddIndent(Body.String())}

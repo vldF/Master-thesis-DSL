@@ -5,7 +5,7 @@ namespace me.vldf.jsa.dsl.ir.nodes.declarations;
 public class FileAstNode(
     IReadOnlyCollection<IStatementAstNode> topLevelDeclarations) : IAstNode
 {
-    public IReadOnlyCollection<IStatementAstNode> TopLevelDeclarations { get; } = topLevelDeclarations;
+    public IReadOnlyCollection<IStatementAstNode> TopLevelDeclarations { get; set; } = topLevelDeclarations;
 
     public string String()
     {

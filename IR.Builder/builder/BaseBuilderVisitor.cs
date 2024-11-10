@@ -41,7 +41,7 @@ public class BaseBuilderVisitor(IrContext irContext) : JSADSLBaseVisitor<IAstNod
         {
             var argName = argContext.name.Text;
             var argTypeName = argContext.type?.Text;
-            var argType = argTypeName == null ? irContext.AnyTypeRef : new TypeReference(argTypeName);
+            var argType = argTypeName == null ? irContext.AnyTypeRef : new TypeReference(argTypeName, newContext);
             if (argType == null)
             {
                 throw new UnresolvedVariableException(argTypeName!);
@@ -54,7 +54,7 @@ public class BaseBuilderVisitor(IrContext irContext) : JSADSLBaseVisitor<IAstNod
 
         var resultTypeName = context.resultType?.Text;
         var resultTypeRef = resultTypeName != null
-            ? new TypeReference(resultTypeName)
+            ? new TypeReference(resultTypeName, newContext)
             : irContext.AnyTypeRef;
 
         if (resultTypeName != null && resultTypeRef == null)
@@ -62,11 +62,14 @@ public class BaseBuilderVisitor(IrContext irContext) : JSADSLBaseVisitor<IAstNod
             throw new UnresolvedTypeException(resultTypeName!);
         }
 
-        return new FunctionAstNode(
+        var functionAstNode = new FunctionAstNode(
             name,
             args,
             resultTypeRef,
             newVisitor.VisitStatementsBlock(context.statementsBlock()));
+        irContext.SaveNewFunc(functionAstNode);
+
+        return functionAstNode;
     }
 
     public override IAstNode VisitObjectDecl(JSADSLParser.ObjectDeclContext context)
@@ -108,7 +111,7 @@ public class BaseBuilderVisitor(IrContext irContext) : JSADSLBaseVisitor<IAstNod
             elseStatement = newVisitor.VisitStatementsBlock(context.@else);
         }
 
-        return new IfStatementAstNode(cond, mainBlock, elseStatement);
+        return new IfStatementAstNode(cond, mainBlock, null); // todo
     }
 
     public override StatementsBlockAstNode VisitStatementsBlock(JSADSLParser.StatementsBlockContext context)
@@ -121,12 +124,11 @@ public class BaseBuilderVisitor(IrContext irContext) : JSADSLBaseVisitor<IAstNod
     public override IAstNode VisitVarAssignmentStatement(JSADSLParser.VarAssignmentStatementContext context)
     {
         var varName = context.varName.Text;
-        var varRef = new VariableReference(varName);
-        var varDecl = irContext.ResolveVar(varRef) ?? throw new UnresolvedVariableException(varName);
+        var varRef = new VariableReference(varName, irContext);
 
         var value = _expessionBuilderVisitor.VisitExpression(context.expression());
 
-        return new VarAssignmentAstNode(varDecl, value);
+        return new VarAssignmentAstNode(varRef, value);
     }
 
     public override IAstNode VisitReturnStatement(JSADSLParser.ReturnStatementContext context)
