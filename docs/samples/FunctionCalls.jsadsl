@@ -1,0 +1,26 @@
+object HttpResponse {
+    var status: Int,
+    var body: Any,
+}
+
+object HttpClient {
+  func post(url: String, args: String[] = [], queryArgs: Map = {}): HttpResponse {
+    for (arg in args) {
+      detect(arg, VulnerabilityType.XQueryInjection, PvoArgumentGrammar.HttpUri);
+    }
+
+    // as far as `request` is a helper function, this is a simple C# method invoke
+    request(url, args, queryArgs);
+  }
+
+  func get(url: String, queryArgs: Map = {}): HttpResponse {
+    request(url, args, queryArgs);
+  }
+
+  helper func request(url: String, queryArgs: Map = {}) {
+    for ((paramName, paramValue) in queryArgs) {
+      detect(paramName, VulnerabilityType.XQueryInjection, PvoArgumentGrammar.HttpUri);
+      detect(paramValue, VulnerabilityType.XQueryInjection, PvoArgumentGrammar.HttpUri);
+    }
+  }
+}

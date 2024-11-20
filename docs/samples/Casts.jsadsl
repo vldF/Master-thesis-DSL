@@ -1,0 +1,36 @@
+object HttpResponse {
+    var status: Int,
+    var body: Any,
+}
+
+object HttpClient {
+  // `self` is implicit there
+  // Python has a dynamic type system. So, sometimes types should be something dynamic
+  // User can use `Any` type or omit it
+
+  func post(url, args, queryArgs): HttpResponse {
+    detect(url, VulnerabilityType.ServerSideRequestForgery, PvoArgumentGrammar.HttpUri);
+
+    var argsArray = args as String[];
+    for (arg in argsArray) {
+      detect(arg, VulnerabilityType.XQueryInjection, PvoArgumentGrammar.HttpUri);
+    }
+
+    // todo: are type checks possible?
+    // also, there is a type check
+    if (queryArgs is Dict queryArgsDict) {
+      for ((queryArgKey, queryArgValue) in queryArgsDict) {
+        // ...
+      }
+    }
+
+    // or, if we decide to use flow types (kotlin way)
+    if (queryArgs is Dict) {
+      for ((queryArgKey, queryArgValue) in queryArgs) {
+        // ...
+      }
+    }
+  }
+
+  return new HttpResponse(); // todo: express tainted value here
+}

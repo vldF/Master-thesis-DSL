@@ -1,0 +1,24 @@
+object HttpResponse {
+    var status: Int,
+    var body: Any,
+}
+
+object HttpClient {
+  // `self` is implicit there
+  func post(url: String, args: String[] = [], queryArgs: Map = {}): HttpResponse {
+    var i = 1;
+
+    detect(url, VulnerabilityType.ServerSideRequestForgery, PvoArgumentGrammar.HttpUri);
+
+    for (arg in args) {
+      detect(arg, VulnerabilityType.XQueryInjection, PvoArgumentGrammar.HttpUri);
+    }
+
+    for ((paramName, paramValue) in queryArgs) {
+      detect(paramName, VulnerabilityType.XQueryInjection, PvoArgumentGrammar.HttpUri);
+      detect(paramValue, VulnerabilityType.XQueryInjection, PvoArgumentGrammar.HttpUri);
+    }
+  }
+
+  return new HttpResponse(); // todo: express tainted value here
+}

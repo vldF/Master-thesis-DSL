@@ -1,0 +1,60 @@
+var RequestsModelsModuleDescriptor = ImportModule("httpclient");
+
+var HttpResponseType = PythonTypes
+  .CreateClass("HttpResponse")
+  .WithMethod("post", PostHandler, postMethodInfo);
+
+Interpreter.Assign(RequestsModelsModuleDescriptor, "HttpResponse", HttpResponseType.ClassDescriptor);
+
+
+var postMethodInfo = new ArgumentsInfo(
+  argumentNames: new List<String>() {
+    "self", "url", "args", "queryArgs"
+  },
+  argcount: 4,
+  hasVarArgs: false,
+  posonlyargcount: 0,
+  kwonlyargcount: 0
+);
+
+var HttpClientType = PythonTypes
+  .CreateClass("HttpClient")
+  .WithMethod("post", PostHandler, postMethodInfo);
+
+Interpreter.Assign(HttpClientType, "HttpClient", HttpClientType.ClassDescriptor);
+
+CallHandler PostHandler = (location, functionCall) =>
+{
+  if (functionCall.Arguments.Count < 3)
+  {
+    return CallHandlerResult.Unprocessed;
+  }
+
+  var self = functionCall.Arguments[0];
+  var urlArg = functionCall.Arguments[1];
+  var queryArg = functionCall.Arguments[2];
+
+  if (!urlParam.IsFakeAttribute()) // todo: what the fake argument is?
+  {
+    Detector.Detect(location, urlArg, VulnerabilityType.ServerSideRequestForgery, PvoArgumentGrammar.HttpUri);
+  }
+
+  var argsExtracted = PythonTypes.ListProcessor.GetItems(urlArg);
+  foreach (var arg in argsExtracted)
+  {
+    Detector.Detect(location, arg, VulnerabilityType.XQueryInjection, PvoArgumentGrammar.HttpUri);
+  }
+
+  var queryArgs = PythonTypes.DictionaryProcessor.GetItems(queryArg)
+  foreach (var arg in queryArgs)
+  {
+    if (arg.Key.TryGetLiteralValue(out string key)) {
+      Detector.Detect(location, arg, VulnerabilityType.XQueryInjection, PvoArgumentGrammar.HttpUri);
+      Detector.Detect(location, key, VulnerabilityType.XQueryInjection, PvoArgumentGrammar.HttpUri);
+    }
+  }
+
+  // something like this
+  var result = PythonTypes.CreateInstance(location, HttpResponseType)
+  return CallHandlerResult.Processed(result);
+}

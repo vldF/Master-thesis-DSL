@@ -1,0 +1,15 @@
+extern func request(url: String, queryArgs: Map = {});
+// or
+sharp func request(url: String, queryArgs: Map = {});
+
+object HttpResponse {
+    var status: Int,
+    var body: Any,
+}
+
+object HttpClient {
+  func post(url: String, args: String[] = [], queryArgs: Map = {}): HttpResponse {
+    // optimization: is there are no other actions, the `request` method will be used as a handler
+    request(url, args, queryArgs);
+  }
+}
