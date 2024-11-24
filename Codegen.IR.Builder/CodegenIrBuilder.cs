@@ -78,10 +78,22 @@ public static class CodegenIrBuilder
         ICgType? type = null,
         ICgExpression? init = null)
     {
-        var VarDecl = new CgVarDeclStatement(name, Type: type, Init: init);
-        statementsContainer.Statements.Add(VarDecl);
+        var varDecl = new CgVarDeclStatement(name, Type: type, Init: init);
+        statementsContainer.Statements.Add(varDecl);
 
-        return VarDecl.AsValue();
+        return varDecl.AsValue();
+    }
+
+    public static CgAssignmentStatement VarAssignment(
+        ICgStatementsContainer statementsContainer,
+        string varName,
+        ICgExpression value)
+    {
+        var variable = new CgVarExpression(varName);
+        var varAssignment = new CgAssignmentStatement(variable, value);
+        statementsContainer.Statements.Add(varAssignment);
+
+        return varAssignment;
     }
 
     public static ICgExpression AsExpression<T>(T value)

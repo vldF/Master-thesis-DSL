@@ -5,6 +5,8 @@ object MyObject {
         var test1: Type = arg1;
         var test2: Type = test1;
 
-        return test2;
+        test1 = test2;
+
+        return test1;
     }
 }

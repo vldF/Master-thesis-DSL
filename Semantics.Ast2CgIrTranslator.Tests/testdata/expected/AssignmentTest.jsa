@@ -4,6 +4,7 @@ CallHandlerResult InnerFuncHandler(Location location, FunctionCall functionCall)
     var arg1 = FunctionCall.Arguments[0];
     var test1 = arg1;
     var test2 = test1;
-    return CallHandlerResult.Processed(test2);
+    test1 = test2;
+    return CallHandlerResult.Processed(test1);
 }
 var MyObjectClassDescription = PythonTypes.CreateClass("MyObject").WithMethod("InnerFunc", InnerFuncHandler);

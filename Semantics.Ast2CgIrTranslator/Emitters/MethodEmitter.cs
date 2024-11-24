@@ -97,11 +97,13 @@ public class MethodEmitter(TranslatorContext ctx)
 
     private void EmitVarAssignmentAstNode(VarAssignmentAstNode varAssignmentAstNode)
     {
-        var initValue = _expressionsEmitter.EmitExpression(varAssignmentAstNode.Value);
-        VarDeclaration(
+        var value = _expressionsEmitter.EmitExpression(varAssignmentAstNode.Value);
+        var varName = varAssignmentAstNode.VariableReference.SealedValue!.Name;
+
+        VarAssignment(
             ctx.HandlerMethod,
-            varAssignmentAstNode.VariableReference.SealedValue!.Name,
-            init: initValue);
+            varName,
+            value);
     }
 
     private void EmitReturnStatement(ReturnStatementAstNode statement)
