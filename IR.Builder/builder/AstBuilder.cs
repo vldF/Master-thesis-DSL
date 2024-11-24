@@ -34,7 +34,7 @@ public class AstBuilder
             throw new Exception("error while lexing occurred!");
         }
 
-        var transOrhestrator = new TransformersOrchestrator();
+        var transOrhestrator = new TransformersOrchestrator(rootContext);
         return (FileAstNode)transOrhestrator.Transform(fileAstNode);
     }
 }

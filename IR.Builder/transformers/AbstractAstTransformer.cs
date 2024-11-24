@@ -1,4 +1,5 @@
 using System.Data;
+using me.vldf.jsa.dsl.ir.context;
 using me.vldf.jsa.dsl.ir.nodes;
 using me.vldf.jsa.dsl.ir.nodes.declarations;
 using me.vldf.jsa.dsl.ir.nodes.expressions;
@@ -8,30 +9,58 @@ namespace me.vldf.jsa.dsl.ir.builder.transformers;
 
 public abstract class AbstractAstTransformer
 {
+    public virtual void Init(IrContext rootContext) { }
+
     public virtual IAstNode Transform(IAstNode node)
     {
         return node switch
         {
             FileAstNode fileAstNode => TransformFileAstNode(fileAstNode),
-            FunctionArgAstNode functionArgAstNode => TransformFunctionArgAstNode(functionArgAstNode),
-            FunctionAstNode functionAstNode => TransformFunctionAstNode(functionAstNode),
-            ObjectAstNode objectAstNode => TransformObjectAstNode(objectAstNode),
-            VarDeclAstNode varDeclAstNode => TransformVarDeclAstNode(varDeclAstNode),
             IExpressionAstNode expressionAstNode => TransformExpressionAstNode(expressionAstNode),
             IStatementAstNode statementAstNode => TransformStatementAstNode(statementAstNode),
             _ => node
         };
     }
 
-    protected virtual FileAstNode TransformFileAstNode(FileAstNode node) => node;
+    protected virtual FileAstNode TransformFileAstNode(FileAstNode node)
+    {
+        node.TopLevelDeclarations = node.TopLevelDeclarations.Select(TransformStatementAstNode).ToList();
 
-    protected virtual FunctionArgAstNode TransformFunctionArgAstNode(FunctionArgAstNode node) => node;
+        return node;
+    }
 
-    protected virtual FunctionAstNode TransformFunctionAstNode(FunctionAstNode node) => node;
+    protected virtual IStatementAstNode TransformFunctionArgAstNode(FunctionArgAstNode node)
+    {
+        return TransformVarDeclAstNode(node);
+    }
 
-    protected virtual ObjectAstNode TransformObjectAstNode(ObjectAstNode node) => node;
+    protected virtual FunctionAstNode TransformFunctionAstNode(FunctionAstNode node)
+    {
+        node.Args = node.Args.Select(TransformStatementAstNode)
+            .Select(it => (FunctionArgAstNode)it)
+            .ToList();
 
-    protected virtual VarDeclAstNode TransformVarDeclAstNode(VarDeclAstNode node) => node;
+        node.Body.Children = node.Body.Children.Select(Transform).ToList();
+
+        return node;
+    }
+
+    protected virtual ObjectAstNode TransformObjectAstNode(ObjectAstNode node)
+    {
+        node.Children = node.Children.Select(Transform).ToList();
+
+        return node;
+    }
+
+    protected virtual VarDeclAstNode TransformVarDeclAstNode(VarDeclAstNode node)
+    {
+        if (node.Init != null)
+        {
+            node.Init = TransformExpressionAstNode(node.Init);
+        }
+
+        return node;
+    }
 
     protected virtual IExpressionAstNode TransformExpressionAstNode(IExpressionAstNode node)
     {
@@ -45,18 +74,34 @@ public abstract class AbstractAstTransformer
         };
     }
 
-    protected virtual BinaryExpressionAstNode TransforBinaryAstNode(BinaryExpressionAstNode node) => node;
+    protected virtual IExpressionAstNode TransforBinaryAstNode(BinaryExpressionAstNode node)
+    {
+        return node with
+        {
+            Left = TransformExpressionAstNode(node.Left),
+            Right = TransformExpressionAstNode(node.Right),
+        };
+    }
 
-    protected virtual UnaryExpressionAstNode TransforUnaryAstNode(UnaryExpressionAstNode node) => node;
+    protected virtual IExpressionAstNode TransforUnaryAstNode(UnaryExpressionAstNode node)
+    {
+        return node with
+        {
+            Value = TransformExpressionAstNode(node.Value)
+        };
+    }
 
-    protected virtual VarExpressionAstNode TransformVarExpressionAstNode(VarExpressionAstNode node) => node;
+    protected virtual VarExpressionAstNode TransformVarExpressionAstNode(VarExpressionAstNode node)
+    {
+        return node;
+    }
 
     protected virtual IStatementAstNode TransformStatementAstNode(IStatementAstNode node)
     {
         return node switch
         {
             FunctionAstNode functionAstNode => TransformFunctionAstNode(functionAstNode),
-            FunctionArgAstNode => throw new InvalidExpressionException("can't use argument as a statement"),
+            FunctionArgAstNode functionArgAstNode => TransformFunctionArgAstNode(functionArgAstNode),
             ObjectAstNode objectAstNode => TransformObjectAstNode(objectAstNode),
             VarDeclAstNode varDeclAstNode => TransformVarDeclAstNode(varDeclAstNode),
             IfStatementAstNode ifStatementAstNode => TransformIfStatementAstNode(ifStatementAstNode),
@@ -67,13 +112,46 @@ public abstract class AbstractAstTransformer
         };
     }
 
-    protected virtual IfStatementAstNode TransformIfStatementAstNode(IfStatementAstNode node) => node;
+    protected virtual IfStatementAstNode TransformIfStatementAstNode(IfStatementAstNode node)
+    {
+        node.MainBlock = TransformStatementsBlockAstNode(node.MainBlock);
+        if (node.ElseBlock != null)
+        {
+            node.ElseBlock = TransformStatementsBlockAstNode(node.ElseBlock);
+        }
 
-    protected virtual ReturnStatementAstNode TransformReturnStatementAstNode(ReturnStatementAstNode node) => node;
+        node.Cond = TransformExpressionAstNode(node.Cond);
+        return node;
+    }
 
-    protected virtual StatementsBlockAstNode TransformStatementsBlockAstNode(StatementsBlockAstNode node) => node;
+    protected virtual ReturnStatementAstNode TransformReturnStatementAstNode(ReturnStatementAstNode node)
+    {
+        if (node.Expression != null)
+        {
+            node.Expression = TransformExpressionAstNode(node.Expression);
+        }
 
-    protected virtual VarAssignmentAstNode TransformVarAssignmentAstNode(VarAssignmentAstNode node) => node;
+        return node;
+    }
 
-    protected virtual NewAstNode TransformNewAstNode(NewAstNode node) => node;
+    protected virtual StatementsBlockAstNode TransformStatementsBlockAstNode(StatementsBlockAstNode node)
+    {
+        node.Children = node.Children.Select(Transform).ToList();
+
+        return node;
+    }
+
+    protected virtual VarAssignmentAstNode TransformVarAssignmentAstNode(VarAssignmentAstNode node)
+    {
+        node.Value = TransformExpressionAstNode(node.Value);
+        return node;
+    }
+
+    protected virtual NewAstNode TransformNewAstNode(NewAstNode node)
+    {
+        return node with
+        {
+            Args = node.Args.Select(TransformExpressionAstNode).ToList()
+        };
+    }
 }

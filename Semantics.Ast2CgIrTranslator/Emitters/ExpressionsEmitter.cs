@@ -1,3 +1,4 @@
+using Codegen.IR.nodes;
 using Codegen.IR.nodes.expressions;
 using me.vldf.jsa.dsl.ir.nodes.expressions;
 
@@ -13,9 +14,34 @@ public class ExpressionsEmitter(TranslatorContext ctx)
             VarExpressionAstNode varExpressionAstNode => EmitVarExpressionNode(varExpressionAstNode),
             BinaryExpressionAstNode binaryExpressionAstNode => EmitBinaryExpressionNode(binaryExpressionAstNode),
             UnaryExpressionAstNode unaryExpressionAstNode => EmitUnaryExpressionNode(unaryExpressionAstNode),
+            IntrinsicFunctionInvokationAstNode intrinsicFunctionInvokationAstNode =>
+                EmitIntrinsicFunctionInvokationAstNode(intrinsicFunctionInvokationAstNode),
+            QualifiedAccessAstNodeBase qualifiedAccessAstNode => EmitQualifiedAccessAstNodeBase(qualifiedAccessAstNode),
 
             _ => throw new ArgumentOutOfRangeException(nameof(expression))
         };
+    }
+
+    private ICgExpression EmitQualifiedAccessAstNodeBase(QualifiedAccessAstNodeBase qualifiedAccessAstNode)
+    {
+        return qualifiedAccessAstNode switch
+        {
+            QualifiedAccessPropertyAstNode node => EmitQualifiedAccessPropertyAstNode(node),
+            _ => throw new ArgumentOutOfRangeException(nameof(qualifiedAccessAstNode))
+        };
+    }
+
+    private ICgExpression EmitQualifiedAccessPropertyAstNode(QualifiedAccessPropertyAstNode node)
+    {
+        return new CgValueWithReciever(EmitExpression(node.Parent), node.PropertyName);
+    }
+
+    private ICgExpression EmitIntrinsicFunctionInvokationAstNode(IntrinsicFunctionInvokationAstNode functionInvoke)
+    {
+        return new CgMethodCall(
+            EmitExpression(functionInvoke.Reciever),
+            functionInvoke.Name,
+            functionInvoke.Args.Select(EmitExpression).ToList());
     }
 
     private ICgExpression EmitBinaryExpressionNode(BinaryExpressionAstNode binaryExpressionAstNode)

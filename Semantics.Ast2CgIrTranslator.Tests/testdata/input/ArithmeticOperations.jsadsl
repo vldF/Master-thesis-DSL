@@ -6,6 +6,8 @@ object MyObject {
         var sub: number = arg1 - arg2;
         var mul: number = arg1 * arg2;
         var div: number = arg1 / arg2;
+        var unaryMinus: number = -arg1;
+        var unaryNot: number = !arg1;
         var parens: number = (sum + sub);
         var complex: number = (sum + sub) * mul / div + parens;
         return complex;

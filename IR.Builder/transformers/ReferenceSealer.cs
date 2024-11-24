@@ -13,7 +13,7 @@ public class ReferenceSealer : AbstractAstTransformer
 {
     protected override FileAstNode TransformFileAstNode(FileAstNode node)
     {
-        var file = node.Copy<FileAstNode>();
+        var file = base.TransformFileAstNode(node).Copy<FileAstNode>();
         file.TopLevelDeclarations = file.TopLevelDeclarations.Select(TransformStatementAstNode).ToList();
 
         return file;
@@ -21,7 +21,7 @@ public class ReferenceSealer : AbstractAstTransformer
 
     protected override FunctionAstNode TransformFunctionAstNode(FunctionAstNode node)
     {
-        var func = node.Copy<FunctionAstNode>();
+        var func = base.TransformFunctionAstNode(node).Copy<FunctionAstNode>();
         if (func.ReturnTypeRef != null)
         {
             func.ReturnTypeRef.SealedValue = func.ReturnTypeRef.Resolve();
@@ -39,7 +39,7 @@ public class ReferenceSealer : AbstractAstTransformer
 
     protected override FunctionArgAstNode TransformFunctionArgAstNode(FunctionArgAstNode node)
     {
-        var arg = node.Copy<FunctionArgAstNode>();
+        var arg = base.TransformFunctionArgAstNode(node).Copy<FunctionArgAstNode>();
         arg.TypeReference = arg.TypeReference.Clone<TypeReference>();
         arg.TypeReference.SealedValue = arg.TypeReference.Resolve();
 
@@ -48,7 +48,7 @@ public class ReferenceSealer : AbstractAstTransformer
 
     protected override StatementsBlockAstNode TransformStatementsBlockAstNode(StatementsBlockAstNode node)
     {
-        var block = node.Copy<StatementsBlockAstNode>();
+        var block = base.TransformStatementsBlockAstNode(node).Copy<StatementsBlockAstNode>();
         var children = block.Children.Select(Transform);
         block.Children = children.ToList();
         return block;
@@ -56,14 +56,14 @@ public class ReferenceSealer : AbstractAstTransformer
 
     protected override ObjectAstNode TransformObjectAstNode(ObjectAstNode node)
     {
-        var @object = node.Copy<ObjectAstNode>();
+        var @object = base.TransformObjectAstNode(node).Copy<ObjectAstNode>();
         @object.Children = @object.Children.Select(Transform).ToList();
         return @object;
     }
 
     protected override VarDeclAstNode TransformVarDeclAstNode(VarDeclAstNode node)
     {
-        var varDecl = node.Copy<VarDeclAstNode>();
+        var varDecl = base.TransformVarDeclAstNode(node).Copy<VarDeclAstNode>();
         varDecl.TypeReference.SealedValue = varDecl.TypeReference.Resolve();
 
         if (varDecl.Init != null)
@@ -76,7 +76,7 @@ public class ReferenceSealer : AbstractAstTransformer
 
     protected override VarExpressionAstNode TransformVarExpressionAstNode(VarExpressionAstNode node)
     {
-        var varExpression = node.Copy<VarExpressionAstNode>();
+        var varExpression = base.TransformVarExpressionAstNode(node).Copy<VarExpressionAstNode>();
         varExpression.VariableReference.SealedValue = varExpression.VariableReference.Resolve();
 
         return varExpression;
@@ -84,7 +84,7 @@ public class ReferenceSealer : AbstractAstTransformer
 
     protected override BinaryExpressionAstNode TransforBinaryAstNode(BinaryExpressionAstNode node)
     {
-        var binExpression = node with
+        var binExpression = (BinaryExpressionAstNode)base.TransforBinaryAstNode(node) with
         {
             Left = TransformExpressionAstNode(node.Left),
             Right = TransformExpressionAstNode(node.Right),
@@ -95,7 +95,7 @@ public class ReferenceSealer : AbstractAstTransformer
 
     protected override UnaryExpressionAstNode TransforUnaryAstNode(UnaryExpressionAstNode node)
     {
-        return node with
+        return (UnaryExpressionAstNode)base.TransforUnaryAstNode(node) with
         {
             Value = TransformExpressionAstNode(node.Value),
         };
@@ -103,7 +103,7 @@ public class ReferenceSealer : AbstractAstTransformer
 
     protected override IfStatementAstNode TransformIfStatementAstNode(IfStatementAstNode node)
     {
-        var ifStatement = node.Copy<IfStatementAstNode>();
+        var ifStatement = base.TransformIfStatementAstNode(node).Copy<IfStatementAstNode>();
         ifStatement.Cond = TransformExpressionAstNode(ifStatement.Cond);
         ifStatement.MainBlock = TransformStatementsBlockAstNode(ifStatement.MainBlock);
         if (ifStatement.ElseBlock != null)
@@ -116,7 +116,7 @@ public class ReferenceSealer : AbstractAstTransformer
 
     protected override ReturnStatementAstNode TransformReturnStatementAstNode(ReturnStatementAstNode node)
     {
-        var returnStatement = node.Copy<ReturnStatementAstNode>();
+        var returnStatement = base.TransformReturnStatementAstNode(node).Copy<ReturnStatementAstNode>();
         if (returnStatement.Expression != null)
         {
             returnStatement.Expression = TransformExpressionAstNode(returnStatement.Expression);
@@ -127,7 +127,7 @@ public class ReferenceSealer : AbstractAstTransformer
 
     protected override VarAssignmentAstNode TransformVarAssignmentAstNode(VarAssignmentAstNode node)
     {
-        var assignment = node.Copy<VarAssignmentAstNode>();
+        var assignment = base.TransformVarAssignmentAstNode(node).Copy<VarAssignmentAstNode>();
         assignment.VariableReference.SealedValue = assignment.VariableReference.Resolve();
         assignment.Value = TransformExpressionAstNode(assignment.Value);
 
@@ -136,7 +136,7 @@ public class ReferenceSealer : AbstractAstTransformer
 
     protected override NewAstNode TransformNewAstNode(NewAstNode node)
     {
-        node.TypeReference.SealedValue = node.TypeReference.Resolve();
+        node.TypeReference.SealedValue = base.TransformNewAstNode(node).TypeReference.Resolve();
 
         return node with
         {
