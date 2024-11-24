@@ -74,22 +74,31 @@ public class ReferenceSealer : AbstractAstTransformer
         return varDecl;
     }
 
-    protected override IExpressionAstNode TransformExpressionAstNode(IExpressionAstNode node)
-    {
-        return node switch
-        {
-            NewAstNode newAstNode => TransformNewAstNode(newAstNode),
-            VarExpressionAstNode varExpressionAstNode => TransformVarExpressionAstNode(varExpressionAstNode),
-            _ => node
-        };
-    }
-
     protected override VarExpressionAstNode TransformVarExpressionAstNode(VarExpressionAstNode node)
     {
         var varExpression = node.Copy<VarExpressionAstNode>();
         varExpression.VariableReference.SealedValue = varExpression.VariableReference.Resolve();
 
         return varExpression;
+    }
+
+    protected override BinaryExpressionAstNode TransforBinaryAstNode(BinaryExpressionAstNode node)
+    {
+        var binExpression = node with
+        {
+            Left = TransformExpressionAstNode(node.Left),
+            Right = TransformExpressionAstNode(node.Right),
+        };
+
+        return binExpression;
+    }
+
+    protected override UnaryExpressionAstNode TransforUnaryAstNode(UnaryExpressionAstNode node)
+    {
+        return node with
+        {
+            Value = TransformExpressionAstNode(node.Value),
+        };
     }
 
     protected override IfStatementAstNode TransformIfStatementAstNode(IfStatementAstNode node)

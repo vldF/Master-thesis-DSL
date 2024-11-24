@@ -87,4 +87,19 @@ public class Tests : BaseE2ETest<Tests>
 
         Validate(cgFile);
     }
+
+    [Test]
+    public void ArithmeticOperations()
+    {
+        var input = GetInput();
+
+        var astBuilder = new AstBuilder();
+        var file = astBuilder.FromString(input);
+        Console.WriteLine(file.String());
+
+        var translator = new Ast2IrTranslator();
+        var cgFile = translator.Translate(file);
+
+        Validate(cgFile);
+    }
 }

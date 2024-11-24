@@ -25,7 +25,7 @@ public class Program
         var expression1 = new CgBinExpression(
             method.GetArgument("arg1"),
             method.GetArgument("arg2"),
-            CgBinExpression.BinOp.Plus);
+            CgBinExpression.BinOp.Sum);
 
         var varTestVar = method.AddVarDecl("testVar", CgSimpleType.IntType);
 
@@ -33,7 +33,7 @@ public class Program
         var expression2 = new CgBinExpression(
             varTestVar.AsValue(),
             expression1,
-            CgBinExpression.BinOp.Plus);
+            CgBinExpression.BinOp.Sum);
 
         method.AddAssignment(varTestVar.AsValue(), expression2);
 

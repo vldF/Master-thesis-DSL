@@ -1,0 +1,13 @@
+object number {} // todo: introduce primary types
+
+object MyObject {
+    func InnerFunc(arg1: number, arg2: number) {
+        var sum: number = arg1 + arg2;
+        var sub: number = arg1 - arg2;
+        var mul: number = arg1 * arg2;
+        var div: number = arg1 / arg2;
+        var parens: number = (sum + sub);
+        var complex: number = (sum + sub) * mul / div + parens;
+        return complex;
+    }
+}

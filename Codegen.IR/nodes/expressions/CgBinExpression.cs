@@ -21,8 +21,6 @@ public record CgBinExpression(
 
     public enum BinOp
     {
-        Plus, Minus, Mul, Div, Eq, NotEq, Less, Great, LessEq, GreatEq,
-        And, Or
+        Mul, Div, Mod, Sum, Sub, Eq, NotEq, LtEq, Lt, GtEq, Gt, AndAnd, OrOr, Xor
     }
-
 }

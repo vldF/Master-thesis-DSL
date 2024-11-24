@@ -169,6 +169,9 @@ public class CodegenSynthesizer : AbstractTextSynthesizer
             case CgBinExpression cgBinExpression:
                 SynthBinExpression(cgBinExpression);
                 break;
+            case CgUnaryExpression cgUnaryExpression:
+                SynthUnExpression(cgUnaryExpression);
+                break;
             case CgBoolLiteral cgBoolExpression:
                 Append(cgBoolExpression.Value ? "true" : "false");
                 break;
@@ -190,6 +193,25 @@ public class CodegenSynthesizer : AbstractTextSynthesizer
             default:
                 throw new ArgumentOutOfRangeException(nameof(expression));
         }
+    }
+
+    private void SynthUnExpression(CgUnaryExpression cgUnaryExpression)
+    {
+        switch (cgUnaryExpression.Operation)
+        {
+            case CgUnOp.Minus:
+                Append("-");
+                break;
+            case CgUnOp.Not:
+                Append("!");
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(cgUnaryExpression.Operation.ToString());
+        }
+
+        Append("(");
+        SynthExpression(cgUnaryExpression.Value);
+        Append(")");
     }
 
     private void SynthValueWithIndex(CgValueWithIndex cgValueWithIndex)
@@ -249,15 +271,17 @@ public class CodegenSynthesizer : AbstractTextSynthesizer
 
     private void SynthBinExpression(CgBinExpression expression)
     {
+        Append("(");
+
         SynthExpression(expression.Left);
         AppendSpace();
 
         switch (expression.Operation)
         {
-            case CgBinExpression.BinOp.Plus:
+            case CgBinExpression.BinOp.Sum:
                 Append("+");
                 break;
-            case CgBinExpression.BinOp.Minus:
+            case CgBinExpression.BinOp.Sub:
                 Append("-");
                 break;
             case CgBinExpression.BinOp.Mul:
@@ -272,22 +296,22 @@ public class CodegenSynthesizer : AbstractTextSynthesizer
             case CgBinExpression.BinOp.NotEq:
                 Append("!=");
                 break;
-            case CgBinExpression.BinOp.Less:
+            case CgBinExpression.BinOp.Lt:
                 Append("<");
                 break;
-            case CgBinExpression.BinOp.Great:
+            case CgBinExpression.BinOp.Gt:
                 Append(">");
                 break;
-            case CgBinExpression.BinOp.LessEq:
+            case CgBinExpression.BinOp.LtEq:
                 Append("<=");
                 break;
-            case CgBinExpression.BinOp.GreatEq:
+            case CgBinExpression.BinOp.GtEq:
                 Append(">=");
                 break;
-            case CgBinExpression.BinOp.And:
+            case CgBinExpression.BinOp.AndAnd:
                 Append("&&");
                 break;
-            case CgBinExpression.BinOp.Or:
+            case CgBinExpression.BinOp.OrOr:
                 Append("||");
                 break;
             default:
@@ -296,6 +320,8 @@ public class CodegenSynthesizer : AbstractTextSynthesizer
 
         AppendSpace();
         SynthExpression(expression.Right);
+
+        Append(")");
     }
 
     private void SynthVarExpression(CgVarExpression varExpression)

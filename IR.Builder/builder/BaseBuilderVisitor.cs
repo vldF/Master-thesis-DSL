@@ -59,7 +59,7 @@ public class BaseBuilderVisitor(IrContext irContext) : JSADSLBaseVisitor<IAstNod
 
         if (resultTypeName != null && resultTypeRef == null)
         {
-            throw new UnresolvedTypeException(resultTypeName!);
+            throw new UnresolvedTypeException(resultTypeName);
         }
 
         var functionAstNode = new FunctionAstNode(

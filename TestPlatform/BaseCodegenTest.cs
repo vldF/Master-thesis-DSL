@@ -63,7 +63,7 @@ public abstract class BaseCodegenTest<T>
 
     private static void UpdateExpectedFile(string testName, string actual)
     {
-        var physicalTestDataPath = "../../../testdata/expected/" + testName + ".jsadsl";
+        var physicalTestDataPath = "../../../testdata/expected/" + testName + ".jsa";
         var file = File.Open(physicalTestDataPath, FileMode.Create);
         file.Write(Encoding.UTF8.GetBytes(actual));
         file.Close();

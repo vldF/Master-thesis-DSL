@@ -28,16 +28,45 @@ ifStatement : IF_KW L_PAREN cond=expression R_PAREN mainBlock=statementsBlock L_
 
 returnStatement : RETURN_KW expression?;
 
-expression :
-    variableExpression
-    | newExpression
-    ;
-
 expressionList : expression? (COMMA expression)* COMMA?;
 
 variableExpression : name=ID;
 
 newExpression : NEW_KW name=ID L_PAREN expressionList R_PAREN;
+
+expression
+   :   L_PAREN expr_in_paren=expression R_PAREN
+   |   left=expression op=(ASTERISK | SLASH) right=expression
+   |   left=expression op=PERCENT right=expression
+   |   left=expression op=(PLUS | MINUS) right=expression
+   |   op=MINUS unary=expression
+   |   op=EXCLAMATION unary=expression
+   |   left=expression op=(EQEQ | NOT_EQ | LESS_EQ | LESS | GREAT_EQ | GREAT) right=expression
+   |   left=expression op=(AND | OR | XOR) right=expression
+   |   atomic=expressionAtomic
+   ;
+
+expressionAtomic
+   :   primitiveLiteral
+   |   newExpression
+   |   variableExpression
+   ;
+
+primitiveLiteral
+   :   integerNumber
+   |   floatNumber
+   |   DoubleQuotedString
+   |   bool=(TRUE_KW | FALSE_KW)
+   ;
+
+integerNumber
+   :   MINUS? Digit+
+   |   Digit
+   ;
+
+floatNumber
+   :  MINUS? Digit+ DOT Digit+
+   ;
 
 objectDecl : OBJECT_KW name=ID L_BRACE objectBody R_BRACE;
 
@@ -50,6 +79,8 @@ ELSE_KW : 'else';
 VAR_KW : 'var';
 RETURN_KW : 'return';
 NEW_KW : 'new';
+TRUE_KW : 'true';
+FALSE_KW : 'false';
 
 L_PAREN : '(';
 R_PAREN : ')';
@@ -58,9 +89,41 @@ R_BRACE : '}';
 COLON   : ':';
 COMMA   : ',';
 SEMI_COLON   : ';';
+
+ASTERISK : '*';
+SLASH : '/';
+PERCENT : '%';
+PLUS : '+';
+MINUS : '-';
+EXCLAMATION : '!';
 EQ : '=';
+EQEQ : '==';
+NOT_EQ : '!=';
+LESS_EQ : '<=';
+LESS : '<';
+GREAT_EQ : '>=';
+GREAT : '>';
+AND : '&&';
+OR : '||';
+XOR : '^';
+DOT : '.';
+
+
 ID : VALID_ID_START VALID_ID_CHAR*;
 fragment VALID_ID_START : ('a' .. 'z') | ('A' .. 'Z') | '_' ;
 fragment VALID_ID_CHAR : VALID_ID_START | ('0' .. '9') ;
+Digit : ('0'..'9');
 
 WS : [ \r\n\t] + -> channel(HIDDEN) ;
+
+COMMENT
+   :   '/*' .*? '*/' -> channel(HIDDEN)
+   ;
+
+LINE_COMMENT
+   :   (' //' ~[\r\n]* | '// ' ~[\r\n]*) -> channel(HIDDEN)
+   ;
+
+DoubleQuotedString
+   :   '"' .*? '"'
+   ;

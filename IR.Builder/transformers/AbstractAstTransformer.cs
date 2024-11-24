@@ -39,9 +39,15 @@ public abstract class AbstractAstTransformer
         {
             NewAstNode newAstNode => TransformNewAstNode(newAstNode),
             VarExpressionAstNode varExpressionAstNode => TransformVarExpressionAstNode(varExpressionAstNode),
+            BinaryExpressionAstNode binaryExpressionAstNode => TransforBinaryAstNode(binaryExpressionAstNode),
+            UnaryExpressionAstNode unaryExpressionAstNode => TransforUnaryAstNode(unaryExpressionAstNode),
             _ => node
         };
     }
+
+    protected virtual BinaryExpressionAstNode TransforBinaryAstNode(BinaryExpressionAstNode node) => node;
+
+    protected virtual UnaryExpressionAstNode TransforUnaryAstNode(UnaryExpressionAstNode node) => node;
 
     protected virtual VarExpressionAstNode TransformVarExpressionAstNode(VarExpressionAstNode node) => node;
 

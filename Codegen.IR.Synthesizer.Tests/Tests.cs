@@ -29,7 +29,7 @@ public class Tests : BaseCodegenTest<Tests>
         var testVarOfInt = method.AddVarDecl("testVarOfInt", CgSimpleType.IntType);
 
         var intExpression = new CgIntLiteral(123);
-        var initValue = new CgBinExpression(testVarOfInt, intExpression, CgBinExpression.BinOp.Plus);
+        var initValue = new CgBinExpression(testVarOfInt, intExpression, CgBinExpression.BinOp.AndAnd);
         var testVarWithVarType = method.AddVarDecl("testVarWithVarType", init: initValue);
 
         method.AddReturn(testVarWithVarType.AsValue());
