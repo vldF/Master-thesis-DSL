@@ -6,19 +6,21 @@ namespace me.vldf.jsa.dsl.ir.nodes.declarations;
 
 public class VarDeclAstNode(
     string name,
-    TypeReference typeRef,
+    TypeReference? typeRef,
     IExpressionAstNode? init) : IStatementAstNode
 {
+    public IExpressionAstNode? Init = init;
+
     public string Name { get; } = name;
-    public TypeReference TypeReference { get; set; } = typeRef;
+    public TypeReference? TypeReference { get; set; } = typeRef;
 
     public virtual string String()
     {
-        if (init != null)
+        if (Init != null)
         {
-            return $"{Name}: @{TypeReference.AsString()} = {init.String()}";
+            return $"@{Name}: @{TypeReference?.AsString() ?? "<unresolved>"} = {Init.String()}";
         }
 
-        return $"{Name}: @{TypeReference.AsString()}";
+        return $"@{Name}: @{TypeReference?.AsString() ?? "<unresolved>"}";
     }
 }

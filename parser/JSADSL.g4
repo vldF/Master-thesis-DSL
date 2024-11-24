@@ -12,9 +12,17 @@ functionArg : name=ID (COLON type=ID)?;
 
 statementsBlock : (statement SEMI_COLON)*;
 
-statement : ifStatement | varAssignmentStatement | returnStatement;
+statement :
+    ifStatement
+    | varAssignmentStatement
+    | varDeclarationStatement
+    | returnStatement
+    ;
 
 varAssignmentStatement : varName=ID EQ expression;
+
+// todo: make the type optional
+varDeclarationStatement : VAR_KW varName=ID (COLON type=ID) (EQ initValue=expression)?;
 
 ifStatement : IF_KW L_PAREN cond=expression R_PAREN mainBlock=statementsBlock L_BRACE ((ELSE_KW else_if=ifStatement) | (ELSE_KW else=statementsBlock));
 

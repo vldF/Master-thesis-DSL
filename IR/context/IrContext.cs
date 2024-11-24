@@ -8,6 +8,7 @@ public class IrContext
 {
     private readonly IrContext? _parent;
     private readonly Dictionary<string, VarDeclAstNode> _vars = new ();
+    private readonly Dictionary<string, FunctionArgAstNode> _args = new ();
     private readonly Dictionary<string, FunctionAstNode> _funcs = new ();
     private readonly Dictionary<string, ObjectAstNode> _objects = new ();
     private readonly Dictionary<string, AstType> _types = new();
@@ -23,6 +24,11 @@ public class IrContext
     public void SaveNewVar(VarDeclAstNode node)
     {
         _vars[node.Name] = node;
+    }
+
+    public void SaveNewArg(FunctionArgAstNode node)
+    {
+        _args[node.Name] = node;
     }
 
     public void SaveNewFunc(FunctionAstNode node)
@@ -43,7 +49,7 @@ public class IrContext
 
     public VarDeclAstNode? ResolveVar(string id)
     {
-        return _vars.GetValueOrDefault(id) ?? _parent?.ResolveVar(id);
+        return _vars.GetValueOrDefault(id) ?? (_args.GetValueOrDefault(id) ?? _parent?.ResolveVar(id));
     }
 
     public FunctionAstNode? ResolveFunc(string id)

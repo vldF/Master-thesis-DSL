@@ -78,10 +78,10 @@ public static class CodegenIrBuilder
         ICgType? type = null,
         ICgExpression? init = null)
     {
-        var globalVar = new CgVarDeclStatement(name, Type: type, Init: init);
-        statementsContainer.Statements.Add(globalVar);
+        var VarDecl = new CgVarDeclStatement(name, Type: type, Init: init);
+        statementsContainer.Statements.Add(VarDecl);
 
-        return globalVar.AsValue();
+        return VarDecl.AsValue();
     }
 
     public static ICgExpression AsExpression<T>(T value)

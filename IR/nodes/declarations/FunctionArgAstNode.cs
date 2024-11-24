@@ -1,3 +1,4 @@
+using me.vldf.jsa.dsl.ir.nodes.statements;
 using me.vldf.jsa.dsl.ir.references;
 
 namespace me.vldf.jsa.dsl.ir.nodes.declarations;
@@ -8,6 +9,6 @@ namespace me.vldf.jsa.dsl.ir.nodes.declarations;
 
     public override string String()
     {
-        return $"arg {Name}: {TypeReference.AsString()}";
+        return $"arg[{Name}]: {TypeReference?.AsString() ?? "<unresolved>"}";
     }
 }

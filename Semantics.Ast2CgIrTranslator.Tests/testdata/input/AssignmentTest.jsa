@@ -1,0 +1,10 @@
+object Type {}
+
+object MyObject {
+    func InnerFunc(arg1: Type) {
+        var test1: Type = arg1;
+        var test2: Type = test1;
+
+        return test2;
+    }
+}

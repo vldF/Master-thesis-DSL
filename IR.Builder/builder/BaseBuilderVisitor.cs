@@ -49,7 +49,7 @@ public class BaseBuilderVisitor(IrContext irContext) : JSADSLBaseVisitor<IAstNod
             var arg = new FunctionArgAstNode(argName, argType, argIndex++);
 
             args.Add(arg);
-            newContext.SaveNewVar(arg);
+            newContext.SaveNewArg(arg);
         }
 
         var resultTypeName = context.resultType?.Text;
@@ -129,6 +129,21 @@ public class BaseBuilderVisitor(IrContext irContext) : JSADSLBaseVisitor<IAstNod
         var value = _expessionBuilderVisitor.VisitExpression(context.expression());
 
         return new VarAssignmentAstNode(varRef, value);
+    }
+
+    public override IAstNode VisitVarDeclarationStatement(JSADSLParser.VarDeclarationStatementContext context)
+    {
+        var varName = context.varName.Text;
+        var initValue = context.initValue;
+        var typeName = context.type?.Text;
+
+        var value = initValue != null ? _expessionBuilderVisitor.VisitExpression(initValue) : null;
+        var type = typeName != null ? new TypeReference(typeName, irContext) : null;
+
+        var varDeclarationStatement = new VarDeclAstNode(varName, type, value);
+        irContext.SaveNewVar(varDeclarationStatement);
+
+        return varDeclarationStatement;
     }
 
     public override IAstNode VisitReturnStatement(JSADSLParser.ReturnStatementContext context)

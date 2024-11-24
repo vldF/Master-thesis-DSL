@@ -66,6 +66,11 @@ public class ReferenceSealer : AbstractAstTransformer
         var varDecl = node.Copy<VarDeclAstNode>();
         varDecl.TypeReference.SealedValue = varDecl.TypeReference.Resolve();
 
+        if (varDecl.Init != null)
+        {
+            varDecl.Init = TransformExpressionAstNode(varDecl.Init);
+        }
+
         return varDecl;
     }
 

@@ -58,6 +58,7 @@ public class MethodEmitter(TranslatorContext ctx)
         switch (bodyChild)
         {
             case VarDeclAstNode varDeclAstNode:
+                EmitVarDeclAstNode(varDeclAstNode);
                 break;
             case IfStatementAstNode ifStatementAstNode:
                 break;
@@ -65,10 +66,42 @@ public class MethodEmitter(TranslatorContext ctx)
                 EmitReturnStatement(returnStatementAstNode);
                 break;
             case VarAssignmentAstNode varAssignmentAstNode:
+                EmitVarAssignmentAstNode(varAssignmentAstNode);
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(bodyChild));
         }
+    }
+
+    private void EmitVarDeclAstNode(VarDeclAstNode varDeclAstNode)
+    {
+        if (varDeclAstNode.Init != null)
+        {
+            var initValue = _expressionsEmitter.EmitExpression(varDeclAstNode.Init!);
+            VarDeclaration(
+                ctx.HandlerMethod,
+                varDeclAstNode.Name,
+                init: initValue);
+        }
+        else
+        {
+            var typeName = varDeclAstNode.TypeReference!.SealedValue!.Name;
+            var type = new CgSimpleType(typeName);
+            VarDeclaration(
+                ctx.HandlerMethod,
+                varDeclAstNode.Name,
+                type: type,
+                init: null);
+        }
+    }
+
+    private void EmitVarAssignmentAstNode(VarAssignmentAstNode varAssignmentAstNode)
+    {
+        var initValue = _expressionsEmitter.EmitExpression(varAssignmentAstNode.Value);
+        VarDeclaration(
+            ctx.HandlerMethod,
+            varAssignmentAstNode.VariableReference.SealedValue!.Name,
+            init: initValue);
     }
 
     private void EmitReturnStatement(ReturnStatementAstNode statement)
