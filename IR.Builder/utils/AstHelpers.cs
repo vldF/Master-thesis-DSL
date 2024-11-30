@@ -7,11 +7,12 @@ namespace me.vldf.jsa.dsl.ir.builder.utils;
 
 public static class AstHelpers
 {
-    public static VarExpressionAstNode GetFakeVariable(this IrContext ctx, string name)
+    public static VarExpressionAstNode GetFakeVariable(this IrContext ctx, string name, bool isOutVar = false)
     {
         var interpretatorFakeDecl = new VarDeclAstNode(name, null, null);
         ctx.SaveNewVar(interpretatorFakeDecl);
         return new VarExpressionAstNode(
-            new VariableReference(name, ctx));
+            new VariableReference(name, ctx),
+            isOutVar: isOutVar);
     }
 }

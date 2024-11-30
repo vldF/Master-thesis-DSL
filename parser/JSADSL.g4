@@ -10,13 +10,13 @@ functionArgs : functionArg? (COMMA functionArg)* COMMA?;
 
 functionArg : name=ID (COLON type=ID)?;
 
-statementsBlock : (statement SEMI_COLON)*;
+statementsBlock : (statement)*;
 
 statement :
     ifStatement
-    | varAssignmentStatement
-    | varDeclarationStatement
-    | returnStatement
+    | varAssignmentStatement SEMI_COLON
+    | varDeclarationStatement SEMI_COLON
+    | returnStatement SEMI_COLON
     ;
 
 varAssignmentStatement : varName=ID EQ expression;
@@ -24,7 +24,7 @@ varAssignmentStatement : varName=ID EQ expression;
 // todo: make the type optional
 varDeclarationStatement : VAR_KW varName=ID (COLON type=ID) (EQ initValue=expression)?;
 
-ifStatement : IF_KW L_PAREN cond=expression R_PAREN mainBlock=statementsBlock L_BRACE ((ELSE_KW else_if=ifStatement) | (ELSE_KW else=statementsBlock));
+ifStatement : IF_KW L_PAREN cond=expression R_PAREN L_BRACE mainBlock=statementsBlock R_BRACE ((ELSE_KW elseIfStatement=ifStatement)|(ELSE_KW L_BRACE elseBlock=statementsBlock R_BRACE))?;
 
 returnStatement : RETURN_KW expression?;
 
@@ -53,20 +53,24 @@ expressionAtomic
    ;
 
 primitiveLiteral
-   :   integerNumber
-   |   floatNumber
+   :   integerNumberLiteral
+   |   floatNumberLiteral
    |   DoubleQuotedString
-   |   bool=(TRUE_KW | FALSE_KW)
+   |   boolLiteral
    ;
 
-integerNumber
+integerNumberLiteral
    :   MINUS? Digit+
    |   Digit
    ;
 
-floatNumber
+floatNumberLiteral
    :  MINUS? Digit+ DOT Digit+
    ;
+
+boolLiteral
+  :  bool=(TRUE_KW | FALSE_KW)
+  ;
 
 objectDecl : OBJECT_KW name=ID L_BRACE objectBody R_BRACE;
 

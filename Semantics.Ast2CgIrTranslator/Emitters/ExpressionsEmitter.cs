@@ -17,9 +17,27 @@ public class ExpressionsEmitter(TranslatorContext ctx)
             IntrinsicFunctionInvokationAstNode intrinsicFunctionInvokationAstNode =>
                 EmitIntrinsicFunctionInvokationAstNode(intrinsicFunctionInvokationAstNode),
             QualifiedAccessAstNodeBase qualifiedAccessAstNode => EmitQualifiedAccessAstNodeBase(qualifiedAccessAstNode),
+            IntLiteralAstNode intLiteralAstNode => EmitIntLiteralAstNode(intLiteralAstNode),
+            FloatLiteralAstNode floatLiteralAstNode => EmitFloatLiteralAstNode(floatLiteralAstNode),
+            BoolLiteralAstNode boolLiteralAstNode => EmitBoolLiteralAstNode(boolLiteralAstNode),
 
             _ => throw new ArgumentOutOfRangeException(nameof(expression))
         };
+    }
+
+    private ICgExpression EmitBoolLiteralAstNode(BoolLiteralAstNode boolLiteralAstNode)
+    {
+        return new CgBoolLiteral(boolLiteralAstNode.Value);
+    }
+
+    private ICgExpression EmitFloatLiteralAstNode(FloatLiteralAstNode floatLiteralAstNode)
+    {
+        return new CgFloatLiteral(floatLiteralAstNode.Value);
+    }
+
+    private ICgExpression EmitIntLiteralAstNode(IntLiteralAstNode intLiteralAstNode)
+    {
+        return new CgIntLiteral(intLiteralAstNode.Value);
     }
 
     private ICgExpression EmitQualifiedAccessAstNodeBase(QualifiedAccessAstNodeBase qualifiedAccessAstNode)
@@ -27,8 +45,17 @@ public class ExpressionsEmitter(TranslatorContext ctx)
         return qualifiedAccessAstNode switch
         {
             QualifiedAccessPropertyAstNode node => EmitQualifiedAccessPropertyAstNode(node),
+            QualifiedFunctionCallAstNode node => EmitQualifiedFunctionCallAstNode(node),
             _ => throw new ArgumentOutOfRangeException(nameof(qualifiedAccessAstNode))
         };
+    }
+
+    private ICgExpression EmitQualifiedFunctionCallAstNode(QualifiedFunctionCallAstNode node)
+    {
+        return new CgFunctionCallWithReciever(
+            EmitExpression(node.Parent),
+            node.FunctionName,
+            node.Args.Select(EmitExpression).ToArray());
     }
 
     private ICgExpression EmitQualifiedAccessPropertyAstNode(QualifiedAccessPropertyAstNode node)
@@ -62,7 +89,9 @@ public class ExpressionsEmitter(TranslatorContext ctx)
 
     private ICgExpression EmitVarExpressionNode(VarExpressionAstNode varExpressionAstNode)
     {
-        return new CgVarExpression(varExpressionAstNode.VariableReference.Resolve()!.Name);
+        return new CgVarExpression(
+            varExpressionAstNode.VariableReference.Resolve()!.Name,
+            isOutVar: varExpressionAstNode.IsOutVar);
     }
 
     private ICgExpression EmitNewNode(NewAstNode newAstNode)

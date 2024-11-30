@@ -22,7 +22,7 @@ public class SemanticUnaryOperationsTransformer : AbstractAstSemanticTransformer
         var semanticEntityAccess = PythonSemantics.Property(semanticEntityName);
 
         return new IntrinsicFunctionInvokationAstNode(
-            InterpretorReciever,
+            Interpretor,
             "InvokeFunction",
             [LocationArg, semanticEntityAccess, node.Value]);
     }

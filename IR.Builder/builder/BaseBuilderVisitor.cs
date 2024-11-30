@@ -88,40 +88,40 @@ public class BaseBuilderVisitor(IrContext irContext) : JSADSLBaseVisitor<IAstNod
         return result;
     }
 
-    public override IAstNode VisitIfStatement(JSADSLParser.IfStatementContext context)
+    public override IStatementAstNode VisitIfStatement(JSADSLParser.IfStatementContext context)
     {
         var cond = VisitExpression(context.cond);
         var mainBlockContext = new IrContext(irContext);
         var mainBlockVisitor = new BaseBuilderVisitor(mainBlockContext);
 
         var mainBlock = mainBlockVisitor.VisitStatementsBlock(context.mainBlock);
-        IAstNode? elseStatement = null;
+        IStatementAstNode? elseBranch = null;
 
-        if (context.else_if != null)
+        if (context.elseIfStatement != null)
         {
             var newContext = new IrContext(irContext);
             var newVisitor = new BaseBuilderVisitor(newContext);
 
-            elseStatement = newVisitor.VisitIfStatement(context.else_if)!;
-        } else if (context.@else != null)
+            elseBranch = newVisitor.VisitIfStatement(context.elseIfStatement);
+        } else if (context.elseBlock != null)
         {
             var newContext = new IrContext(irContext);
             var newVisitor = new BaseBuilderVisitor(newContext);
 
-            elseStatement = newVisitor.VisitStatementsBlock(context.@else);
+            elseBranch = newVisitor.VisitStatementsBlock(context.elseBlock);
         }
 
-        return new IfStatementAstNode(cond, mainBlock, null); // todo
+        return new IfStatementAstNode(cond, mainBlock, elseBranch);
     }
 
     public override StatementsBlockAstNode VisitStatementsBlock(JSADSLParser.StatementsBlockContext context)
     {
-        var children = context.statement().SelectNotNull(Visit).ToList();
+        var children = context.statement().SelectNotNull(VisitStatement).ToList();
 
         return new StatementsBlockAstNode(children);
     }
 
-    public override IAstNode VisitVarAssignmentStatement(JSADSLParser.VarAssignmentStatementContext context)
+    public override IStatementAstNode VisitVarAssignmentStatement(JSADSLParser.VarAssignmentStatementContext context)
     {
         var varName = context.varName.Text;
         var varRef = new VariableReference(varName, irContext);
@@ -131,7 +131,7 @@ public class BaseBuilderVisitor(IrContext irContext) : JSADSLBaseVisitor<IAstNod
         return new VarAssignmentAstNode(varRef, value);
     }
 
-    public override IAstNode VisitVarDeclarationStatement(JSADSLParser.VarDeclarationStatementContext context)
+    public override IStatementAstNode VisitVarDeclarationStatement(JSADSLParser.VarDeclarationStatementContext context)
     {
         var varName = context.varName.Text;
         var initValue = context.initValue;
@@ -146,7 +146,7 @@ public class BaseBuilderVisitor(IrContext irContext) : JSADSLBaseVisitor<IAstNod
         return varDeclarationStatement;
     }
 
-    public override IAstNode VisitReturnStatement(JSADSLParser.ReturnStatementContext context)
+    public override IStatementAstNode VisitReturnStatement(JSADSLParser.ReturnStatementContext context)
     {
         var expressionContext = context.expression();
         if (expressionContext == null)
@@ -162,5 +162,30 @@ public class BaseBuilderVisitor(IrContext irContext) : JSADSLBaseVisitor<IAstNod
     public override IExpressionAstNode VisitExpression(JSADSLParser.ExpressionContext context)
     {
         return _expessionBuilderVisitor.VisitExpression(context);
+    }
+
+    public override IStatementAstNode VisitStatement(JSADSLParser.StatementContext context)
+    {
+        if (context.ifStatement() != null)
+        {
+            return VisitIfStatement(context.ifStatement());
+        }
+
+        if (context.varAssignmentStatement() != null)
+        {
+            return VisitVarAssignmentStatement(context.varAssignmentStatement());
+        }
+
+        if (context.varDeclarationStatement() != null)
+        {
+            return VisitVarDeclarationStatement(context.varDeclarationStatement());
+        }
+
+        if (context.returnStatement() != null)
+        {
+            return VisitReturnStatement(context.returnStatement());
+        }
+
+        throw new ArgumentOutOfRangeException(nameof(context));
     }
 }

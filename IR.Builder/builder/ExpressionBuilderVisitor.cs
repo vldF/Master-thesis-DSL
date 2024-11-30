@@ -89,4 +89,19 @@ public class ExpressionBuilderVisitor(IrContext irContext) : JSADSLBaseVisitor<I
 
         return new NewAstNode(typeRef, args);
     }
+
+    public override IExpressionAstNode VisitFloatNumberLiteral(JSADSLParser.FloatNumberLiteralContext context)
+    {
+        return new FloatLiteralAstNode(double.Parse(context.GetText()));
+    }
+
+    public override IExpressionAstNode VisitIntegerNumberLiteral(JSADSLParser.IntegerNumberLiteralContext context)
+    {
+        return new IntLiteralAstNode(int.Parse(context.GetText()));
+    }
+
+    public override IExpressionAstNode VisitBoolLiteral(JSADSLParser.BoolLiteralContext context)
+    {
+        return new BoolLiteralAstNode(bool.Parse(context.GetText()));
+    }
 }

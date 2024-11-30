@@ -1,6 +1,9 @@
+using Codegen.IR.nodes;
 using Codegen.IR.nodes.expressions;
+using Codegen.IR.nodes.statements;
 using Codegen.IR.nodes.types;
 using me.vldf.jsa.dsl.ir.nodes.declarations;
+using me.vldf.jsa.dsl.ir.nodes.expressions;
 using me.vldf.jsa.dsl.ir.nodes.statements;
 
 namespace Semantics.Ast2CgIrTranslator.Emitters;
@@ -30,19 +33,16 @@ public class MethodEmitter(TranslatorContext ctx)
         var returnType = new CgSimpleType("CallHandlerResult");
 
         ctx.HandlerMethod = ctx.File.CreateMethod(func.GetHandlerName(), args, returnType);
+        ctx.PushContainer(ctx.HandlerMethod);
 
         foreach (var arg in func.Args)
         {
             EmitArg(arg);
         }
 
-        foreach (var bodyChild in func.Body.Children)
-        {
-            if (bodyChild is IStatementAstNode statement)
-            {
-                EmitStatement(statement);
-            }
-        }
+        EmitStatementBlockAstNode(func.Body);
+
+        ctx.PopContainer();
     }
 
     private void EmitArg(FunctionArgAstNode argNode)
@@ -50,7 +50,7 @@ public class MethodEmitter(TranslatorContext ctx)
         // todo: desugar it in preprocessing stages
         var initExpression = ctx.Semantics.GetArgument(argNode.Index);
 
-        VarDeclaration(ctx.HandlerMethod, argNode.Name, init: initExpression);
+        VarDeclaration(ctx.CurrentContainer!, argNode.Name, init: initExpression);
     }
 
     private void EmitStatement(IStatementAstNode bodyChild)
@@ -61,6 +61,7 @@ public class MethodEmitter(TranslatorContext ctx)
                 EmitVarDeclAstNode(varDeclAstNode);
                 break;
             case IfStatementAstNode ifStatementAstNode:
+                EmitIfStatement(ifStatementAstNode);
                 break;
             case ReturnStatementAstNode returnStatementAstNode:
                 EmitReturnStatement(returnStatementAstNode);
@@ -68,9 +69,74 @@ public class MethodEmitter(TranslatorContext ctx)
             case VarAssignmentAstNode varAssignmentAstNode:
                 EmitVarAssignmentAstNode(varAssignmentAstNode);
                 break;
+            case StatementsBlockAstNode statementsBlockAstNode:
+                EmitStatementBlockAstNode(statementsBlockAstNode);
+                break;
+            case QualifiedFunctionCallAstNode qualifiedFunctionCallAstNode:
+                EmitQualifiedFunctionCallAstNode(qualifiedFunctionCallAstNode);
+                break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(bodyChild));
         }
+    }
+
+    private void EmitQualifiedFunctionCallAstNode(QualifiedFunctionCallAstNode astCall)
+    {
+        var call = new CgFunctionCallWithReciever(
+            _expressionsEmitter.EmitExpression(astCall.Parent),
+            astCall.FunctionName,
+            astCall.Args.Select(_expressionsEmitter.EmitExpression).ToArray());
+        ctx.CurrentContainer!.Add(call);
+    }
+
+    private void EmitStatementBlockAstNode(StatementsBlockAstNode statementsBlockAstNode)
+    {
+        foreach (var bodyChild in statementsBlockAstNode.Children)
+        {
+            if (bodyChild is IStatementAstNode statement)
+            {
+                EmitStatement(statement);
+            }
+            else
+            {
+                throw new ArgumentOutOfRangeException(nameof(bodyChild));
+            }
+        }
+    }
+
+    private void EmitIfStatement(IfStatementAstNode ifStatementAstNode)
+    {
+        ctx.CurrentContainer!.Statements.Add(AsIfStatement(ifStatementAstNode));
+    }
+
+    private CgIfElseStatement AsIfStatement(IfStatementAstNode node)
+    {
+        var cond = _expressionsEmitter.EmitExpression(node.Cond);
+        var ifStatement = new CgIfElseStatement(cond);
+
+        ctx.PushContainer(ifStatement.MainBody);
+        EmitStatementBlockAstNode(node.MainBlock);
+        ctx.PopContainer();
+
+        if (ifStatement.Elseif != null)
+        {
+            switch (node.ElseStatement)
+            {
+                case IfStatementAstNode elseIf:
+                    ifStatement.Elseif = AsIfStatement(elseIf);
+                    break;
+                case StatementsBlockAstNode elseBlock:
+                    ifStatement.ElseBody = new CgStatementsContainer();
+                    ctx.PushContainer(ifStatement.ElseBody);
+                    EmitStatementBlockAstNode(elseBlock);
+                    ctx.PopContainer();
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(node.ElseStatement));
+            }
+        }
+
+        return ifStatement;
     }
 
     private void EmitVarDeclAstNode(VarDeclAstNode varDeclAstNode)
@@ -79,7 +145,7 @@ public class MethodEmitter(TranslatorContext ctx)
         {
             var initValue = _expressionsEmitter.EmitExpression(varDeclAstNode.Init!);
             VarDeclaration(
-                ctx.HandlerMethod,
+                ctx.CurrentContainer!,
                 varDeclAstNode.Name,
                 init: initValue);
         }
@@ -88,7 +154,7 @@ public class MethodEmitter(TranslatorContext ctx)
             var typeName = varDeclAstNode.TypeReference!.SealedValue!.Name;
             var type = new CgSimpleType(typeName);
             VarDeclaration(
-                ctx.HandlerMethod,
+                ctx.CurrentContainer!,
                 varDeclAstNode.Name,
                 type: type,
                 init: null);
@@ -101,7 +167,7 @@ public class MethodEmitter(TranslatorContext ctx)
         var varName = varAssignmentAstNode.VariableReference.SealedValue!.Name;
 
         VarAssignment(
-            ctx.HandlerMethod,
+            ctx.CurrentContainer!,
             varName,
             value);
     }

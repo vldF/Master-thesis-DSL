@@ -101,6 +101,8 @@ public static class CodegenIrBuilder
         return value switch
         {
             int i => new CgIntLiteral(i),
+            double d => new CgFloatLiteral(d),
+            float f => new CgFloatLiteral(f),
             string str => new CgStringExpression(str),
             _ => throw new ArgumentOutOfRangeException()
         };

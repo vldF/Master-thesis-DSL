@@ -106,9 +106,9 @@ public class ReferenceSealer : AbstractAstTransformer
         var ifStatement = base.TransformIfStatementAstNode(node).Copy<IfStatementAstNode>();
         ifStatement.Cond = TransformExpressionAstNode(ifStatement.Cond);
         ifStatement.MainBlock = TransformStatementsBlockAstNode(ifStatement.MainBlock);
-        if (ifStatement.ElseBlock != null)
+        if (ifStatement.ElseStatement != null)
         {
-            ifStatement.ElseBlock = TransformStatementsBlockAstNode(ifStatement.ElseBlock);
+            ifStatement.ElseStatement = TransformStatementAstNode(ifStatement.ElseStatement);
         }
 
         return ifStatement;

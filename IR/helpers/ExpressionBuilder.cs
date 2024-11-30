@@ -8,4 +8,9 @@ public static class ExpressionBuilder
     {
         return new QualifiedAccessPropertyAstNode(parent, name);
     }
+
+    public static QualifiedFunctionCallAstNode Function(this IExpressionAstNode parent, string name, params IExpressionAstNode[] args)
+    {
+        return new QualifiedFunctionCallAstNode(parent, name, args);
+    }
 }

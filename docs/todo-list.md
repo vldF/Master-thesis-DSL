@@ -19,3 +19,10 @@ There are some tasks to be done:
 12. Macros for standard library
 13. Move some semantic analysis from BE to FE
 14. Add usings to the generated code
+15. Types: api for basic target types and references
+16. Checkers:
+   16.1. Variable visibility
+   16.2. Type checker
+   16.3. Assignment to arguments
+   16.4. Unresolved variable, field, function, argument, ...
+17. Empty lines in the generated code

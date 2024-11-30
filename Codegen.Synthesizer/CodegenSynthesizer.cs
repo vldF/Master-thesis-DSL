@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Text;
 using Codegen.IR.nodes;
 using Codegen.IR.nodes.expressions;
@@ -34,6 +35,7 @@ public class CodegenSynthesizer : AbstractTextSynthesizer
                 SynthMethodCallStatement(cgMethodCall);
                 break;
             case CgIfElseStatement cgIfElseStatement:
+                SynthIfElseStatement(cgIfElseStatement);
                 break;
             case CgReturnStatement cgReturnStatement:
                 SynthReturnStatement(cgReturnStatement);
@@ -50,8 +52,49 @@ public class CodegenSynthesizer : AbstractTextSynthesizer
             case CgAssignmentStatement assignmentStatement:
                 SynthAssignmentStatement(assignmentStatement);
                 break;
+            case CgFunctionCallWithReciever functionCallWithReciever:
+                SynthCgFunctionCallWithReciever(functionCallWithReciever);
+                AppendLine(";");
+                break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(statement));
+        }
+    }
+
+    private void SynthIfElseStatement(CgIfElseStatement cgIfElseStatement)
+    {
+        Append("if (");
+        SynthExpression(cgIfElseStatement.Cond);
+        AppendLine(")");
+        AppendLine("{");
+        IncreaserIndent();
+
+        foreach (var mainBodyStatement in cgIfElseStatement.MainBody.Statements)
+        {
+            SynthStatement(mainBodyStatement);
+        }
+
+        DecreaseIndent();
+        Append("}");
+
+        if (cgIfElseStatement.Elseif != null)
+        {
+            AppendLine(" else ");
+            SynthIfElseStatement(cgIfElseStatement.Elseif);
+        }
+
+        if (cgIfElseStatement.ElseBody != null)
+        {
+            AppendLine(" else {");
+            IncreaserIndent();
+
+            foreach (var elseBodyStatement in cgIfElseStatement.ElseBody.Statements)
+            {
+                SynthStatement(elseBodyStatement);
+            }
+
+            DecreaseIndent();
+            AppendLine("}");
         }
     }
 
@@ -178,6 +221,9 @@ public class CodegenSynthesizer : AbstractTextSynthesizer
             case CgIntLiteral cgIntExpression:
                 Append(cgIntExpression.Value.ToString());
                 break;
+            case CgFloatLiteral cgFloatExpression:
+                Append(cgFloatExpression.Value.ToString(CultureInfo.InvariantCulture));
+                break;
             case CgStringExpression cgStringExpression:
                 Append(cgStringExpression.Value);
                 break;
@@ -187,12 +233,33 @@ public class CodegenSynthesizer : AbstractTextSynthesizer
             case CgValueWithReciever cgValueWithReciever:
                 SynthValueWithReciever(cgValueWithReciever);
                 break;
+            case CgFunctionCallWithReciever cgFunctionCallWithReciever:
+                SynthCgFunctionCallWithReciever(cgFunctionCallWithReciever);
+                break;
             case CgValueWithIndex cgValueWithIndex:
                 SynthValueWithIndex(cgValueWithIndex);
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(expression));
         }
+    }
+
+    private void SynthCgFunctionCallWithReciever(CgFunctionCallWithReciever cgFunctionCallWithReciever)
+    {
+        SynthExpression(cgFunctionCallWithReciever.Reciever);
+        Append(".");
+        Append(cgFunctionCallWithReciever.Name);
+        Append("(");
+        var lastArg = cgFunctionCallWithReciever.Args.LastOrDefault();
+        foreach (var arg in cgFunctionCallWithReciever.Args)
+        {
+            SynthExpression(arg);
+            if (!ReferenceEquals(arg, lastArg))
+            {
+                Append(", ");
+            }
+        }
+        Append(")");
     }
 
     private void SynthUnExpression(CgUnaryExpression cgUnaryExpression)
@@ -326,6 +393,10 @@ public class CodegenSynthesizer : AbstractTextSynthesizer
 
     private void SynthVarExpression(CgVarExpression varExpression)
     {
+        if (varExpression.isOutVar)
+        {
+            Append("out var ");
+        }
         Append(varExpression.Name);
     }
 }

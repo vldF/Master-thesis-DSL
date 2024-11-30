@@ -112,12 +112,12 @@ public abstract class AbstractAstTransformer
         };
     }
 
-    protected virtual IfStatementAstNode TransformIfStatementAstNode(IfStatementAstNode node)
+    protected virtual IStatementAstNode TransformIfStatementAstNode(IfStatementAstNode node)
     {
         node.MainBlock = TransformStatementsBlockAstNode(node.MainBlock);
-        if (node.ElseBlock != null)
+        if (node.ElseStatement != null)
         {
-            node.ElseBlock = TransformStatementsBlockAstNode(node.ElseBlock);
+            node.ElseStatement = TransformStatementAstNode(node.ElseStatement);
         }
 
         node.Cond = TransformExpressionAstNode(node.Cond);

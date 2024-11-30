@@ -31,7 +31,7 @@ public class SemanticBinaryOperationsTransformer : AbstractAstSemanticTransforme
         var semanticEntityAccess = PythonSemantics.Property(semanticEntityName);
 
         return new IntrinsicFunctionInvokationAstNode(
-            InterpretorReciever,
+            Interpretor,
             "InvokeFunction",
             [LocationArg, semanticEntityAccess, node.Left, node.Right]);
     }
