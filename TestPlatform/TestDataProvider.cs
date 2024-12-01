@@ -1,10 +1,11 @@
-using System.Reflection;
 using NUnit.Framework;
 
 namespace TestPlatform;
 
-public class TestDataProvider(string testdataRelPath)
+public class TestDataProvider
 {
+    private readonly string _testdataRelPath = TestDirectoriesUtils.GetCurrentProjectTestdataPath();
+
     public string GetExpectedCodePath(string testName)
     {
         var fileNape = testName + ".jsa";
@@ -19,13 +20,13 @@ public class TestDataProvider(string testdataRelPath)
     }
     private string GetExpectedDirPath()
     {
-        var testdataPath = GetDirectoryInProjectRoot(testdataRelPath);
+        var testdataPath = GetDirectoryInProjectRoot(_testdataRelPath);
         return Path.Combine(testdataPath, "expected");
     }
 
-    private string GetInputDirPath()
+    public string GetInputDirPath()
     {
-        var testdataPath = GetDirectoryInProjectRoot(testdataRelPath);
+        var testdataPath = GetDirectoryInProjectRoot(_testdataRelPath);
         return Path.Combine(testdataPath, "input");
     }
 

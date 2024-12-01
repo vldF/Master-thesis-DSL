@@ -8,7 +8,7 @@ namespace Codegen.IR.Synthesizer.Tests;
 
 public class Tests : CodegenTestBase
 {
-    public Tests() : base(TestDirectoriesUtils.GetCurrentProjectTestdataPath())
+    public Tests()
     {
         // set it to 'true' to override all expected test data to the actual ones
         UpdateTests = false;

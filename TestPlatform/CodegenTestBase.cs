@@ -5,9 +5,9 @@ using NUnit.Framework;
 
 namespace TestPlatform;
 
-public abstract class CodegenTestBase(string testdataRelPath)
+public abstract class CodegenTestBase
 {
-    protected readonly TestDataProvider _testDataProvider = new(testdataRelPath);
+    protected static readonly TestDataProvider _testDataProvider = new();
 
     protected bool UpdateTests = false;
 

@@ -5,7 +5,7 @@ using TestPlatform;
 
 namespace Semantics.Ast2CgIrTranslator.Tests;
 
-public class Tests : CodegenTestBaseE2ETest
+public class Tests : CodegenTestBase
 {
     [SetUp]
     public void Setup()
@@ -13,103 +13,25 @@ public class Tests : CodegenTestBaseE2ETest
         UpdateTests = false;
     }
 
-    [Test]
-    public void SimpleTest()
+    private static IEnumerable<TestCaseData> GetAllTests()
     {
-        var input = GetInput();
-
-        var astBuilder = new AstBuilder();
-        var file = astBuilder.FromString(input);
-        Console.WriteLine(file.String());
-
-        var translator = new Ast2IrTranslator();
-        var cgFile = translator.Translate(file);
-
-        Validate(cgFile);
+        return Directory
+            .EnumerateFiles(_testDataProvider.GetInputDirPath())
+            .Select(Path.GetFileNameWithoutExtension)
+            .Select(fileName => new TestCaseData(fileName)
+            {
+                TestName = fileName
+            });
     }
 
-    [Test]
-    public void NewTest()
+    [TestCaseSource(nameof(GetAllTests))]
+    public void Test(string testName)
     {
-        var input = GetInput();
+        var inputPath = _testDataProvider.GetInputCodePath(testName);
+        var inputCode = File.ReadAllText(inputPath);
 
         var astBuilder = new AstBuilder();
-        var file = astBuilder.FromString(input);
-        Console.WriteLine(file.String());
-
-        var translator = new Ast2IrTranslator();
-        var cgFile = translator.Translate(file);
-
-        Validate(cgFile);
-    }
-
-    [Test]
-    public void ForwardDeclaration1Test()
-    {
-        var input = GetInput();
-
-        var astBuilder = new AstBuilder();
-        var file = astBuilder.FromString(input);
-        Console.WriteLine(file.String());
-
-        var translator = new Ast2IrTranslator();
-        var cgFile = translator.Translate(file);
-
-        Validate(cgFile);
-    }
-
-    [Test]
-    public void ForwardDeclaration2Test()
-    {
-        var input = GetInput();
-
-        var astBuilder = new AstBuilder();
-        var file = astBuilder.FromString(input);
-        Console.WriteLine(file.String());
-
-        var translator = new Ast2IrTranslator();
-        var cgFile = translator.Translate(file);
-
-        Validate(cgFile);
-    }
-
-    [Test]
-    public void AssignmentTest()
-    {
-        var input = GetInput();
-
-        var astBuilder = new AstBuilder();
-        var file = astBuilder.FromString(input);
-        Console.WriteLine(file.String());
-
-        var translator = new Ast2IrTranslator();
-        var cgFile = translator.Translate(file);
-
-        Validate(cgFile);
-    }
-
-    [Test]
-    public void ArithmeticOperations()
-    {
-        var input = GetInput();
-
-        var astBuilder = new AstBuilder();
-        var file = astBuilder.FromString(input);
-        Console.WriteLine(file.String());
-
-        var translator = new Ast2IrTranslator();
-        var cgFile = translator.Translate(file);
-
-        Validate(cgFile);
-    }
-
-    [Test]
-    public void IfThenElseTest()
-    {
-        var input = GetInput();
-
-        var astBuilder = new AstBuilder();
-        var file = astBuilder.FromString(input);
+        var file = astBuilder.FromString(inputCode);
         Console.WriteLine(file.String());
 
         var translator = new Ast2IrTranslator();
