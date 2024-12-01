@@ -13,7 +13,11 @@ public static class DiffUtils
         PrintDiffForCode(expectedCode, actualCode);
 
         // integration with Rider, it allows to compare files with the build-in diff tool
-        Console.WriteLine($"Compare(Rider): \"file:///{actualPath}\",\"file:///{expectedPath}\"");
+        var host = Environment.GetEnvironmentVariable("RESHARPER_HOST");
+        if (host == "Rider")
+        {
+            Console.WriteLine($"Compare(Rider): \"file:///{actualPath}\",\"file:///{expectedPath}\"");
+        }
     }
 
     private static void PrintDiffForCode(string expectedCode, string actualCode)
