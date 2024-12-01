@@ -1,51 +1,40 @@
 using System.Reflection;
+using NUnit.Framework;
 
 namespace TestPlatform;
 
-public class TestDataProvider<T>
+public class TestDataProvider(string testdataRelPath)
 {
-    private const string BasePath = "testdata/";
-    private const string ExpectedDirPath = BasePath + "expected/";
-    private const string InputDirPath = BasePath + "input/";
-
-    public string? GetExpectedCodeForTest(string testName)
+    public string GetExpectedCodePath(string testName)
     {
-        var testFilePath = ExpectedDirPath + testName + ".jsa";
-        var testFileAsStream = GetResourceStream(testFilePath);
-        if (testFileAsStream == null)
-        {
-            return null;
-        }
+        var fileNape = testName + ".jsa";
 
-        var reader = new StreamReader(testFileAsStream);
-        return reader.ReadToEnd();
+        return Path.Combine(GetExpectedDirPath(), fileNape);
     }
 
-    public string? GetInputCodeForTest(string testName)
+    public string GetInputCodePath(string testName)
     {
-        var testFilePath = InputDirPath + testName + ".jsadsl";
-        var testFileAsStream = GetResourceStream(testFilePath);
-        if (testFileAsStream == null)
-        {
-            return null;
-        }
-
-        var reader = new StreamReader(testFileAsStream);
-        return reader.ReadToEnd();
+        var fileName = testName + ".jsadsl";
+        return Path.Combine(GetInputDirPath(), fileName);
+    }
+    private string GetExpectedDirPath()
+    {
+        var testdataPath = GetDirectoryInProjectRoot(testdataRelPath);
+        return Path.Combine(testdataPath, "expected");
     }
 
-    private static Stream? GetResourceStream(string resName)
+    private string GetInputDirPath()
     {
-        var assembly = Assembly.GetAssembly(typeof(T));
-        var allResources = assembly.GetManifestResourceNames();
-        var convertedResourceName = resName.Replace("/", ".");
+        var testdataPath = GetDirectoryInProjectRoot(testdataRelPath);
+        return Path.Combine(testdataPath, "input");
+    }
 
-        var resourceName = allResources.FirstOrDefault(res => res.EndsWith(convertedResourceName));
-        if (resourceName == null)
-        {
-            return null;
-        }
-
-        return assembly.GetManifestResourceStream(resourceName);
+    private static string GetDirectoryInProjectRoot(string relDirPath)
+    {
+        return Path.Combine(GetProjectRootDirectory(), relDirPath);
+    }
+    private static string GetProjectRootDirectory()
+    {
+        return Directory.GetParent(TestContext.CurrentContext.TestDirectory)!.Parent!.FullName;
     }
 }

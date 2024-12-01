@@ -5,7 +5,7 @@ using TestPlatform;
 
 namespace Semantics.Ast2CgIrTranslator.Tests;
 
-public class Tests : BaseE2ETest<Tests>
+public class Tests : CodegenTestBaseE2ETest
 {
     [SetUp]
     public void Setup()
