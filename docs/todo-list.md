@@ -8,7 +8,7 @@ There are some tasks to be done:
    3.1. Aliases for build-in types to the target language ones (or just target language types)
    3.2. Collections (with generics)
    3.3. Nullable wrapper
-4. If-then-else
+4. ~~If-then-else~~
 5. Foreach
 6. Taint markers: Detect, a way to put a taint mark, a way to remove it 
 7. C# external declaration
