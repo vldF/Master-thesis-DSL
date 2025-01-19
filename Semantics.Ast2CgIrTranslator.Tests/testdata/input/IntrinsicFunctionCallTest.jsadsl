@@ -1,0 +1,10 @@
+object Type {}
+
+object MyObject {
+    func InnerFunc(arg1: Type): Type {
+        MyIntrinsicFunction(arg1); // statement
+        return MyIntrinsicFunction(arg1); // expression
+    }
+}
+
+intrinsic func MyIntrinsicFunction(a: Type): Type;

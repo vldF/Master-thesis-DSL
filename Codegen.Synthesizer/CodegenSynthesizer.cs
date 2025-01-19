@@ -52,10 +52,6 @@ public class CodegenSynthesizer : AbstractTextSynthesizer
             case CgAssignmentStatement assignmentStatement:
                 SynthAssignmentStatement(assignmentStatement);
                 break;
-            case CgFunctionCallWithReciever functionCallWithReciever:
-                SynthCgFunctionCallWithReciever(functionCallWithReciever);
-                AppendLine(";");
-                break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(statement));
         }
@@ -233,33 +229,12 @@ public class CodegenSynthesizer : AbstractTextSynthesizer
             case CgValueWithReciever cgValueWithReciever:
                 SynthValueWithReciever(cgValueWithReciever);
                 break;
-            case CgFunctionCallWithReciever cgFunctionCallWithReciever:
-                SynthCgFunctionCallWithReciever(cgFunctionCallWithReciever);
-                break;
             case CgValueWithIndex cgValueWithIndex:
                 SynthValueWithIndex(cgValueWithIndex);
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(expression));
         }
-    }
-
-    private void SynthCgFunctionCallWithReciever(CgFunctionCallWithReciever cgFunctionCallWithReciever)
-    {
-        SynthExpression(cgFunctionCallWithReciever.Reciever);
-        Append(".");
-        Append(cgFunctionCallWithReciever.Name);
-        Append("(");
-        var lastArg = cgFunctionCallWithReciever.Args.LastOrDefault();
-        foreach (var arg in cgFunctionCallWithReciever.Args)
-        {
-            SynthExpression(arg);
-            if (!ReferenceEquals(arg, lastArg))
-            {
-                Append(", ");
-            }
-        }
-        Append(")");
     }
 
     private void SynthUnExpression(CgUnaryExpression cgUnaryExpression)

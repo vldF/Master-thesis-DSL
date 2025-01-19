@@ -34,6 +34,16 @@ public abstract class AbstractAstTransformer
         return TransformVarDeclAstNode(node);
     }
 
+    protected virtual FunctionAstNodeBase TransformFunctionAstNodeBase(FunctionAstNodeBase node)
+    {
+        return node switch
+        {
+            FunctionAstNode func => TransformFunctionAstNode(func),
+            IntrinsicFunctionAstNode func => TransformIntrinsicFunctionAstNode(func),
+            _ => throw new ArgumentOutOfRangeException(nameof(node), node, null)
+        };
+    }
+
     protected virtual FunctionAstNode TransformFunctionAstNode(FunctionAstNode node)
     {
         node.Args = node.Args.Select(TransformStatementAstNode)
@@ -41,6 +51,15 @@ public abstract class AbstractAstTransformer
             .ToList();
 
         node.Body.Children = node.Body.Children.Select(Transform).ToList();
+
+        return node;
+    }
+
+    protected virtual IntrinsicFunctionAstNode TransformIntrinsicFunctionAstNode(IntrinsicFunctionAstNode node)
+    {
+        node.Args = node.Args.Select(TransformStatementAstNode)
+            .Select(it => (FunctionArgAstNode)it)
+            .ToList();
 
         return node;
     }
@@ -70,8 +89,17 @@ public abstract class AbstractAstTransformer
             VarExpressionAstNode varExpressionAstNode => TransformVarExpressionAstNode(varExpressionAstNode),
             BinaryExpressionAstNode binaryExpressionAstNode => TransforBinaryAstNode(binaryExpressionAstNode),
             UnaryExpressionAstNode unaryExpressionAstNode => TransforUnaryAstNode(unaryExpressionAstNode),
+            FunctionCallAstNode functionCallAstNode => TransformFunctionCallAstNode(functionCallAstNode),
             _ => node
         };
+    }
+
+    protected virtual IExpressionAstNode TransformFunctionCallAstNode(FunctionCallAstNode node)
+    {
+        var copy = node.Copy<FunctionCallAstNode>();
+        copy.Args = copy.Args.Select(TransformExpressionAstNode).ToArray();
+
+        return copy;
     }
 
     protected virtual IExpressionAstNode TransforBinaryAstNode(BinaryExpressionAstNode node)
@@ -100,7 +128,7 @@ public abstract class AbstractAstTransformer
     {
         return node switch
         {
-            FunctionAstNode functionAstNode => TransformFunctionAstNode(functionAstNode),
+            FunctionAstNodeBase functionAstNodeBase => TransformFunctionAstNodeBase(functionAstNodeBase),
             FunctionArgAstNode functionArgAstNode => TransformFunctionArgAstNode(functionArgAstNode),
             ObjectAstNode objectAstNode => TransformObjectAstNode(objectAstNode),
             VarDeclAstNode varDeclAstNode => TransformVarDeclAstNode(varDeclAstNode),

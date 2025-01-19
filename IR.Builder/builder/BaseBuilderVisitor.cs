@@ -44,7 +44,7 @@ public class BaseBuilderVisitor(IrContext irContext) : JSADSLBaseVisitor<IAstNod
             var argType = argTypeName == null ? irContext.AnyTypeRef : new TypeReference(argTypeName, newContext);
             if (argType == null)
             {
-                throw new UnresolvedVariableException(argTypeName!);
+                throw new UnresolvedTypeException(argTypeName!);
             }
             var arg = new FunctionArgAstNode(argName, argType, argIndex++);
 
@@ -67,6 +67,45 @@ public class BaseBuilderVisitor(IrContext irContext) : JSADSLBaseVisitor<IAstNod
             args,
             resultTypeRef,
             newVisitor.VisitStatementsBlock(context.statementsBlock()));
+        irContext.SaveNewFunc(functionAstNode);
+
+        return functionAstNode;
+    }
+
+    public override IntrinsicFunctionAstNode VisitIntrinsicFuncDecl(JSADSLParser.IntrinsicFuncDeclContext context)
+    {
+        var name = context.name.Text;
+
+        var args = new List<FunctionArgAstNode>();
+        var argIndex = 0;
+        foreach (var argContext in context.functionArgs().functionArg())
+        {
+            var argName = argContext.name.Text;
+            var argTypeName = argContext.type?.Text;
+            var argType = argTypeName == null ? irContext.AnyTypeRef : new TypeReference(argTypeName, irContext);
+            if (argType == null)
+            {
+                throw new UnresolvedTypeException(argTypeName!);
+            }
+            var arg = new FunctionArgAstNode(argName, argType, argIndex++);
+
+            args.Add(arg);
+        }
+
+        var resultTypeName = context.resultType?.Text;
+        var resultTypeRef = resultTypeName == null
+            ? irContext.AnyTypeRef
+            : new TypeReference(resultTypeName, irContext);
+
+        if (resultTypeName != null && resultTypeRef == null)
+        {
+            throw new UnresolvedTypeException(resultTypeName);
+        }
+
+        var functionAstNode = new IntrinsicFunctionAstNode(
+            name,
+            args,
+            resultTypeRef);
         irContext.SaveNewFunc(functionAstNode);
 
         return functionAstNode;
@@ -164,6 +203,18 @@ public class BaseBuilderVisitor(IrContext irContext) : JSADSLBaseVisitor<IAstNod
         return _expessionBuilderVisitor.VisitExpression(context);
     }
 
+    public override FunctionCallAstNode VisitFunctionCall(JSADSLParser.FunctionCallContext context)
+    {
+        var name = context.name.Text;
+        var funcRef = new FunctionReference(name, irContext);
+        var args = context.args
+            .expression()
+            .Select(argExpr => _expessionBuilderVisitor.VisitExpression(argExpr))
+            .ToArray();
+
+        return new FunctionCallAstNode(qualifiedParent: null, funcRef, args);
+    }
+
     public override IStatementAstNode VisitStatement(JSADSLParser.StatementContext context)
     {
         if (context.ifStatement() != null)
@@ -184,6 +235,11 @@ public class BaseBuilderVisitor(IrContext irContext) : JSADSLBaseVisitor<IAstNod
         if (context.returnStatement() != null)
         {
             return VisitReturnStatement(context.returnStatement());
+        }
+
+        if (context.functionCall() != null)
+        {
+            return VisitFunctionCall(context.functionCall());
         }
 
         throw new ArgumentOutOfRangeException(nameof(context));

@@ -1,4 +1,5 @@
 using me.vldf.jsa.dsl.ir.nodes.expressions;
+using me.vldf.jsa.dsl.ir.references;
 
 namespace me.vldf.jsa.dsl.ir.helpers;
 
@@ -9,8 +10,8 @@ public static class ExpressionBuilder
         return new QualifiedAccessPropertyAstNode(parent, name);
     }
 
-    public static QualifiedFunctionCallAstNode Function(this IExpressionAstNode parent, string name, params IExpressionAstNode[] args)
+    public static IntrinsicFunctionInvokationAstNode Function(this VarExpressionAstNode parent, string name, params IExpressionAstNode[] args)
     {
-        return new QualifiedFunctionCallAstNode(parent, name, args);
+        return new IntrinsicFunctionInvokationAstNode(parent, name, args.ToList());
     }
 }

@@ -1,14 +1,14 @@
 namespace me.vldf.jsa.dsl.ir.nodes.expressions;
 
 public class QualifiedAccessPropertyAstNode(
-    IExpressionAstNode parent,
+    IExpressionAstNode qualifiedParent,
     string propertyName
-    ) : QualifiedAccessAstNodeBase(parent)
+    ) : QualifiedAccessAstNodeBase(qualifiedParent)
 {
     public string PropertyName { get; } = propertyName;
 
     public override string String()
     {
-        return $"({Parent.String()}).{PropertyName}";
+        return $"({QualifiedParent?.String()}).{PropertyName}";
     }
 }

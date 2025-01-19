@@ -96,4 +96,7 @@ public class Ast2IrTranslator : IAstVisitor
     {
     }
 
+    public void VisitIntrinsicFunctionAstNode(IntrinsicFunctionAstNode node)
+    {
+    }
 }

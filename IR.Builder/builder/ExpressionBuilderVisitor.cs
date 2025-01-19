@@ -104,4 +104,17 @@ public class ExpressionBuilderVisitor(IrContext irContext) : JSADSLBaseVisitor<I
     {
         return new BoolLiteralAstNode(bool.Parse(context.GetText()));
     }
+
+    public override FunctionCallAstNode VisitFunctionCall(JSADSLParser.FunctionCallContext context)
+    {
+        var name = context.name.Text;
+        var functionReference = new FunctionReference(name, irContext);
+
+        var args = context.args
+            .expression()
+            .Select(VisitExpression)
+            .ToArray();
+
+        return new FunctionCallAstNode(qualifiedParent: null, functionReference, args);
+    }
 }

@@ -36,9 +36,9 @@ public class TypeReference(string id, IrContext context) : Reference<AstType>()
     public override string AsString() => $"TypeRef[{id}]";
 }
 
-public class FunctionReference(string id, IrContext context) : Reference<FunctionAstNode>()
+public class FunctionReference(string id, IrContext context) : Reference<FunctionAstNodeBase>()
 {
-    public override FunctionAstNode? Resolve()
+    public override FunctionAstNodeBase? Resolve()
     {
         if (SealedValue != null)
         {
@@ -68,6 +68,8 @@ public class ObjectReference(string id, IrContext context) : Reference<ObjectAst
 
 public class VariableReference(string Id, IrContext context) : Reference<VarDeclAstNode>()
 {
+    public readonly IrContext Context = context;
+
     public override VarDeclAstNode? Resolve()
     {
         if (SealedValue != null)
@@ -75,7 +77,7 @@ public class VariableReference(string Id, IrContext context) : Reference<VarDecl
             return SealedValue;
         }
 
-        return context.ResolveVar(Id);
+        return Context.ResolveVar(Id);
     }
 
     public override string AsString() => $"VariableRef[{Id}]";

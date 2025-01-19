@@ -72,19 +72,30 @@ public class MethodEmitter(TranslatorContext ctx)
             case StatementsBlockAstNode statementsBlockAstNode:
                 EmitStatementBlockAstNode(statementsBlockAstNode);
                 break;
-            case QualifiedFunctionCallAstNode qualifiedFunctionCallAstNode:
+            case FunctionCallAstNode qualifiedFunctionCallAstNode:
                 EmitQualifiedFunctionCallAstNode(qualifiedFunctionCallAstNode);
+                break;
+            case IntrinsicFunctionInvokationAstNode intrinsicFunctionInvokationAstNode:
+                EmitIntrinsicFunctionInvokationAstNode(intrinsicFunctionInvokationAstNode);
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(bodyChild));
         }
     }
 
-    private void EmitQualifiedFunctionCallAstNode(QualifiedFunctionCallAstNode astCall)
+    private void EmitIntrinsicFunctionInvokationAstNode(IntrinsicFunctionInvokationAstNode intrinsicFunctionInvokationAstNode)
     {
-        var call = new CgFunctionCallWithReciever(
-            _expressionsEmitter.EmitExpression(astCall.Parent),
-            astCall.FunctionName,
+        ctx.CurrentContainer!.Add((CgMethodCall)_expressionsEmitter.EmitExpression(intrinsicFunctionInvokationAstNode));
+    }
+
+    private void EmitQualifiedFunctionCallAstNode(FunctionCallAstNode astCall)
+    {
+        var qualifiedExpr = astCall.QualifiedParent != null
+            ? _expressionsEmitter.EmitExpression(astCall.QualifiedParent)
+            : null;
+        var call = new CgMethodCall(
+            qualifiedExpr,
+            astCall.FunctionReference.SealedValue!.Name,
             astCall.Args.Select(_expressionsEmitter.EmitExpression).ToArray());
         ctx.CurrentContainer!.Add(call);
     }

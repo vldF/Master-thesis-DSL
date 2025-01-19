@@ -2,10 +2,10 @@ grammar JSADSL;
 
 file : topLevelDecl*;
 
-topLevelDecl :
-   funcDecl
-   | intrinsicFuncDecl
-   | objectDecl
+topLevelDecl
+   :   funcDecl
+   |   intrinsicFuncDecl
+   |   objectDecl
    ;
 
 funcDecl : FUNC_KW name=ID L_PAREN (functionArgs) R_PAREN (COLON resultType=ID)? L_BRACE statementsBlock R_BRACE;
@@ -18,12 +18,13 @@ functionArg : name=ID (COLON type=ID)?;
 
 statementsBlock : (statement)*;
 
-statement :
-    ifStatement
-    | varAssignmentStatement SEMI_COLON
-    | varDeclarationStatement SEMI_COLON
-    | returnStatement SEMI_COLON
-    ;
+statement
+   :   ifStatement
+   |   varAssignmentStatement SEMI_COLON
+   |   varDeclarationStatement SEMI_COLON
+   |   returnStatement SEMI_COLON
+   |   functionCall SEMI_COLON
+   ;
 
 varAssignmentStatement : varName=ID EQ expression;
 
@@ -56,6 +57,7 @@ expressionAtomic
    :   primitiveLiteral
    |   newExpression
    |   variableExpression
+   |   functionCall
    ;
 
 primitiveLiteral
@@ -71,12 +73,16 @@ integerNumberLiteral
    ;
 
 floatNumberLiteral
-   :  MINUS? Digit+ DOT Digit+
+   :   MINUS? Digit+ DOT Digit+
    ;
 
 boolLiteral
-  :  bool=(TRUE_KW | FALSE_KW)
-  ;
+   :   bool=(TRUE_KW | FALSE_KW)
+   ;
+
+functionCall
+   :   name=ID L_PAREN args=expressionList R_PAREN
+   ;
 
 objectDecl : OBJECT_KW name=ID L_BRACE objectBody R_BRACE;
 

@@ -54,7 +54,7 @@ public class IfStatementsTransformer : AbstractAstSemanticTransformer
         return new StatementsBlockAstNode(resultNodes);
     }
 
-    private List<IAstNode> TransformBranch(StatementsBlockAstNode body, QualifiedFunctionCallAstNode conditionBool)
+    private List<IAstNode> TransformBranch(StatementsBlockAstNode body, IExpressionAstNode conditionBool)
     {
         var resultNodes = new List<IAstNode>();
         var conditionIdVarName = GetFreshVar("branchId");

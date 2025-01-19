@@ -87,6 +87,9 @@ public interface IAstVisitor
             case VarAssignmentAstNode varAssignmentAstNode:
                 VisitVarAssignmentAstNode(varAssignmentAstNode);
                 break;
+            case IntrinsicFunctionAstNode intrinsicFunctionAstNode:
+                VisitIntrinsicFunctionAstNode(intrinsicFunctionAstNode);
+                break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(node));
         }
@@ -96,4 +99,5 @@ public interface IAstVisitor
     protected void VisitReturnStatementAstNode(ReturnStatementAstNode node);
     protected void VisitStatementsBlockAstNode(StatementsBlockAstNode node);
     protected void VisitVarAssignmentAstNode(VarAssignmentAstNode node);
+    protected void VisitIntrinsicFunctionAstNode(IntrinsicFunctionAstNode intrinsicFunctionAstNode);
 }
