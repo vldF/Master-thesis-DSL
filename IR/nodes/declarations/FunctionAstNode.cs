@@ -7,22 +7,18 @@ public class FunctionAstNode(
     string name,
     IReadOnlyCollection<FunctionArgAstNode> args,
     TypeReference returnTypeRef,
-    StatementsBlockAstNode body) : IStatementAstNode
+    StatementsBlockAstNode body) : FunctionAstNodeBase(name, args, returnTypeRef)
 {
-    public string Name { get; set; } = name;
-
     public StatementsBlockAstNode Body { get; set; } = body;
-    public List<FunctionArgAstNode> Args { get; set; } = args.ToList();
-    public TypeReference? ReturnTypeRef { get; set; } = returnTypeRef;
 
-    public string String()
+    public override string String()
     {
         var argsAsString = string.Join(", ", Args.Select(x => x.String()));
         var returnTypeAsStr = ReturnTypeRef != null ? ": " + ReturnTypeRef.AsString() : "";
-        return $"""
-                func {Name} ({argsAsString}) {returnTypeAsStr} (
-                {AddIndent(Body.String())}
-                )
+        return $$"""
+                func {Name} ({{argsAsString}}) {{returnTypeAsStr}} \{
+                {{AddIndent(Body.String())}}
+                }
                 """;
     }
 }
