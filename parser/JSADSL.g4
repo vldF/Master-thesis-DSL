@@ -2,9 +2,15 @@ grammar JSADSL;
 
 file : topLevelDecl*;
 
-topLevelDecl : funcDecl | objectDecl;
+topLevelDecl :
+   funcDecl
+   | intrinsicFuncDecl
+   | objectDecl
+   ;
 
 funcDecl : FUNC_KW name=ID L_PAREN (functionArgs) R_PAREN (COLON resultType=ID)? L_BRACE statementsBlock R_BRACE;
+
+intrinsicFuncDecl : INTRINSIC_KW FUNC_KW name=ID L_PAREN (functionArgs) R_PAREN (COLON resultType=ID)?;
 
 functionArgs : functionArg? (COMMA functionArg)* COMMA?;
 
@@ -76,6 +82,7 @@ objectDecl : OBJECT_KW name=ID L_BRACE objectBody R_BRACE;
 
 objectBody : funcDecl*;
 
+INTRINSIC_KW : 'intrinsic';
 FUNC_KW : 'func';
 OBJECT_KW: 'object';
 IF_KW : 'if';
