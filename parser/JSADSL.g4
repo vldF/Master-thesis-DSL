@@ -1,11 +1,12 @@
 grammar JSADSL;
 
-file : topLevelDecl*;
+file : packageDecl? topLevelDecl*;
 
 topLevelDecl
    :   funcDecl
    |   intrinsicFuncDecl
    |   objectDecl
+   |   importDecl
    ;
 
 funcDecl : FUNC_KW name=ID L_PAREN (functionArgs) R_PAREN (COLON resultType=ID)? L_BRACE statementsBlock R_BRACE;
@@ -88,6 +89,9 @@ objectDecl : OBJECT_KW name=ID L_BRACE objectBody R_BRACE;
 
 objectBody : funcDecl*;
 
+importDecl : IMPORT_KW package=DoubleQuotedString SEMI_COLON;
+packageDecl : PACKAGE_KW package=DoubleQuotedString SEMI_COLON;
+
 INTRINSIC_KW : 'intrinsic';
 FUNC_KW : 'func';
 OBJECT_KW: 'object';
@@ -98,6 +102,8 @@ RETURN_KW : 'return';
 NEW_KW : 'new';
 TRUE_KW : 'true';
 FALSE_KW : 'false';
+PACKAGE_KW : 'package';
+IMPORT_KW : 'import';
 
 L_PAREN : '(';
 R_PAREN : ')';

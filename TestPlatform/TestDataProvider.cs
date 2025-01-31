@@ -8,9 +8,17 @@ public class TestDataProvider
 
     public string GetExpectedCodePath(string testName)
     {
-        var fileNape = testName + ".jsa";
+        var fileName = testName + ".jsa";
 
-        return Path.Combine(GetExpectedDirPath(), fileNape);
+        return Path.Combine(GetExpectedDirPath(), fileName);
+    }
+
+    public string GetExpectedCodePath(string testName, string fileName)
+    {
+        var dirPath = Path.Combine(GetExpectedDirPath(), testName);
+        fileName += ".jsa";
+
+        return Path.Combine(dirPath, fileName);
     }
 
     public string GetInputCodePath(string testName)
@@ -18,6 +26,15 @@ public class TestDataProvider
         var fileName = testName + ".jsadsl";
         return Path.Combine(GetInputDirPath(), fileName);
     }
+
+    public string GetInputCodePath(string testName, string fileName)
+    {
+        var dirPath = Path.Combine(GetExpectedDirPath(), testName);
+        fileName += ".jsadsl";
+
+        return Path.Combine(dirPath, fileName);
+    }
+
     private string GetExpectedDirPath()
     {
         var testdataPath = GetDirectoryInProjectRoot(_testdataRelPath);

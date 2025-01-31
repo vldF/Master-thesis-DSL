@@ -1,0 +1,1 @@
+var TypeClassDescription = PythonTypes.CreateClass("Type");

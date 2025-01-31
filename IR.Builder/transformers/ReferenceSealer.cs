@@ -1,3 +1,4 @@
+using me.vldf.jsa.dsl.ir.builder.exceptions;
 using me.vldf.jsa.dsl.ir.nodes;
 using me.vldf.jsa.dsl.ir.nodes.declarations;
 using me.vldf.jsa.dsl.ir.nodes.expressions;
@@ -24,7 +25,13 @@ public class ReferenceSealer : AbstractAstTransformer
         var func = base.TransformFunctionAstNode(node).Copy<FunctionAstNode>();
         if (func.ReturnTypeRef != null)
         {
-            func.ReturnTypeRef.SealedValue = func.ReturnTypeRef.Resolve();
+            var type = func.ReturnTypeRef.Resolve();
+            if (type == null)
+            {
+                throw new UnresolvedTypeException(func.ReturnTypeRef.Name);
+            }
+
+            func.ReturnTypeRef.SealedValue = type;
         }
 
         for (var i = func.Args.Count - 1; i >= 0; i--)
@@ -41,7 +48,13 @@ public class ReferenceSealer : AbstractAstTransformer
     {
         var arg = base.TransformFunctionArgAstNode(node).Copy<FunctionArgAstNode>();
         arg.TypeReference = arg.TypeReference.Clone<TypeReference>();
-        arg.TypeReference.SealedValue = arg.TypeReference.Resolve();
+
+        var type = arg.TypeReference.Resolve();
+        if (type == null)
+        {
+            throw new UnresolvedTypeException(arg.TypeReference.Name);
+        }
+        arg.TypeReference.SealedValue = type;
 
         return arg;
     }
@@ -64,7 +77,12 @@ public class ReferenceSealer : AbstractAstTransformer
     protected override VarDeclAstNode TransformVarDeclAstNode(VarDeclAstNode node)
     {
         var varDecl = base.TransformVarDeclAstNode(node).Copy<VarDeclAstNode>();
-        varDecl.TypeReference.SealedValue = varDecl.TypeReference.Resolve();
+        var type = varDecl.TypeReference!.Resolve();
+        if (type == null)
+        {
+            throw new UnresolvedTypeException(varDecl.TypeReference.Name);
+        }
+        varDecl.TypeReference.SealedValue = type;
 
         if (varDecl.Init != null)
         {
@@ -136,7 +154,13 @@ public class ReferenceSealer : AbstractAstTransformer
 
     protected override NewAstNode TransformNewAstNode(NewAstNode node)
     {
-        node.TypeReference.SealedValue = base.TransformNewAstNode(node).TypeReference.Resolve();
+        var type = node.TypeReference.Resolve();
+        if (type == null)
+        {
+            throw new UnresolvedTypeException(node.TypeReference.Name);
+        }
+
+        node.TypeReference.SealedValue = type;
 
         return node with
         {

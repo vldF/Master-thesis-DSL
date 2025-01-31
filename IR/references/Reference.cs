@@ -15,6 +15,8 @@ public abstract class Reference<T>()
     public abstract string AsString();
     public T? SealedValue { get; set; } = default;
 
+    public abstract string Name { get; set; }
+
     public R Clone<R>() where R : Reference<T>
     {
         return (R)this.MemberwiseClone();
@@ -34,6 +36,7 @@ public class TypeReference(string id, IrContext context) : Reference<AstType>()
     }
 
     public override string AsString() => $"TypeRef[{id}]";
+    public override string Name { get; set; } = id;
 }
 
 public class FunctionReference(string id, IrContext context) : Reference<FunctionAstNodeBase>()
@@ -49,6 +52,7 @@ public class FunctionReference(string id, IrContext context) : Reference<Functio
     }
 
     public override string AsString() => $"FunctionRef[{id}]";
+    public override string Name { get; set; } = id;
 }
 
 public class ObjectReference(string id, IrContext context) : Reference<ObjectAstNode>()
@@ -64,6 +68,7 @@ public class ObjectReference(string id, IrContext context) : Reference<ObjectAst
     }
 
     public override string AsString() => $"ObjectRef[{id}]";
+    public override string Name { get; set; } = id;
 }
 
 public class VariableReference(string Id, IrContext context) : Reference<VarDeclAstNode>()
@@ -81,4 +86,5 @@ public class VariableReference(string Id, IrContext context) : Reference<VarDecl
     }
 
     public override string AsString() => $"VariableRef[{Id}]";
+    public override string Name { get; set; } = Id;
 }

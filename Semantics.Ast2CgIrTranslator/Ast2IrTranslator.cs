@@ -28,7 +28,8 @@ public class Ast2IrTranslator : IAstVisitor
     // todo: extract a dedicated phase
     public void VisitFileAstNode(FileAstNode node)
     {
-        _ctx.File = CreateFile("file.jsadsl");
+        var fileName = Path.GetFileNameWithoutExtension(node.FileName!) + ".jsa";
+        _ctx.File = CreateFile(fileName);
 
         var objectDeclarations = node.TopLevelDeclarations
             .Where(decl => decl is ObjectAstNode);

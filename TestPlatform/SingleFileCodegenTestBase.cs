@@ -5,7 +5,7 @@ using NUnit.Framework;
 
 namespace TestPlatform;
 
-public abstract class CodegenTestBase
+public abstract class SingleFileCodegenTestBase
 {
     protected static readonly TestDataProvider _testDataProvider = new();
 

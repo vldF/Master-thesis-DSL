@@ -6,7 +6,7 @@ using TestPlatform;
 
 namespace Codegen.IR.Synthesizer.Tests;
 
-public class Tests : CodegenTestBase
+public class Tests : SingleFileCodegenTestBase
 {
     public Tests()
     {

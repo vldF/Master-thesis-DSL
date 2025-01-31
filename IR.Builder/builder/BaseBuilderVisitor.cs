@@ -1,4 +1,3 @@
-using Ast.Builder.exceptions;
 using me.vldf.jsa.dsl.ast.types;
 using me.vldf.jsa.dsl.ir.builder.exceptions;
 using me.vldf.jsa.dsl.ir.builder.utils;
@@ -18,6 +17,7 @@ public class BaseBuilderVisitor(IrContext irContext) : JSADSLBaseVisitor<IAstNod
 
     public override FileAstNode VisitFile(JSADSLParser.FileContext context)
     {
+        var package = context.packageDecl()?.package?.Text;
         var result = context
             .topLevelDecl()
             .Select(Visit)
@@ -25,7 +25,9 @@ public class BaseBuilderVisitor(IrContext irContext) : JSADSLBaseVisitor<IAstNod
             .Cast<IStatementAstNode>()
             .ToList();
 
-        return new FileAstNode(result);
+        return new FileAstNode(
+            package,
+            result);
     }
 
     public override FunctionAstNode VisitFuncDecl(JSADSLParser.FuncDeclContext context)
@@ -213,6 +215,14 @@ public class BaseBuilderVisitor(IrContext irContext) : JSADSLBaseVisitor<IAstNod
             .ToArray();
 
         return new FunctionCallAstNode(qualifiedParent: null, funcRef, args);
+    }
+
+    public override IAstNode VisitImportDecl(JSADSLParser.ImportDeclContext context)
+    {
+        var package = context.package.Text;
+        irContext.SaveImport(package);
+
+        return default;
     }
 
     public override IStatementAstNode VisitStatement(JSADSLParser.StatementContext context)

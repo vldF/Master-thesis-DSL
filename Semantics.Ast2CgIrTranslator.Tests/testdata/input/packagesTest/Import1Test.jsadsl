@@ -1,0 +1,5 @@
+import "package2";
+
+func foo(t: Type): Type {
+    return 1;
+}
