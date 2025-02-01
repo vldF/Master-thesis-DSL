@@ -29,6 +29,9 @@ public class PackageTests : PackageCodegenTestBase
     {
         var astBuilder = new AstBuilder();
 
+        var standardLibraryPath = _testDataProvider.GetStandardLibrary();
+        var standardLibraryCode = File.ReadAllText(standardLibraryPath);
+
         var inputDataDir = Path.Combine(_testDataProvider.GetInputDirPath(), testName);
         var inputFiles = Directory.EnumerateFiles(inputDataDir);
 
@@ -37,9 +40,17 @@ public class PackageTests : PackageCodegenTestBase
             .Select(f => (Path.GetFileName(f), File.ReadAllText(f)))
             .ToList();
 
+        var standardLibraryFileName = Path.GetFileNameWithoutExtension(standardLibraryPath);
+        codes.Add((standardLibraryFileName, standardLibraryCode));
+
         var file = astBuilder.FromStrings(codes);
         foreach (var fileAstNode in file)
         {
+            if (fileAstNode.FileName == standardLibraryFileName)
+            {
+                continue;
+            }
+
             Console.WriteLine(fileAstNode.String());
 
             var translator = new Ast2IrTranslator();

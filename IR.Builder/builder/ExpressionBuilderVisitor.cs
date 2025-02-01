@@ -105,6 +105,12 @@ public class ExpressionBuilderVisitor(IrContext irContext) : JSADSLBaseVisitor<I
         return new BoolLiteralAstNode(bool.Parse(context.GetText()));
     }
 
+    public override IExpressionAstNode VisitStringLiteral(JSADSLParser.StringLiteralContext context)
+    {
+        var quotedString = context.DoubleQuotedString().GetText();
+        return new StringLiteralAstNode(quotedString[1..^1]);
+    }
+
     public override FunctionCallAstNode VisitFunctionCall(JSADSLParser.FunctionCallContext context)
     {
         var name = context.name.Text;

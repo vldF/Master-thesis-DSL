@@ -4,6 +4,7 @@ public class SimpleAstType(string name) : AstType
 {
     public static SimpleAstType Int = new("int");
     public static SimpleAstType Any = new("any");
+    public static SimpleAstType StringT = new("string");
 
     public override string Name { get; } = name;
 

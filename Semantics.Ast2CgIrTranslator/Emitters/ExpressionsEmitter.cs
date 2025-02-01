@@ -20,6 +20,7 @@ public class ExpressionsEmitter(TranslatorContext ctx)
             IntLiteralAstNode intLiteralAstNode => EmitIntLiteralAstNode(intLiteralAstNode),
             FloatLiteralAstNode floatLiteralAstNode => EmitFloatLiteralAstNode(floatLiteralAstNode),
             BoolLiteralAstNode boolLiteralAstNode => EmitBoolLiteralAstNode(boolLiteralAstNode),
+            StringLiteralAstNode stringLiteralAstNode => EmitStringLiteralAstNode(stringLiteralAstNode),
 
             _ => throw new ArgumentOutOfRangeException(nameof(expression))
         };
@@ -38,6 +39,11 @@ public class ExpressionsEmitter(TranslatorContext ctx)
     private ICgExpression EmitIntLiteralAstNode(IntLiteralAstNode intLiteralAstNode)
     {
         return new CgIntLiteral(intLiteralAstNode.Value);
+    }
+
+    private ICgExpression EmitStringLiteralAstNode(StringLiteralAstNode stringLiteralAstNode)
+    {
+        return new CgStringLiteral(stringLiteralAstNode.Value);
     }
 
     private ICgExpression EmitQualifiedAccessAstNodeBase(QualifiedAccessAstNodeBase qualifiedAccessAstNode)

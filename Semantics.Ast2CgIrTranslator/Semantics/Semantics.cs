@@ -10,7 +10,7 @@ public class Semantics
     public CgVarExpression SemanticsApi = new("SemanticsApi");
 
     private CgVarExpression _location = new("Location");
-    private CgVarExpression _functionCall = new("FunctionCall");
+    private CgVarExpression _functionCall = new("functionCall");
 
     public ICgExpression CreateClass(string name)
     {

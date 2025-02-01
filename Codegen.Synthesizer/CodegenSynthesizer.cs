@@ -220,7 +220,7 @@ public class CodegenSynthesizer : AbstractTextSynthesizer
             case CgFloatLiteral cgFloatExpression:
                 Append(cgFloatExpression.Value.ToString(CultureInfo.InvariantCulture));
                 break;
-            case CgStringExpression cgStringExpression:
+            case CgStringLiteral cgStringExpression:
                 Append(cgStringExpression.Value);
                 break;
             case CgVarExpression cgVarExpression:

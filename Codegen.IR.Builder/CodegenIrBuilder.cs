@@ -103,7 +103,7 @@ public static class CodegenIrBuilder
             int i => new CgIntLiteral(i),
             double d => new CgFloatLiteral(d),
             float f => new CgFloatLiteral(f),
-            string str => new CgStringExpression(str),
+            string str => new CgStringLiteral(str),
             _ => throw new ArgumentOutOfRangeException()
         };
     }

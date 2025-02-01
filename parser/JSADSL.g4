@@ -64,7 +64,7 @@ expressionAtomic
 primitiveLiteral
    :   integerNumberLiteral
    |   floatNumberLiteral
-   |   DoubleQuotedString
+   |   stringLiteral
    |   boolLiteral
    ;
 
@@ -79,6 +79,10 @@ floatNumberLiteral
 
 boolLiteral
    :   bool=(TRUE_KW | FALSE_KW)
+   ;
+
+stringLiteral
+   : DoubleQuotedString
    ;
 
 functionCall

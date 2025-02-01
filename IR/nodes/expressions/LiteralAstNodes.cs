@@ -25,3 +25,11 @@ public record BoolLiteralAstNode(bool Value) : IExpressionAstNode
         return Value.ToString();
     }
 }
+
+public record StringLiteralAstNode(string Value) : IExpressionAstNode
+{
+    public string String()
+    {
+        return $"\"{Value}\"";
+    }
+}

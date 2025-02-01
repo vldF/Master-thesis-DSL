@@ -13,6 +13,8 @@ public class AstBuilder
     {
         var rootContext = new IrContext(null);
         rootContext.SaveNewType(SimpleAstType.Any);
+        rootContext.SaveNewType(SimpleAstType.Int);
+        rootContext.SaveNewType(SimpleAstType.StringT);
 
         var transOrhestrator = new TransformersOrchestrator(rootContext);
 
