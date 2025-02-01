@@ -7,6 +7,10 @@ public class FunctionCallTransformer : AbstractAstSemanticTransformer
 {
     protected override IExpressionAstNode TransformFunctionCallAstNode(FunctionCallAstNode node)
     {
+        var args = node.Args.ToList();
+        args.Insert(0, LocationArg);
+        node.Args = args.ToArray();
+
         return node.FunctionReference.Resolve() is IntrinsicFunctionAstNode
             ? TransformIntrinsicFunctionCall(node)
             : TransformFunctionCall(node);

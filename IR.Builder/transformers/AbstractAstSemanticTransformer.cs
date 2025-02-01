@@ -32,7 +32,7 @@ public class AbstractAstSemanticTransformer : AbstractAstTransformer
         IntTypeRef = new TypeReference("int", CurrentContext);
 
         Interpretor = rootContext.GetFakeVariable("Interpreter");
-        LocationArg = rootContext.GetFakeVariable("Location");
+        LocationArg = rootContext.GetFakeVariable("location");
         PythonSemantics = rootContext.GetFakeVariable("PythonSemantics");
         Engine = rootContext.GetFakeVariable("Engine");
     }

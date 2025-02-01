@@ -1,6 +1,6 @@
 CallHandlerResult InnerFuncHandler(Location location, FunctionCall functionCall)
 {
-    var arg1 = FunctionCall.Arguments[0];
+    var arg1 = functionCall.Arguments[0];
     return CallHandlerResult.Processed(SemanticsApi.None);
 }
 CallHandlerResult InnerFunc2Handler(Location location, FunctionCall functionCall)
