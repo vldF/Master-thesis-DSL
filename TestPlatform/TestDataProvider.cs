@@ -35,6 +35,11 @@ public class TestDataProvider
         return Path.Combine(dirPath, fileName);
     }
 
+    public string GetStandardLibrary()
+    {
+        return Path.Combine(GetDirectoryInSolutionRoot("StandardLibrary"), "Standard.jsadsl");
+    }
+
     private string GetExpectedDirPath()
     {
         var testdataPath = GetDirectoryInProjectRoot(_testdataRelPath);
@@ -51,8 +56,15 @@ public class TestDataProvider
     {
         return Path.Combine(GetProjectRootDirectory(), relDirPath);
     }
+
     private static string GetProjectRootDirectory()
     {
         return Directory.GetParent(TestContext.CurrentContext.TestDirectory)!.Parent!.FullName;
+    }
+
+    private static string GetDirectoryInSolutionRoot(string relDirPath)
+    {
+        var solDir = Directory.GetParent(GetProjectRootDirectory())!.Parent!;
+        return Path.Combine(solDir.FullName, relDirPath);
     }
 }

@@ -26,11 +26,18 @@ public class Tests : SingleFileCodegenTestBase
     [TestCaseSource(nameof(GetAllTests))]
     public void Test(string testName)
     {
+        var standardLibraryPath = _testDataProvider.GetStandardLibrary();
+        var standardLibraryCode = File.ReadAllText(standardLibraryPath);
+
         var inputPath = _testDataProvider.GetInputCodePath(testName);
         var inputCode = File.ReadAllText(inputPath);
 
         var astBuilder = new AstBuilder();
-        var file = astBuilder.FromStrings([(testName, inputCode)]).First();
+        var file = astBuilder.FromStrings([
+            (testName, inputCode),
+            (Path.GetFileNameWithoutExtension(standardLibraryPath), standardLibraryCode)
+        ]).First();
+
         Console.WriteLine(file.String());
 
         var translator = new Ast2IrTranslator();

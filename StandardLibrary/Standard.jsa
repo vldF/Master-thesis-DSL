@@ -1,0 +1,5 @@
+void Detect(Location location, SymbolicExpression expression, string vulnerabilityType, string grammar)
+{
+    var grmr = new PvoArgumentGrammar(grammar);
+    Detector.Detect(location, expression, (VulnerabilityType)vulnerabilityType, grmr);
+}
