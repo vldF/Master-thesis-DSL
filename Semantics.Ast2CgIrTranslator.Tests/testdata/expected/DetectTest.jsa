@@ -2,5 +2,6 @@ CallHandlerResult DoPostHandler(Location location, FunctionCall functionCall)
 {
     var url = functionCall.Arguments[0];
     detect(location, url, "Server-Side Request Forgery", "HTTP URI");
+    return CallHandlerResult.Processed(PythonSemantics.None);
 }
 var HttpClientClassDescription = PythonTypes.CreateClass("HttpClient").WithMethod("DoPost", DoPostHandler);

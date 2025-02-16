@@ -1,0 +1,9 @@
+func Comp(arg1: int, arg2: int) {
+    if (arg1 > arg2) {
+        return 1;
+    } else if (arg1 == arg2) {
+        return 0;
+    }
+
+    return 1;
+}

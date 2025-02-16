@@ -1,0 +1,4 @@
+CallHandlerResult FooHandler(Location location, FunctionCall functionCall)
+{
+    return CallHandlerResult.Processed(PythonSemantics.None);
+}

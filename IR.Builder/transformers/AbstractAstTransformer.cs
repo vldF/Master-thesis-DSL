@@ -1,4 +1,3 @@
-using System.Data;
 using me.vldf.jsa.dsl.ir.context;
 using me.vldf.jsa.dsl.ir.nodes;
 using me.vldf.jsa.dsl.ir.nodes.declarations;
@@ -152,7 +151,7 @@ public abstract class AbstractAstTransformer
         return node;
     }
 
-    protected virtual ReturnStatementAstNode TransformReturnStatementAstNode(ReturnStatementAstNode node)
+    protected virtual IStatementAstNode TransformReturnStatementAstNode(ReturnStatementAstNode node)
     {
         if (node.Expression != null)
         {

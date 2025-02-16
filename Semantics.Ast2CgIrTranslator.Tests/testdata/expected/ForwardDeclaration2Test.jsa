@@ -5,6 +5,7 @@ CallHandlerResult InnerFuncHandler(Location location, FunctionCall functionCall)
 }
 CallHandlerResult InnerFunc2Handler(Location location, FunctionCall functionCall)
 {
+    return CallHandlerResult.Processed(PythonSemantics.None);
 }
 var MyObjectClassDescription = PythonTypes.CreateClass("MyObject").WithMethod("InnerFunc", InnerFuncHandler).WithMethod("InnerFunc2", InnerFunc2Handler);
 var Type1ClassDescription = PythonTypes.CreateClass("Type1");

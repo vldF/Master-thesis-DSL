@@ -1,0 +1,22 @@
+CallHandlerResult CompHandler(Location location, FunctionCall functionCall)
+{
+    var arg1 = functionCall.Arguments[0];
+    var arg2 = functionCall.Arguments[1];
+    var returnValueBuilder0 = Interpreter.CreateReturnedValuesBuilder();
+    var condition1 = PythonSemantics.CreateCastToBoolOperator(Interpreter.InvokeFunction(location, PythonSemantics.GreaterDescriptor, arg1, arg2));
+    Engine.TryEnterBranch(condition1, out var branchId1);
+    var currentCond0 = Interpreter.CurrentContext.CurrentCondition;
+    returnValueBuilder0.AddOption(currentCond0, 1);
+    Engine.LeaveBranch(out var branchId1);
+    var notCondition0 = Interpreter.InvokeFunction(location, PythonSemantics.NotDescriptor, PythonSemantics.CreateCastToBoolOperator(Interpreter.InvokeFunction(location, PythonSemantics.GreaterDescriptor, arg1, arg2)));
+    Engine.TryEnterBranch(notCondition0, out var branchId2);
+    var condition0 = PythonSemantics.CreateCastToBoolOperator(Interpreter.InvokeFunction(location, PythonSemantics.EqDescriptor, arg1, arg2));
+    Engine.TryEnterBranch(condition0, out var branchId0);
+    var currentCond1 = Interpreter.CurrentContext.CurrentCondition;
+    returnValueBuilder0.AddOption(currentCond1, 0);
+    Engine.LeaveBranch(out var branchId0);
+    Engine.LeaveBranch(out var branchId2);
+    var currentCond2 = Interpreter.CurrentContext.CurrentCondition;
+    returnValueBuilder0.AddOption(currentCond2, 1);
+    return CallHandlerResult.Processed(returnValueBuilder0);
+}

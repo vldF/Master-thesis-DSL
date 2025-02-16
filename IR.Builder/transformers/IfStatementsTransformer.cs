@@ -19,8 +19,9 @@ public class IfStatementsTransformer : AbstractAstSemanticTransformer
         var conditionBool = PythonSemantics.Function("CreateCastToBoolOperator", node.Cond);
         var conditionBoolVarDecl = new VarDeclAstNode(GetFreshVar("condition"), null, conditionBool);
         resultNodes.Add(conditionBoolVarDecl);
+        CurrentContext.SaveNewVar(conditionBoolVarDecl);
 
-        var mainBranchStatements = TransformBranch(node.MainBlock, conditionBool);
+        var mainBranchStatements = TransformBranch(node.MainBlock, conditionBoolVarDecl.GetVarExpr(CurrentContext));
         resultNodes.AddRange(mainBranchStatements);
 
         if (node.ElseStatement == null)
@@ -44,8 +45,11 @@ public class IfStatementsTransformer : AbstractAstSemanticTransformer
                     GetFreshVar("notCondition"),
                     null,
                     notConditionBool);
+
                 resultNodes.Add(notConditionBoolVarDecl);
-                resultNodes.AddRange(TransformBranch(elseStatements, notConditionBool));
+                CurrentContext.SaveNewVar(notConditionBoolVarDecl);
+
+                resultNodes.AddRange(TransformBranch(elseStatements, notConditionBoolVarDecl.GetVarExpr(CurrentContext)));
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(node.ElseStatement));

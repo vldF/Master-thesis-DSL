@@ -14,6 +14,7 @@ public class TransformersOrchestrator(IrContext rootContext)
         new SemanticBinaryOperationsTransformer(),
         new SemanticUnaryOperationsTransformer(),
         new IfStatementsTransformer(),
+        new ReturnTransformer(),
     ];
 
     public IAstNode Transform(IAstNode node)
