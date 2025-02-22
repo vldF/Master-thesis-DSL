@@ -11,7 +11,7 @@ There are some tasks to be done:
 4. ~~If-then-else~~
 5. Foreach
 6. Taint markers: Detect, a way to put a taint mark, a way to remove it 
-7. C# external declaration
+7. ~~C# external declaration~~
 8. Generics
 9. This
 10. Function calls (with receiver)
@@ -26,3 +26,6 @@ There are some tasks to be done:
    16.3. Assignment to arguments
    16.4. Unresolved variable, field, function, argument, ...
 17. Empty lines in the generated code
+18. Compile-time constants (especially for strings) to use them instead of enums
+19. Inheritance :(
+20. Attributes aka object fields
