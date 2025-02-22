@@ -1,3 +1,4 @@
+using me.vldf.jsa.dsl.ir.builder.transformers.python;
 using me.vldf.jsa.dsl.ir.context;
 using me.vldf.jsa.dsl.ir.nodes;
 
@@ -9,6 +10,7 @@ public class TransformersOrchestrator(IrContext rootContext)
 
     private readonly List<AbstractAstTransformer> _transformers =
     [
+        new IncrementArgumentsIndexForFuncsInObjects(),
         new ReferenceSealer(),
         new FunctionCallTransformer(),
         new SemanticBinaryOperationsTransformer(),

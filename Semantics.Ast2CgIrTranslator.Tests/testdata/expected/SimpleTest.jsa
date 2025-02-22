@@ -3,7 +3,7 @@ var Type2ClassDescription = PythonTypes.CreateClass("Type2");
 var ReturnTypeClassDescription = PythonTypes.CreateClass("ReturnType");
 CallHandlerResult InnerFuncHandler(Location location, FunctionCall functionCall)
 {
-    var arg1 = functionCall.Arguments[0];
+    var arg1 = functionCall.Arguments[1];
     return CallHandlerResult.Processed(SemanticsApi.None);
 }
 CallHandlerResult InnerFunc2Handler(Location location, FunctionCall functionCall)

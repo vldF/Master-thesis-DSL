@@ -1,8 +1,8 @@
 var numberClassDescription = PythonTypes.CreateClass("number");
 CallHandlerResult InnerFuncHandler(Location location, FunctionCall functionCall)
 {
-    var arg1 = functionCall.Arguments[0];
-    var arg2 = functionCall.Arguments[1];
+    var arg1 = functionCall.Arguments[1];
+    var arg2 = functionCall.Arguments[2];
     var sum = Interpreter.InvokeFunction(location, PythonSemantics.AddDescriptor, arg1, arg2);
     var sub = Interpreter.InvokeFunction(location, PythonSemantics.SubDescriptor, arg1, arg2);
     var mul = Interpreter.InvokeFunction(location, PythonSemantics.MultiplyDescriptor, arg1, arg2);

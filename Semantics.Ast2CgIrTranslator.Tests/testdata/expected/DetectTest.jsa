@@ -1,6 +1,6 @@
 CallHandlerResult DoPostHandler(Location location, FunctionCall functionCall)
 {
-    var url = functionCall.Arguments[0];
+    var url = functionCall.Arguments[1];
     detect(location, url, "Server-Side Request Forgery", "HTTP URI");
     return CallHandlerResult.Processed(PythonSemantics.None);
 }
