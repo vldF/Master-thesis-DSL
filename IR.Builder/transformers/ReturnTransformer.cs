@@ -1,7 +1,5 @@
-using me.vldf.jsa.dsl.ast.types;
 using me.vldf.jsa.dsl.ir.builder.transformers.utils;
 using me.vldf.jsa.dsl.ir.builder.utils;
-using me.vldf.jsa.dsl.ir.context;
 using me.vldf.jsa.dsl.ir.helpers;
 using me.vldf.jsa.dsl.ir.nodes;
 using me.vldf.jsa.dsl.ir.nodes.declarations;
@@ -32,7 +30,7 @@ public class ReturnTransformer : AbstractAstSemanticTransformer
         var children = node.Body.Children.ToList();
         node.Body.Children = children;
 
-        var newReturn = new ReturnStatementAstNode(PythonSemantics.Property("None"));
+        var newReturn = new ReturnStatementAstNode(SemanticsApi.Property("None"));
         children.Insert(children.Count, newReturn);
 
         return node;
@@ -76,7 +74,7 @@ public class ReturnTransformer : AbstractAstSemanticTransformer
         CurrentContext.SaveNewVar(currentCondVarDecl);
         var currentCondVarExpr = currentCondVarDecl.GetVarExpr(CurrentContext);
 
-        var returnExpr = node.Expression ?? PythonSemantics.Property("None");
+        var returnExpr = node.Expression ?? SemanticsApi.Property("None");
 
         var addOptionInvoke = new VarExpressionAstNode(_currentReturnConditionalBuilder)
             .Function(

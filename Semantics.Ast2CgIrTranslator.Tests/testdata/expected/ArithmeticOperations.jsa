@@ -1,16 +1,19 @@
+#load "Standard.jsa"
 var numberClassDescription = PythonTypes.CreateClass("number");
 CallHandlerResult InnerFuncHandler(Location location, FunctionCall functionCall)
 {
     var arg1 = functionCall.Arguments[1];
     var arg2 = functionCall.Arguments[2];
-    var sum = Interpreter.InvokeFunction(location, PythonSemantics.AddDescriptor, arg1, arg2);
-    var sub = Interpreter.InvokeFunction(location, PythonSemantics.SubDescriptor, arg1, arg2);
-    var mul = Interpreter.InvokeFunction(location, PythonSemantics.MultiplyDescriptor, arg1, arg2);
-    var div = Interpreter.InvokeFunction(location, PythonSemantics.DivDescriptor, arg1, arg2);
-    var unaryMinus = Interpreter.InvokeFunction(location, PythonSemantics.NegDescriptor, arg1);
-    var unaryNot = Interpreter.InvokeFunction(location, PythonSemantics.NotDescriptor, arg1);
-    var parens = Interpreter.InvokeFunction(location, PythonSemantics.AddDescriptor, sum, sub);
-    var complex = Interpreter.InvokeFunction(location, PythonSemantics.AddDescriptor, Interpreter.InvokeFunction(location, PythonSemantics.DivDescriptor, Interpreter.InvokeFunction(location, PythonSemantics.MultiplyDescriptor, Interpreter.InvokeFunction(location, PythonSemantics.AddDescriptor, sum, sub), mul), div), parens);
+    var sum = Interpreter.InvokeFunction(location, SemanticsApi.AddDescriptor, arg1, arg2);
+    var sub = Interpreter.InvokeFunction(location, SemanticsApi.SubDescriptor, arg1, arg2);
+    var mul = Interpreter.InvokeFunction(location, SemanticsApi.MultiplyDescriptor, arg1, arg2);
+    var div = Interpreter.InvokeFunction(location, SemanticsApi.DivDescriptor, arg1, arg2);
+    var unaryMinus = Interpreter.InvokeFunction(location, SemanticsApi.NegDescriptor, arg1);
+    var unaryNot = Interpreter.InvokeFunction(location, SemanticsApi.NotDescriptor, arg1);
+    var parens = Interpreter.InvokeFunction(location, SemanticsApi.AddDescriptor, sum, sub);
+    var complex = Interpreter.InvokeFunction(location, SemanticsApi.AddDescriptor, Interpreter.InvokeFunction(location, SemanticsApi.DivDescriptor, Interpreter.InvokeFunction(location, SemanticsApi.MultiplyDescriptor, Interpreter.InvokeFunction(location, SemanticsApi.AddDescriptor, sum, sub), mul), div), parens);
     return CallHandlerResult.Processed(complex);
 }
 var MyObjectClassDescription = PythonTypes.CreateClass("MyObject").WithMethod("InnerFunc", InnerFuncHandler);
+Interpreter.Assign(ModuleDescriptor, "number", numberClassDescription.ClassDescriptor);
+Interpreter.Assign(ModuleDescriptor, "MyObject", MyObjectClassDescription.ClassDescriptor);

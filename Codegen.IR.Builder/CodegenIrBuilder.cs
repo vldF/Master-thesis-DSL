@@ -9,7 +9,9 @@ public static class CodegenIrBuilder
 {
     public static CgFile CreateFile(string name = "")
     {
-        return new CgFile(name);
+        var file = new CgFile(name);
+        file.Statements.Add(new CgDirectiveStatement("load", "Standard.jsa"));
+        return file;
     }
 
     public static CgMethod CreateMethod(

@@ -28,7 +28,7 @@ public class SemanticBinaryOperationsTransformer : AbstractAstSemanticTransforme
             _ => throw new ArgumentOutOfRangeException()
         };
 
-        var semanticEntityAccess = PythonSemantics.Property(semanticEntityName);
+        var semanticEntityAccess = SemanticsApi.Property(semanticEntityName);
 
         return new IntrinsicFunctionInvokationAstNode(
             Interpretor,

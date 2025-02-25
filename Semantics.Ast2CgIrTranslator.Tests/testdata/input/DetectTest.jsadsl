@@ -2,6 +2,6 @@ import "standard";
 
 object HttpClient {
     func DoPost(url: string): string {
-        detect(url, "Server-Side Request Forgery", "HTTP URI");
+        Detect(url, "Server-Side Request Forgery", "HTTP URI");
     }
 }

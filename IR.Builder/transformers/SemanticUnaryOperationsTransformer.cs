@@ -1,8 +1,5 @@
-using me.vldf.jsa.dsl.ir.context;
 using me.vldf.jsa.dsl.ir.helpers;
-using me.vldf.jsa.dsl.ir.nodes.declarations;
 using me.vldf.jsa.dsl.ir.nodes.expressions;
-using me.vldf.jsa.dsl.ir.references;
 
 namespace me.vldf.jsa.dsl.ir.builder.transformers;
 
@@ -19,7 +16,7 @@ public class SemanticUnaryOperationsTransformer : AbstractAstSemanticTransformer
             _ => throw new ArgumentOutOfRangeException()
         };
 
-        var semanticEntityAccess = PythonSemantics.Property(semanticEntityName);
+        var semanticEntityAccess = SemanticsApi.Property(semanticEntityName);
 
         return new IntrinsicFunctionInvokationAstNode(
             Interpretor,

@@ -1,9 +1,8 @@
 using me.vldf.jsa.dsl.ast.types;
+using me.vldf.jsa.dsl.ir.builder.utils;
 using me.vldf.jsa.dsl.ir.context;
-using me.vldf.jsa.dsl.ir.nodes.declarations;
 using me.vldf.jsa.dsl.ir.nodes.expressions;
 using me.vldf.jsa.dsl.ir.references;
-using me.vldf.jsa.dsl.ir.builder.utils;
 
 namespace me.vldf.jsa.dsl.ir.builder.transformers;
 
@@ -12,7 +11,7 @@ public class AbstractAstSemanticTransformer : AbstractAstTransformer
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     protected VarExpressionAstNode Interpretor;
     protected VarExpressionAstNode LocationArg;
-    protected VarExpressionAstNode PythonSemantics;
+    protected VarExpressionAstNode SemanticsApi;
     protected VarExpressionAstNode Engine;
 
     protected TypeReference IntTypeRef;
@@ -33,7 +32,7 @@ public class AbstractAstSemanticTransformer : AbstractAstTransformer
 
         Interpretor = rootContext.GetFakeVariable("Interpreter");
         LocationArg = rootContext.GetFakeVariable("location");
-        PythonSemantics = rootContext.GetFakeVariable("PythonSemantics");
+        SemanticsApi = rootContext.GetFakeVariable("SemanticsApi");
         Engine = rootContext.GetFakeVariable("Engine");
     }
 

@@ -1,3 +1,4 @@
+#load "Standard.jsa"
 var Type1ClassDescription = PythonTypes.CreateClass("Type1");
 var Type2ClassDescription = PythonTypes.CreateClass("Type2");
 var ReturnTypeClassDescription = PythonTypes.CreateClass("ReturnType");
@@ -8,6 +9,10 @@ CallHandlerResult InnerFuncHandler(Location location, FunctionCall functionCall)
 }
 CallHandlerResult InnerFunc2Handler(Location location, FunctionCall functionCall)
 {
-    return CallHandlerResult.Processed(PythonSemantics.None);
+    return CallHandlerResult.Processed(SemanticsApi.None);
 }
 var MyObjectClassDescription = PythonTypes.CreateClass("MyObject").WithMethod("InnerFunc", InnerFuncHandler).WithMethod("InnerFunc2", InnerFunc2Handler);
+Interpreter.Assign(ModuleDescriptor, "Type1", Type1ClassDescription.ClassDescriptor);
+Interpreter.Assign(ModuleDescriptor, "Type2", Type2ClassDescription.ClassDescriptor);
+Interpreter.Assign(ModuleDescriptor, "ReturnType", ReturnTypeClassDescription.ClassDescriptor);
+Interpreter.Assign(ModuleDescriptor, "MyObject", MyObjectClassDescription.ClassDescriptor);

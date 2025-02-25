@@ -1,6 +1,5 @@
 using Codegen.IR.nodes;
 using Codegen.IR.nodes.expressions;
-using Codegen.IR.nodes.types;
 using me.vldf.jsa.dsl.ast.visitors;
 using me.vldf.jsa.dsl.ir.nodes.declarations;
 using me.vldf.jsa.dsl.ir.nodes.expressions;
@@ -32,7 +31,8 @@ public class Ast2IrTranslator : IAstVisitor
         _ctx.File = CreateFile(fileName);
 
         var objectDeclarations = node.TopLevelDeclarations
-            .Where(decl => decl is ObjectAstNode);
+            .Where(decl => decl is ObjectAstNode)
+            .ToList();
         foreach (var decl in objectDeclarations)
         {
             var objectDecl = decl as ObjectAstNode;
@@ -43,6 +43,25 @@ public class Ast2IrTranslator : IAstVisitor
         foreach (var nodeTopLevelDeclaration in node.TopLevelDeclarations)
         {
             ((IAstVisitor)this).VisitStatementAstNode(nodeTopLevelDeclaration);
+        }
+
+        foreach (var decl in objectDeclarations)
+        {
+            var objectDecl = decl as ObjectAstNode;
+
+            var classDescriptorVariable = _ctx.ClassDescriptorVariables[objectDecl!.Name];
+
+            var interpreterVar = new CgVarExpression("Interpreter");
+            var moduleDescriptorVar = new CgVarExpression("ModuleDescriptor");
+            var moduleAssignmentStatement = new CgMethodCall(interpreterVar,
+                "Assign",
+                [
+                    moduleDescriptorVar,
+                    new CgStringLiteral(objectDecl.Name),
+                    classDescriptorVariable.Property("ClassDescriptor")
+                ]);
+
+            _ctx.File.Statements.Add(moduleAssignmentStatement);
         }
     }
 

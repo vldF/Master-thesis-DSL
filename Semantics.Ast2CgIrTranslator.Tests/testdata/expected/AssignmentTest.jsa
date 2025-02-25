@@ -1,3 +1,4 @@
+#load "Standard.jsa"
 var TypeClassDescription = PythonTypes.CreateClass("Type");
 CallHandlerResult InnerFuncHandler(Location location, FunctionCall functionCall)
 {
@@ -8,3 +9,5 @@ CallHandlerResult InnerFuncHandler(Location location, FunctionCall functionCall)
     return CallHandlerResult.Processed(test1);
 }
 var MyObjectClassDescription = PythonTypes.CreateClass("MyObject").WithMethod("InnerFunc", InnerFuncHandler);
+Interpreter.Assign(ModuleDescriptor, "Type", TypeClassDescription.ClassDescriptor);
+Interpreter.Assign(ModuleDescriptor, "MyObject", MyObjectClassDescription.ClassDescriptor);

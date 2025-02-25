@@ -1,5 +1,3 @@
-using System.Reflection.Metadata;
-using me.vldf.jsa.dsl.ast.types;
 using me.vldf.jsa.dsl.ir.builder.utils;
 using me.vldf.jsa.dsl.ir.helpers;
 using me.vldf.jsa.dsl.ir.nodes;
@@ -16,7 +14,7 @@ public class IfStatementsTransformer : AbstractAstSemanticTransformer
         var resultNodes = new List<IAstNode>();
 
         node = (IfStatementAstNode)base.TransformIfStatementAstNode(node);
-        var conditionBool = PythonSemantics.Function("CreateCastToBoolOperator", node.Cond);
+        var conditionBool = SemanticsApi.Function("CreateCastToBoolOperator", node.Cond);
         var conditionBoolVarDecl = new VarDeclAstNode(GetFreshVar("condition"), null, conditionBool);
         resultNodes.Add(conditionBoolVarDecl);
         CurrentContext.SaveNewVar(conditionBoolVarDecl);
@@ -39,7 +37,7 @@ public class IfStatementsTransformer : AbstractAstSemanticTransformer
                 var notConditionBool = Interpretor.Function(
                     "InvokeFunction",
                     LocationArg,
-                    PythonSemantics.Property("NotDescriptor"),
+                    SemanticsApi.Property("NotDescriptor"),
                     conditionBool);
                 var notConditionBoolVarDecl = new VarDeclAstNode(
                     GetFreshVar("notCondition"),

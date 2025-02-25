@@ -1,5 +1,4 @@
 using System.Globalization;
-using System.Text;
 using Codegen.IR.nodes;
 using Codegen.IR.nodes.expressions;
 using Codegen.IR.nodes.statements;
@@ -52,9 +51,22 @@ public class CodegenSynthesizer : AbstractTextSynthesizer
             case CgAssignmentStatement assignmentStatement:
                 SynthAssignmentStatement(assignmentStatement);
                 break;
+            case CgDirectiveStatement directiveStatement:
+                SynthDirectiveStatement(directiveStatement);
+                break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(statement));
         }
+    }
+
+    private void SynthDirectiveStatement(CgDirectiveStatement directiveStatement)
+    {
+        Append("#");
+        Append(directiveStatement.Name);
+        AppendSpace();
+        Append("\"");
+        Append(directiveStatement.Argument);
+        AppendLine("\"");
     }
 
     private void SynthIfElseStatement(CgIfElseStatement cgIfElseStatement)
