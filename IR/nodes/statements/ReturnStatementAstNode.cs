@@ -4,6 +4,7 @@ namespace me.vldf.jsa.dsl.ir.nodes.statements;
 
 public class ReturnStatementAstNode(IExpressionAstNode? expression) : IStatementAstNode
 {
+    public IAstNode? Parent { get; set; } = null;
     public IExpressionAstNode? Expression { get; set; } = expression;
 
     public string String()

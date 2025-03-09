@@ -12,4 +12,6 @@ public record IntrinsicFunctionInvokationAstNode(
     {
         return $"intrinsic[{Reciever?.String() ?? ""}.{Name}({string.Join(",", Args)})]";
     }
+
+    public IAstNode? Parent { get; set; } = null;
 }

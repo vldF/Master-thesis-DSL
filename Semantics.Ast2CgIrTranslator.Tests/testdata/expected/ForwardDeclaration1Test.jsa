@@ -1,6 +1,7 @@
 #load "Standard.jsa"
 CallHandlerResult InnerFuncHandler(Location location, FunctionCall functionCall)
 {
+    var self = functionCall.Arguments[0];
     var arg1 = functionCall.Arguments[1];
     return CallHandlerResult.Processed(SemanticsApi.CreateObjectDescriptor(Location, Type1ClassDescription, "<Type1>", arg1));
 }

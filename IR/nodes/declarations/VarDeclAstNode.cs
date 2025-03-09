@@ -9,6 +9,8 @@ public class VarDeclAstNode(
     TypeReference? typeRef,
     IExpressionAstNode? init) : IStatementAstNode
 {
+    public IAstNode? Parent { get; set; } = null;
+
     public IExpressionAstNode? Init = init;
 
     public string Name { get; } = name;

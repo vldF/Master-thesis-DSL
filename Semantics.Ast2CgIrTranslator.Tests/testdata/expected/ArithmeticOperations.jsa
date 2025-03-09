@@ -2,6 +2,7 @@
 var numberClassDescription = PythonTypes.CreateClass("number");
 CallHandlerResult InnerFuncHandler(Location location, FunctionCall functionCall)
 {
+    var self = functionCall.Arguments[0];
     var arg1 = functionCall.Arguments[1];
     var arg2 = functionCall.Arguments[2];
     var sum = Interpreter.InvokeFunction(location, SemanticsApi.AddDescriptor, arg1, arg2);

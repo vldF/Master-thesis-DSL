@@ -2,6 +2,7 @@
 var TypeClassDescription = PythonTypes.CreateClass("Type");
 CallHandlerResult InnerFuncHandler(Location location, FunctionCall functionCall)
 {
+    var self = functionCall.Arguments[0];
     var arg1 = functionCall.Arguments[1];
     MyIntrinsicFunction(location, arg1);
     return CallHandlerResult.Processed(MyIntrinsicFunction(location, arg1));

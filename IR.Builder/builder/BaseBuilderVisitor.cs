@@ -27,7 +27,8 @@ public class BaseBuilderVisitor(IrContext irContext) : JSADSLBaseVisitor<IAstNod
 
         return new FileAstNode(
             package,
-            result);
+            result,
+            irContext);
     }
 
     public override FunctionAstNode VisitFuncDecl(JSADSLParser.FuncDeclContext context)
@@ -64,12 +65,16 @@ public class BaseBuilderVisitor(IrContext irContext) : JSADSLBaseVisitor<IAstNod
             throw new UnresolvedTypeException(resultTypeName);
         }
 
+        var statementsBlockAstNode = newVisitor.VisitStatementsBlock(context.statementsBlock());
         var functionAstNode = new FunctionAstNode(
             name,
             args,
             resultTypeRef,
-            newVisitor.VisitStatementsBlock(context.statementsBlock()));
+            statementsBlockAstNode,
+            (ObjectAstNode?)irContext.AstNode,
+            newContext);
         irContext.SaveNewFunc(functionAstNode);
+        statementsBlockAstNode.Parent = functionAstNode;
 
         return functionAstNode;
     }
@@ -107,7 +112,8 @@ public class BaseBuilderVisitor(IrContext irContext) : JSADSLBaseVisitor<IAstNod
         var functionAstNode = new IntrinsicFunctionAstNode(
             name,
             args,
-            resultTypeRef);
+            resultTypeRef,
+            (ObjectAstNode?)irContext.AstNode);
         irContext.SaveNewFunc(functionAstNode);
 
         return functionAstNode;
@@ -115,13 +121,29 @@ public class BaseBuilderVisitor(IrContext irContext) : JSADSLBaseVisitor<IAstNod
 
     public override IAstNode VisitObjectDecl(JSADSLParser.ObjectDeclContext context)
     {
+        var name = context.name.Text;
+
         var newContext = new IrContext(irContext);
         var newVisitor = new BaseBuilderVisitor(newContext);
 
-        var name = context.name.Text;
-        var children = context.objectBody().children?.SelectNotNull(c => newVisitor.Visit(c)).ToList()!;
+        var children = new List<IAstNode>();
+        var result = new ObjectAstNode(name, children, irContext);
+        newContext.AstNode = result;
 
-        var result = new ObjectAstNode(name, children);
+        var newObjectType = new TypeReference(name, irContext);
+
+        var thisFakeVarDecl = new VarDeclAstNode("this", newObjectType, null);
+        newContext.SaveNewVar(thisFakeVarDecl);
+
+        var astNodes = context.objectBody().children?.SelectNotNull(c => newVisitor.Visit(c)).ToList();
+        foreach (var astNode in astNodes ?? [])
+        {
+            if (astNode is IStatementAstNode statementAstNode)
+            {
+                statementAstNode.Parent = result;
+            }
+        }
+        children.AddRange(astNodes ?? []);
 
         var type = new ObjectAstType(result);
         irContext.SaveNewType(type);
@@ -152,14 +174,30 @@ public class BaseBuilderVisitor(IrContext irContext) : JSADSLBaseVisitor<IAstNod
             elseBranch = newVisitor.VisitStatementsBlock(context.elseBlock);
         }
 
-        return new IfStatementAstNode(cond, mainBlock, elseBranch);
+        var ifStatementAstNode = new IfStatementAstNode(cond, mainBlock, elseBranch);
+
+        mainBlock.Parent = ifStatementAstNode;
+        if (elseBranch != null)
+        {
+            elseBranch.Parent = ifStatementAstNode;
+        }
+
+        return ifStatementAstNode;
     }
 
     public override StatementsBlockAstNode VisitStatementsBlock(JSADSLParser.StatementsBlockContext context)
     {
         var children = context.statement().SelectNotNull(VisitStatement).ToList();
 
-        return new StatementsBlockAstNode(children);
+        var statementsBlockAstNode = new StatementsBlockAstNode(children);
+        foreach (var statementAstNode in children)
+        {
+            statementAstNode.Parent = statementsBlockAstNode;
+        }
+
+        statementsBlockAstNode.Context = irContext;
+
+        return statementsBlockAstNode;
     }
 
     public override IStatementAstNode VisitVarAssignmentStatement(JSADSLParser.VarAssignmentStatementContext context)

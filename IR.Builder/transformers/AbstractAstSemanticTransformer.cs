@@ -1,4 +1,3 @@
-using me.vldf.jsa.dsl.ast.types;
 using me.vldf.jsa.dsl.ir.builder.utils;
 using me.vldf.jsa.dsl.ir.context;
 using me.vldf.jsa.dsl.ir.nodes.expressions;
@@ -16,19 +15,14 @@ public class AbstractAstSemanticTransformer : AbstractAstTransformer
 
     protected TypeReference IntTypeRef;
 
-    protected IrContext CurrentContext;
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-    private static Dictionary<IrContext, Dictionary<string, int>> _freshVarsContext = new ();
+    private static Dictionary<string, int> _freshVarsContext = new ();
 
     public override void Init(IrContext rootContext)
     {
         base.Init(rootContext);
 
-        CurrentContext = rootContext;
-
-        var intType = SimpleAstType.Int;
-        CurrentContext.SaveNewType(intType);
-        IntTypeRef = new TypeReference("int", CurrentContext);
+        IntTypeRef = new TypeReference("int", rootContext);
 
         Interpretor = rootContext.GetFakeVariable("Interpreter");
         LocationArg = rootContext.GetFakeVariable("location");
@@ -38,20 +32,10 @@ public class AbstractAstSemanticTransformer : AbstractAstTransformer
 
     protected string GetFreshVar(string name)
     {
-        if (!_freshVarsContext.TryGetValue(CurrentContext, out var context))
-        {
-            context = new Dictionary<string, int>();
-            _freshVarsContext[CurrentContext] = context;
-        }
+        var value = _freshVarsContext.GetValueOrDefault(name, 0);
+        _freshVarsContext[name] = value + 1;
 
-        if (!context.TryGetValue(name, out var counter))
-        {
-            counter = 0;
-        }
-
-        context[name] = counter + 1;
-
-        return name + counter;
+        return name + value;
     }
 
 }

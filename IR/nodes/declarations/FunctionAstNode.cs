@@ -1,3 +1,4 @@
+using me.vldf.jsa.dsl.ir.context;
 using me.vldf.jsa.dsl.ir.nodes.statements;
 using me.vldf.jsa.dsl.ir.references;
 
@@ -7,8 +8,12 @@ public class FunctionAstNode(
     string name,
     IReadOnlyCollection<FunctionArgAstNode> args,
     TypeReference returnTypeRef,
-    StatementsBlockAstNode body) : FunctionAstNodeBase(name, args, returnTypeRef)
+    StatementsBlockAstNode body,
+    ObjectAstNode? parent,
+    IrContext context) : FunctionAstNodeBase(name, args, returnTypeRef, parent), IContextOwner
 {
+    public IrContext Context { get; set; } = context;
+
     public StatementsBlockAstNode Body { get; set; } = body;
 
     public override string String()

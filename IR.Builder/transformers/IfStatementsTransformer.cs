@@ -1,3 +1,4 @@
+using me.vldf.jsa.dsl.ir.builder.transformers.utils;
 using me.vldf.jsa.dsl.ir.builder.utils;
 using me.vldf.jsa.dsl.ir.helpers;
 using me.vldf.jsa.dsl.ir.nodes;
@@ -17,14 +18,21 @@ public class IfStatementsTransformer : AbstractAstSemanticTransformer
         var conditionBool = SemanticsApi.Function("CreateCastToBoolOperator", node.Cond);
         var conditionBoolVarDecl = new VarDeclAstNode(GetFreshVar("condition"), null, conditionBool);
         resultNodes.Add(conditionBoolVarDecl);
-        CurrentContext.SaveNewVar(conditionBoolVarDecl);
+        var context = node.GetNearestContext()!;
+        context.SaveNewVar(conditionBoolVarDecl);
 
-        var mainBranchStatements = TransformBranch(node.MainBlock, conditionBoolVarDecl.GetVarExpr(CurrentContext));
+        var mainBranchStatements = TransformBranch(node.MainBlock, conditionBoolVarDecl.GetVarExpr(context));
         resultNodes.AddRange(mainBranchStatements);
 
         if (node.ElseStatement == null)
         {
-            return new StatementsBlockAstNode(resultNodes);
+            var transformIfStatementAstNode = new StatementsBlockAstNode(resultNodes)
+            {
+                Parent = node,
+                Context = context
+            };
+
+            return transformIfStatementAstNode;
         }
 
         switch (node.ElseStatement)
@@ -45,22 +53,27 @@ public class IfStatementsTransformer : AbstractAstSemanticTransformer
                     notConditionBool);
 
                 resultNodes.Add(notConditionBoolVarDecl);
-                CurrentContext.SaveNewVar(notConditionBoolVarDecl);
+                context.SaveNewVar(notConditionBoolVarDecl);
 
-                resultNodes.AddRange(TransformBranch(elseStatements, notConditionBoolVarDecl.GetVarExpr(CurrentContext)));
+                resultNodes.AddRange(TransformBranch(elseStatements, notConditionBoolVarDecl.GetVarExpr(context)));
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(node.ElseStatement));
         }
 
-        return new StatementsBlockAstNode(resultNodes);
+        return new StatementsBlockAstNode(resultNodes)
+        {
+            Parent = node,
+            Context = context,
+        };
     }
 
     private List<IAstNode> TransformBranch(StatementsBlockAstNode body, IExpressionAstNode conditionBool)
     {
         var resultNodes = new List<IAstNode>();
         var conditionIdVarName = GetFreshVar("branchId");
-        var fakeConditionVar = CurrentContext.GetFakeVariable(conditionIdVarName, isOutVar: true);
+        var context = body.GetNearestContext()!;
+        var fakeConditionVar = context.GetFakeVariable(conditionIdVarName, isOutVar: true);
         var enterBranchCall = Engine.Function(
             "TryEnterBranch",
             conditionBool,

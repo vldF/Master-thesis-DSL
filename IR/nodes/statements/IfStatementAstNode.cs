@@ -7,6 +7,7 @@ public class IfStatementAstNode(
     StatementsBlockAstNode mainBlock,
     IStatementAstNode? elseStatement) : IStatementAstNode
 {
+    public IAstNode? Parent { get; set; } = null;
     public IExpressionAstNode Cond { get; set; } = cond;
     public StatementsBlockAstNode MainBlock { get; set; } = mainBlock;
     public IStatementAstNode? ElseStatement { get; set; } = elseStatement;

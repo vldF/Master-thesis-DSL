@@ -5,7 +5,8 @@ namespace me.vldf.jsa.dsl.ir.nodes.declarations;
 public class IntrinsicFunctionAstNode(
     string name,
     IReadOnlyCollection<FunctionArgAstNode> args,
-    TypeReference returnTypeRef) : FunctionAstNodeBase(name, args, returnTypeRef)
+    TypeReference returnTypeRef,
+    ObjectAstNode? parent) : FunctionAstNodeBase(name, args, returnTypeRef, parent)
 {
     public override string String()
     {

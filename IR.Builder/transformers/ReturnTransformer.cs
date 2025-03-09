@@ -30,7 +30,10 @@ public class ReturnTransformer : AbstractAstSemanticTransformer
         var children = node.Body.Children.ToList();
         node.Body.Children = children;
 
-        var newReturn = new ReturnStatementAstNode(SemanticsApi.Property("None"));
+        var newReturn = new ReturnStatementAstNode(SemanticsApi.Property("None"))
+        {
+            Parent = node
+        };
         children.Insert(children.Count, newReturn);
 
         return node;
@@ -43,14 +46,14 @@ public class ReturnTransformer : AbstractAstSemanticTransformer
 
         var builderVarName = GetFreshVar("returnValueBuilder");
         var returnValueBuilderDecl = new VarDeclAstNode(builderVarName, null, returnValueBuilderCall);
-        CurrentContext.SaveNewVar(returnValueBuilderDecl);
-        var builderVarRef = returnValueBuilderDecl.GetVarRef(CurrentContext);
+        node.Context.SaveNewVar(returnValueBuilderDecl);
+        var builderVarRef = returnValueBuilderDecl.GetVarRef(node.Context);
         _currentReturnConditionalBuilder = builderVarRef;
 
         children.Insert(0, returnValueBuilderDecl);
 
         _newReturn = new ReturnStatementAstNode(
-            _currentReturnConditionalBuilder.Resolve()!.GetVarExpr(CurrentContext));
+            _currentReturnConditionalBuilder.Resolve()!.GetVarExpr(node.Context));
         children.Insert(children.Count, _newReturn);
 
         node.Body.Children = children;
@@ -71,8 +74,9 @@ public class ReturnTransformer : AbstractAstSemanticTransformer
             .Property("CurrentCondition");
         var currentCondVarName = GetFreshVar("currentCond");
         var currentCondVarDecl = new VarDeclAstNode(currentCondVarName, null, currentCond);
-        CurrentContext.SaveNewVar(currentCondVarDecl);
-        var currentCondVarExpr = currentCondVarDecl.GetVarExpr(CurrentContext);
+        var context = ((IContextOwner)node.Parent!).Context;
+        context.SaveNewVar(currentCondVarDecl);
+        var currentCondVarExpr = currentCondVarDecl.GetVarExpr(context);
 
         var returnExpr = node.Expression ?? SemanticsApi.Property("None");
 
@@ -83,7 +87,11 @@ public class ReturnTransformer : AbstractAstSemanticTransformer
                 returnExpr);
 
         List<IAstNode> newNodes = [currentCondVarDecl, addOptionInvoke];
-        return new StatementsBlockAstNode(newNodes);
+        return new StatementsBlockAstNode(newNodes)
+        {
+            Context = context,
+            Parent = node.Parent
+        };
     }
 
     private int GetReturnsCount(FunctionAstNode node)

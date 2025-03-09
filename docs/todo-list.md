@@ -10,7 +10,7 @@ There are some tasks to be done:
    3.3. Nullable wrapper
 4. ~~If-then-else~~
 5. Foreach
-6. Taint markers: Detect, a way to put a taint mark, a way to remove it 
+6. Taint markers: ~~Detect~~, a way to put a taint mark, a way to remove it 
 7. ~~C# external declaration~~
 8. Generics
 9. This

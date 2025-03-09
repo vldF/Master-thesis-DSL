@@ -1,4 +1,5 @@
 using me.vldf.jsa.dsl.ast.types;
+using me.vldf.jsa.dsl.ir.nodes;
 using me.vldf.jsa.dsl.ir.nodes.declarations;
 using me.vldf.jsa.dsl.ir.references;
 
@@ -7,6 +8,7 @@ namespace me.vldf.jsa.dsl.ir.context;
 public class IrContext
 {
     public string? Package { get; set; }
+    public IAstNode? AstNode { get; set; }
     private readonly IrContext? _parent;
     private readonly Dictionary<string, VarDeclAstNode> _vars = new ();
     private readonly Dictionary<string, FunctionArgAstNode> _args = new ();

@@ -10,7 +10,7 @@ public class TransformersOrchestrator(IrContext rootContext)
 
     private readonly List<AbstractAstTransformer> _transformers =
     [
-        new IncrementArgumentsIndexForFuncsInObjects(),
+        new AddSelfArgumentTransformer(),
         new ReferenceSealer(),
         new FunctionCallTransformer(),
         new SemanticBinaryOperationsTransformer(),
