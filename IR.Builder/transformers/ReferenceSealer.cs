@@ -1,3 +1,4 @@
+using Ast.Builder.exceptions;
 using me.vldf.jsa.dsl.ir.builder.exceptions;
 using me.vldf.jsa.dsl.ir.nodes;
 using me.vldf.jsa.dsl.ir.nodes.declarations;
@@ -95,7 +96,13 @@ public class ReferenceSealer : AbstractAstTransformer
     protected override VarExpressionAstNode TransformVarExpressionAstNode(VarExpressionAstNode node)
     {
         var varExpression = base.TransformVarExpressionAstNode(node).Copy<VarExpressionAstNode>();
-        varExpression.VariableReference.SealedValue = varExpression.VariableReference.Resolve();
+        var variable = varExpression.VariableReference.Resolve();
+        varExpression.VariableReference.SealedValue = variable;
+        if (variable == null)
+        {
+            throw new UnresolvedVariableException(varExpression.VariableReference.Name);
+        }
+
 
         return varExpression;
     }

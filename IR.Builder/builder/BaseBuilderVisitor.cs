@@ -127,7 +127,7 @@ public class BaseBuilderVisitor(IrContext irContext) : JSADSLBaseVisitor<IAstNod
         var newVisitor = new BaseBuilderVisitor(newContext);
 
         var children = new List<IAstNode>();
-        var result = new ObjectAstNode(name, children, irContext);
+        var result = new ObjectAstNode(name, children, newContext);
         newContext.AstNode = result;
 
         var newObjectType = new TypeReference(name, irContext);
@@ -289,6 +289,26 @@ public class BaseBuilderVisitor(IrContext irContext) : JSADSLBaseVisitor<IAstNod
         if (context.functionCall() != null)
         {
             return VisitFunctionCall(context.functionCall());
+        }
+
+        if (context.varDeclarationStatement() != null)
+        {
+            return VisitVarDeclarationStatement(context.varDeclarationStatement());
+        }
+
+        throw new ArgumentOutOfRangeException(nameof(context));
+    }
+
+    public override IAstNode VisitObjectBodyStatement(JSADSLParser.ObjectBodyStatementContext context)
+    {
+        if (context.varDeclarationStatement() != null)
+        {
+            return VisitVarDeclarationStatement(context.varDeclarationStatement());
+        }
+
+        if (context.funcDecl() != null)
+        {
+            return VisitFuncDecl(context.funcDecl());
         }
 
         throw new ArgumentOutOfRangeException(nameof(context));

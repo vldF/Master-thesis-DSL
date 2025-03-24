@@ -11,6 +11,7 @@ public class TransformersOrchestrator(IrContext rootContext)
     private readonly List<AbstractAstTransformer> _transformers =
     [
         new AddSelfArgumentTransformer(),
+        new AddInitMethod(),
         new ReferenceSealer(),
         new FunctionCallTransformer(),
         new SemanticBinaryOperationsTransformer(),

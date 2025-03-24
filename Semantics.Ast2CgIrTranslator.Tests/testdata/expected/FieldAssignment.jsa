@@ -1,11 +1,38 @@
 #load "Standard.jsa"
-CallHandlerResult InnerFuncHandler(Location location, FunctionCall functionCall)
+CallHandlerResult __init__Handler(Location location, FunctionCall functionCall)
+{
+    var self = functionCall.Arguments[0];
+    return CallHandlerResult.Processed(self);
+}
+var InnerObjectClassDescription = PythonTypes.CreateClass("InnerObject").WithMethod("__init__", __init__Handler);
+CallHandlerResult __init__Handler(Location location, FunctionCall functionCall)
+{
+    var self = functionCall.Arguments[0];
+    return CallHandlerResult.Processed(self);
+}
+CallHandlerResult simpleFieldAssignmentHandler(Location location, FunctionCall functionCall)
 {
     var self = functionCall.Arguments[0];
     var arg1 = functionCall.Arguments[1];
-    Interpreter.TryGetValue(this, out var tryGetValueResult1);
-    Interpreter.Assign(out var tryGetValueResult1, arg1);
+    Interpreter.Assign(self, "field", arg1);
     return CallHandlerResult.Processed(SemanticsApi.None);
 }
-var MyObjectClassDescription = PythonTypes.CreateClass("MyObject").WithMethod("InnerFunc", InnerFuncHandler);
+CallHandlerResult innerFieldAssignmentHandler(Location location, FunctionCall functionCall)
+{
+    var self = functionCall.Arguments[0];
+    var arg1 = functionCall.Arguments[1];
+    Interpreter.TryGetValue(self, "innerObj", out var tryGetValueResult1);
+    Interpreter.Assign(tryGetValueResult1, "innerField", arg1);
+    return CallHandlerResult.Processed(SemanticsApi.None);
+}
+CallHandlerResult localObjectFieldAssignmentHandler(Location location, FunctionCall functionCall)
+{
+    var self = functionCall.Arguments[0];
+    var arg1 = functionCall.Arguments[1];
+    InnerObject local;
+    Interpreter.Assign(local, "innerField", arg1);
+    return CallHandlerResult.Processed(SemanticsApi.None);
+}
+var MyObjectClassDescription = PythonTypes.CreateClass("MyObject").WithMethod("__init__", __init__Handler).WithMethod("simpleFieldAssignment", simpleFieldAssignmentHandler).WithMethod("innerFieldAssignment", innerFieldAssignmentHandler).WithMethod("localObjectFieldAssignment", localObjectFieldAssignmentHandler);
+Interpreter.Assign(ModuleDescriptor, "InnerObject", InnerObjectClassDescription.ClassDescriptor);
 Interpreter.Assign(ModuleDescriptor, "MyObject", MyObjectClassDescription.ClassDescriptor);

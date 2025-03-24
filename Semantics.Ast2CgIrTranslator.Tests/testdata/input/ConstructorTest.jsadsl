@@ -1,0 +1,12 @@
+object MyObject {
+    var field: int = 1;
+
+    func Get(): int {
+        return field;
+    }
+
+    func SetAndGet(value: int): int {
+        field = value;
+        return field;
+    }
+}

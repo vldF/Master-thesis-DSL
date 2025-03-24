@@ -1,0 +1,21 @@
+#load "Standard.jsa"
+CallHandlerResult __init__Handler(Location location, FunctionCall functionCall)
+{
+    var self = functionCall.Arguments[0];
+    Interpreter.Assign(self, "field", 1);
+    return CallHandlerResult.Processed(self);
+}
+CallHandlerResult GetHandler(Location location, FunctionCall functionCall)
+{
+    var self = functionCall.Arguments[0];
+    return CallHandlerResult.Processed(field);
+}
+CallHandlerResult SetAndGetHandler(Location location, FunctionCall functionCall)
+{
+    var self = functionCall.Arguments[0];
+    var value = functionCall.Arguments[1];
+    Interpreter.Assign(self, "field", value);
+    return CallHandlerResult.Processed(field);
+}
+var MyObjectClassDescription = PythonTypes.CreateClass("MyObject").WithMethod("__init__", __init__Handler).WithMethod("Get", GetHandler).WithMethod("SetAndGet", SetAndGetHandler);
+Interpreter.Assign(ModuleDescriptor, "MyObject", MyObjectClassDescription.ClassDescriptor);
