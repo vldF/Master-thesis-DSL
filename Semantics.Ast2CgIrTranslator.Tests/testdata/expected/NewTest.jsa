@@ -4,7 +4,7 @@ CallHandlerResult InnerFuncHandler(Location location, FunctionCall functionCall)
 {
     var self = functionCall.Arguments[0];
     var arg1 = functionCall.Arguments[1];
-    return CallHandlerResult.Processed(SemanticsApi.CreateObjectDescriptor(Location, Type1ClassDescription, "<Type1>", arg1));
+    return CallHandlerResult.Processed(SemanticsApi.CreateObjectDescriptor("<Type1>", arg1));
 }
 var MyObjectClassDescription = PythonTypes.CreateClass("MyObject").WithMethod("InnerFunc", InnerFuncHandler);
 Interpreter.Assign(ModuleDescriptor, "Type1", Type1ClassDescription.ClassDescriptor);

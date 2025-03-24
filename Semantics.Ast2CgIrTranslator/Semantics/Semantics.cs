@@ -19,11 +19,10 @@ public class Semantics
 
     public ICgExpression CreateInstance(
         string name,
-        ICgExpression descriptor,
         IEnumerable<ICgExpression> args)
     {
         var customName = $"<{name}>";
-        List<ICgExpression> callArgs = [_location, descriptor, AsExpression(customName)];
+        List<ICgExpression> callArgs = [AsExpression(customName)];
         callArgs.AddRange(args);
 
         return SemanticsApi.CallMethod("CreateObjectDescriptor", callArgs);

@@ -1,0 +1,17 @@
+import "standard";
+
+object Container {
+    var field: string = "test";
+}
+
+object HttpClient {
+    var container: Container = new Container();
+
+    func Method1(str: string) {
+        container.field = str;
+    }
+
+    func Method2() {
+        Detect(container.field, "Server-Side Request Forgery", "HTTP URI");
+    }
+}

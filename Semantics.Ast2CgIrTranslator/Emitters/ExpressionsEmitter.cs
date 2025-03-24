@@ -125,9 +125,8 @@ public class ExpressionsEmitter(TranslatorContext ctx)
     private ICgExpression EmitNewNode(NewAstNode newAstNode)
     {
         var obj = newAstNode.TypeReference.SealedValue!;
-        var descriptor = ctx.ClassDescriptorVariables[obj.Name];
         var args = newAstNode.Args.Select(EmitExpression);
-        return ctx.Semantics.CreateInstance(obj.Name, descriptor, args);
+        return ctx.Semantics.CreateInstance(obj.Name, args);
     }
 
     private CgMethodCall EmitIntrinsicFunctionInvokationAstNode(IntrinsicFunctionInvokationAstNode intrinsicFunctionInvokationAstNode)

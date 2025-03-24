@@ -1,0 +1,33 @@
+#load "Standard.jsa"
+CallHandlerResult __init__Handler(Location location, FunctionCall functionCall)
+{
+    var self = functionCall.Arguments[0];
+    Interpreter.Assign(self, "field", "test");
+    return CallHandlerResult.Processed(self);
+}
+var ContainerClassDescription = PythonTypes.CreateClass("Container").WithMethod("__init__", __init__Handler);
+CallHandlerResult __init__Handler(Location location, FunctionCall functionCall)
+{
+    var self = functionCall.Arguments[0];
+    Interpreter.Assign(self, "container", SemanticsApi.CreateObjectDescriptor("<Container>"));
+    return CallHandlerResult.Processed(self);
+}
+CallHandlerResult Method1Handler(Location location, FunctionCall functionCall)
+{
+    var self = functionCall.Arguments[0];
+    var str = functionCall.Arguments[1];
+    Interpreter.TryGetValue(self, "container", out var tryGetValueResult1);
+    Interpreter.Assign(tryGetValueResult1, "field", str);
+    return CallHandlerResult.Processed(SemanticsApi.None);
+}
+CallHandlerResult Method2Handler(Location location, FunctionCall functionCall)
+{
+    var self = functionCall.Arguments[0];
+    Interpreter.TryGetValue(self, "container", out var tryGetValueResult2);
+    Interpreter.TryGetValue(tryGetValueResult2, "field", out var tryGetResult1);
+    Detect(location, tryGetResult1, "Server-Side Request Forgery", "HTTP URI");
+    return CallHandlerResult.Processed(SemanticsApi.None);
+}
+var HttpClientClassDescription = PythonTypes.CreateClass("HttpClient").WithMethod("__init__", __init__Handler).WithMethod("Method1", Method1Handler).WithMethod("Method2", Method2Handler);
+Interpreter.Assign(ModuleDescriptor, "Container", ContainerClassDescription.ClassDescriptor);
+Interpreter.Assign(ModuleDescriptor, "HttpClient", HttpClientClassDescription.ClassDescriptor);
