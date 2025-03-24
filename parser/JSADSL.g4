@@ -21,13 +21,13 @@ statementsBlock : (statement)*;
 
 statement
    :   ifStatement
-   |   varAssignmentStatement SEMI_COLON
+   |   assignmentStatement SEMI_COLON
    |   varDeclarationStatement SEMI_COLON
    |   returnStatement SEMI_COLON
    |   functionCall SEMI_COLON
    ;
 
-varAssignmentStatement : varName=ID EQ expression;
+assignmentStatement : assignee=expression EQ value=expression;
 
 // todo: make the type optional
 varDeclarationStatement : VAR_KW varName=ID (COLON type=ID) (EQ initValue=expression)?;
@@ -59,6 +59,11 @@ expressionAtomic
    |   newExpression
    |   variableExpression
    |   functionCall
+   |   qualifiedAccess
+   ;
+
+qualifiedAccess
+   :   (entryName=ID '.')* entryName=ID
    ;
 
 primitiveLiteral
@@ -91,7 +96,12 @@ functionCall
 
 objectDecl : OBJECT_KW name=ID L_BRACE objectBody R_BRACE;
 
-objectBody : funcDecl*;
+objectBody : objectBodyStatement*;
+
+objectBodyStatement
+   :   funcDecl
+   |   varDeclarationStatement SEMI_COLON
+   ;
 
 importDecl : IMPORT_KW package=DoubleQuotedString SEMI_COLON;
 packageDecl : PACKAGE_KW package=DoubleQuotedString SEMI_COLON;

@@ -1,4 +1,3 @@
-using Ast.Builder.exceptions;
 using me.vldf.jsa.dsl.ir.context;
 using me.vldf.jsa.dsl.ir.nodes.expressions;
 using me.vldf.jsa.dsl.ir.references;
@@ -122,5 +121,18 @@ public class ExpressionBuilderVisitor(IrContext irContext) : JSADSLBaseVisitor<I
             .ToArray();
 
         return new FunctionCallAstNode(qualifiedParent: null, functionReference, args);
+    }
+
+    public override IExpressionAstNode VisitQualifiedAccess(JSADSLParser.QualifiedAccessContext context)
+    {
+        var baseVarName = context.ID()[0].GetText();
+        var @base = new VarExpressionAstNode(new VariableReference(baseVarName, irContext));
+        IExpressionAstNode result = @base;
+        foreach (var entry in context.ID().Skip(1))
+        {
+            result = new QualifiedAccessPropertyAstNode(result, entry.GetText());
+        }
+
+        return result;
     }
 }

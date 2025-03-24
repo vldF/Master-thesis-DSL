@@ -1,4 +1,3 @@
-using Codegen.IR.Builder;
 using Codegen.IR.nodes;
 using Codegen.IR.nodes.expressions;
 
@@ -8,6 +7,7 @@ public class Semantics
 {
     public CgVarExpression Types = new("PythonTypes");
     public CgVarExpression SemanticsApi = new("SemanticsApi");
+    public CgVarExpression InterpreterApi = new("Interpreter");
 
     private CgVarExpression _location = new("Location");
     private CgVarExpression _functionCall = new("functionCall");
@@ -39,5 +39,10 @@ public class Semantics
     public ICgExpression GetArgument(int idx)
     {
         return _functionCall.Property("Arguments").Index(idx);
+    }
+
+    public ICgExpression GetSelf()
+    {
+        return new CgVarExpression("self");
     }
 }

@@ -41,7 +41,7 @@ public interface IAstVisitor
             case StatementsBlockAstNode statementsBlockAstNode:
                 VisitStatementsBlockAstNode(statementsBlockAstNode);
                 break;
-            case VarAssignmentAstNode varAssignmentAstNode:
+            case AssignmentAstNode varAssignmentAstNode:
                 VisitVarAssignmentAstNode(varAssignmentAstNode);
                 break;
             case IStatementAstNode statementAstNode:
@@ -84,7 +84,7 @@ public interface IAstVisitor
             case StatementsBlockAstNode statementsBlockAstNode:
                 VisitStatementsBlockAstNode(statementsBlockAstNode);
                 break;
-            case VarAssignmentAstNode varAssignmentAstNode:
+            case AssignmentAstNode varAssignmentAstNode:
                 VisitVarAssignmentAstNode(varAssignmentAstNode);
                 break;
             case IntrinsicFunctionAstNode intrinsicFunctionAstNode:
@@ -98,6 +98,6 @@ public interface IAstVisitor
     protected void VisitIfStatementAstNode(IfStatementAstNode node);
     protected void VisitReturnStatementAstNode(ReturnStatementAstNode node);
     protected void VisitStatementsBlockAstNode(StatementsBlockAstNode node);
-    protected void VisitVarAssignmentAstNode(VarAssignmentAstNode node);
+    protected void VisitVarAssignmentAstNode(AssignmentAstNode node);
     protected void VisitIntrinsicFunctionAstNode(IntrinsicFunctionAstNode intrinsicFunctionAstNode);
 }

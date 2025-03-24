@@ -132,8 +132,11 @@ public class BaseBuilderVisitor(IrContext irContext) : JSADSLBaseVisitor<IAstNod
 
         var newObjectType = new TypeReference(name, irContext);
 
-        var thisFakeVarDecl = new VarDeclAstNode("this", newObjectType, null);
-        newContext.SaveNewVar(thisFakeVarDecl);
+        var selfFakeVarDecl = new VarDeclAstNode("self", newObjectType, null)
+        {
+            IsSelf = true
+        };
+        newContext.SaveNewVar(selfFakeVarDecl);
 
         var astNodes = context.objectBody().children?.SelectNotNull(c => newVisitor.Visit(c)).ToList();
         foreach (var astNode in astNodes ?? [])
@@ -200,14 +203,12 @@ public class BaseBuilderVisitor(IrContext irContext) : JSADSLBaseVisitor<IAstNod
         return statementsBlockAstNode;
     }
 
-    public override IStatementAstNode VisitVarAssignmentStatement(JSADSLParser.VarAssignmentStatementContext context)
+    public override IStatementAstNode VisitAssignmentStatement(JSADSLParser.AssignmentStatementContext context)
     {
-        var varName = context.varName.Text;
-        var varRef = new VariableReference(varName, irContext);
+        var assignee = _expessionBuilderVisitor.VisitExpression(context.assignee);
+        var value = _expessionBuilderVisitor.VisitExpression(context.value);
 
-        var value = _expessionBuilderVisitor.VisitExpression(context.expression());
-
-        return new VarAssignmentAstNode(varRef, value);
+        return new AssignmentAstNode(assignee, value);
     }
 
     public override IStatementAstNode VisitVarDeclarationStatement(JSADSLParser.VarDeclarationStatementContext context)
@@ -270,9 +271,9 @@ public class BaseBuilderVisitor(IrContext irContext) : JSADSLBaseVisitor<IAstNod
             return VisitIfStatement(context.ifStatement());
         }
 
-        if (context.varAssignmentStatement() != null)
+        if (context.assignmentStatement() != null)
         {
-            return VisitVarAssignmentStatement(context.varAssignmentStatement());
+            return VisitAssignmentStatement(context.assignmentStatement());
         }
 
         if (context.varDeclarationStatement() != null)

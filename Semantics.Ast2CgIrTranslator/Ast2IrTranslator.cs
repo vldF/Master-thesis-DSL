@@ -112,7 +112,7 @@ public class Ast2IrTranslator : IAstVisitor
     {
     }
 
-    public void VisitVarAssignmentAstNode(VarAssignmentAstNode node)
+    public void VisitVarAssignmentAstNode(AssignmentAstNode node)
     {
     }
 

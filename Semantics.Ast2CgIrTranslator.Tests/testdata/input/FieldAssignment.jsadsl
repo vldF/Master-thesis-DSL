@@ -1,0 +1,21 @@
+object InnerObject {
+    var innerField: int;
+}
+
+object MyObject {
+    var field: int;
+    var innerObj: InnerObject;
+
+    func simpleFieldAssignment(arg1: int) {
+        self.field = arg1;
+    }
+
+    func innerFieldAssignment(arg1: int) {
+        self.innerObj.innerField = arg1;
+    }
+
+    func localObjectFieldAssignment(arg1: int) {
+        var local: InnerObject;
+        local.innerField = arg1;
+    }
+}

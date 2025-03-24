@@ -25,4 +25,13 @@ public class VarDeclAstNode(
 
         return $"@{Name}: @{TypeReference?.AsString() ?? "<unresolved>"}";
     }
+
+    public bool IsObjectField()
+    {
+        return Parent is ObjectAstNode;
+    }
+
+    public bool IsSelf { get; init; } = false;
+
+    public bool IsLocalVarDecl => !IsObjectField();
 }

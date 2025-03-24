@@ -143,15 +143,6 @@ public class ReferenceSealer : AbstractAstTransformer
         return returnStatement;
     }
 
-    protected override VarAssignmentAstNode TransformVarAssignmentAstNode(VarAssignmentAstNode node)
-    {
-        var assignment = base.TransformVarAssignmentAstNode(node).Copy<VarAssignmentAstNode>();
-        assignment.VariableReference.SealedValue = assignment.VariableReference.Resolve();
-        assignment.Value = TransformExpressionAstNode(assignment.Value);
-
-        return assignment;
-    }
-
     protected override NewAstNode TransformNewAstNode(NewAstNode node)
     {
         var type = node.TypeReference.Resolve();

@@ -1,4 +1,3 @@
-using me.vldf.jsa.dsl.ir.nodes.declarations;
 using me.vldf.jsa.dsl.ir.references;
 
 namespace me.vldf.jsa.dsl.ir.nodes.expressions;
@@ -12,7 +11,7 @@ public class VarExpressionAstNode(
 
     public string String()
     {
-        var outVarPrefix = isOutVar ? "out var" : "";
+        var outVarPrefix = IsOutVar ? "out var" : "";
         return $"var({outVarPrefix}@{VariableReference.AsString()})";
     }
 }

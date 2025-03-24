@@ -1,0 +1,11 @@
+#load "Standard.jsa"
+CallHandlerResult InnerFuncHandler(Location location, FunctionCall functionCall)
+{
+    var self = functionCall.Arguments[0];
+    var arg1 = functionCall.Arguments[1];
+    Interpreter.TryGetValue(this, out var tryGetValueResult1);
+    Interpreter.Assign(out var tryGetValueResult1, arg1);
+    return CallHandlerResult.Processed(SemanticsApi.None);
+}
+var MyObjectClassDescription = PythonTypes.CreateClass("MyObject").WithMethod("InnerFunc", InnerFuncHandler);
+Interpreter.Assign(ModuleDescriptor, "MyObject", MyObjectClassDescription.ClassDescriptor);

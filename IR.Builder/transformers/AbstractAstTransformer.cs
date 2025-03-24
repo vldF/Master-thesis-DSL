@@ -134,7 +134,7 @@ public abstract class AbstractAstTransformer
             IfStatementAstNode ifStatementAstNode => TransformIfStatementAstNode(ifStatementAstNode),
             ReturnStatementAstNode returnStatementAstNode => TransformReturnStatementAstNode(returnStatementAstNode),
             StatementsBlockAstNode statementsBlockAstNode => TransformStatementsBlockAstNode(statementsBlockAstNode),
-            VarAssignmentAstNode varAssignmentAstNode => TransformVarAssignmentAstNode(varAssignmentAstNode),
+            AssignmentAstNode assignmentAstNode => TransformAssignmentAstNode(assignmentAstNode),
             _ => node
         };
     }
@@ -168,8 +168,9 @@ public abstract class AbstractAstTransformer
         return node;
     }
 
-    protected virtual VarAssignmentAstNode TransformVarAssignmentAstNode(VarAssignmentAstNode node)
+    protected virtual AssignmentAstNode TransformAssignmentAstNode(AssignmentAstNode node)
     {
+        node.Reciever = TransformExpressionAstNode(node.Reciever);
         node.Value = TransformExpressionAstNode(node.Value);
         return node;
     }

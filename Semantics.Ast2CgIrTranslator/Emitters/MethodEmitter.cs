@@ -66,7 +66,7 @@ public class MethodEmitter(TranslatorContext ctx)
             case ReturnStatementAstNode returnStatementAstNode:
                 EmitReturnStatement(returnStatementAstNode);
                 break;
-            case VarAssignmentAstNode varAssignmentAstNode:
+            case AssignmentAstNode varAssignmentAstNode:
                 EmitVarAssignmentAstNode(varAssignmentAstNode);
                 break;
             case StatementsBlockAstNode statementsBlockAstNode:
@@ -172,10 +172,89 @@ public class MethodEmitter(TranslatorContext ctx)
         }
     }
 
-    private void EmitVarAssignmentAstNode(VarAssignmentAstNode varAssignmentAstNode)
+    private void EmitVarAssignmentAstNode(AssignmentAstNode assignmentAstNode)
     {
-        var value = _expressionsEmitter.EmitExpression(varAssignmentAstNode.Value);
-        var varName = varAssignmentAstNode.VariableReference.SealedValue!.Name;
+        var reciever = assignmentAstNode.Reciever;
+        if (reciever is VarExpressionAstNode varExpressionAstNode)
+        {
+            if (varExpressionAstNode.VariableReference.Resolve()!.IsLocalVarDecl)
+            {
+                EmitLocalVarAssignment(assignmentAstNode.Value, varExpressionAstNode);
+                return;
+            }
+        }
+
+        CgVarExpression effectiveRecieverCg;
+        string fieldName;
+        switch (reciever)
+        {
+            case VarExpressionAstNode varReciever:
+                // [self].property case
+                effectiveRecieverCg = new CgVarExpression("self");
+                fieldName = varReciever.VariableReference.Resolve()!.Name;
+                break;
+            case QualifiedAccessPropertyAstNode qualReciever:
+                // reciever.field case
+                effectiveRecieverCg = EmitReciever(qualReciever.QualifiedParent!);
+                fieldName = qualReciever.PropertyName;
+                break;
+            default:
+                throw new InvalidOperationException("unimplemented");
+        }
+
+        var value = _expressionsEmitter.EmitExpression(assignmentAstNode.Value);
+        var assignStatement = ctx.Semantics.InterpreterApi.CallMethod(
+            "Assign",
+            [effectiveRecieverCg.AsNoOutVar(), AsExpression(fieldName), value]);
+        ctx.CurrentContainer!.Add(assignStatement);
+    }
+
+    private CgVarExpression EmitReciever(IExpressionAstNode expr)
+    {
+        switch (expr)
+        {
+            case VarExpressionAstNode varExpr:
+            {
+                var reference = varExpr.VariableReference;
+                var varDecl = reference.Resolve()!;
+                if (!varDecl.IsObjectField())
+                {
+                    return new CgVarExpression(varDecl.Name);
+                }
+
+                var selfVar = new CgVarExpression("self");
+                var tryGetValueResult = new CgVarExpression(ctx.GetFreshVarName("tryGetValueResult"), isOutVar: true);
+                var tryGetValueCall = ctx.Semantics.InterpreterApi.CallMethod(
+                    "TryGetValue",
+                    [selfVar, AsExpression(varDecl.Name), tryGetValueResult]);
+
+                ctx.CurrentContainer!.Add(tryGetValueCall);
+                return tryGetValueResult;
+            }
+
+            case QualifiedAccessPropertyAstNode qualExpr:
+            {
+                var parent = EmitReciever(qualExpr.QualifiedParent!);
+
+                var tryGetValueResult = new CgVarExpression(ctx.GetFreshVarName("tryGetValueResult"), isOutVar: true);
+                var tryGetValueCall = ctx.Semantics.InterpreterApi.CallMethod(
+                    "TryGetValue",
+                    [parent, AsExpression(qualExpr.PropertyName), tryGetValueResult]);
+
+                ctx.CurrentContainer!.Add(tryGetValueCall);
+
+                return tryGetValueResult;
+            }
+
+            default:
+                throw new InvalidOperationException("unimplemented");
+        }
+    }
+
+    private void EmitLocalVarAssignment(IExpressionAstNode expr, VarExpressionAstNode varExpressionAstNode)
+    {
+        var value = _expressionsEmitter.EmitExpression(expr);
+        var varName = varExpressionAstNode.VariableReference.SealedValue!.Name;
 
         VarAssignment(
             ctx.CurrentContainer!,

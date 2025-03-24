@@ -1,6 +1,5 @@
 using Codegen.IR.nodes;
 using Codegen.IR.nodes.expressions;
-using Semantics.Ast2CgIrTranslator.Semantics;
 
 namespace Semantics.Ast2CgIrTranslator;
 
@@ -27,5 +26,15 @@ public class TranslatorContext
         _containersStack.Pop();
         _containersStack.TryPeek(out var result);
         CurrentContainer = result;
+    }
+
+    private readonly Dictionary<string, int> _freshVarIndexes = new();
+
+    public string GetFreshVarName(string name)
+    {
+        var newIdx = _freshVarIndexes.GetValueOrDefault(name, 0) + 1;
+        _freshVarIndexes[name] = newIdx;
+
+        return name + newIdx;
     }
 }
