@@ -8,14 +8,16 @@ CallHandlerResult __init__Handler(Location location, FunctionCall functionCall)
 CallHandlerResult GetHandler(Location location, FunctionCall functionCall)
 {
     var self = functionCall.Arguments[0];
-    return CallHandlerResult.Processed(field);
+    Interpreter.TryGetValue(self, "field", out var tryGetResult1);
+    return CallHandlerResult.Processed(tryGetResult1);
 }
 CallHandlerResult SetAndGetHandler(Location location, FunctionCall functionCall)
 {
     var self = functionCall.Arguments[0];
     var value = functionCall.Arguments[1];
     Interpreter.Assign(self, "field", value);
-    return CallHandlerResult.Processed(field);
+    Interpreter.TryGetValue(self, "field", out var tryGetResult2);
+    return CallHandlerResult.Processed(tryGetResult2);
 }
 var MyObjectClassDescription = PythonTypes.CreateClass("MyObject").WithMethod("__init__", __init__Handler).WithMethod("Get", GetHandler).WithMethod("SetAndGet", SetAndGetHandler);
 Interpreter.Assign(ModuleDescriptor, "MyObject", MyObjectClassDescription.ClassDescriptor);

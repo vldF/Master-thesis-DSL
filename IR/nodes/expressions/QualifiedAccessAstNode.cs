@@ -9,4 +9,6 @@ public abstract class QualifiedAccessAstNodeBase(
 
     public IExpressionAstNode? QualifiedParent { get; } = qualifiedParent;
     public abstract string String();
+
+    public bool IsSyntatic { get; init; }
 }

@@ -23,7 +23,9 @@ CallHandlerResult innerFieldAssignmentHandler(Location location, FunctionCall fu
     var arg1 = functionCall.Arguments[1];
     Interpreter.TryGetValue(self, "innerObj", out var tryGetValueResult1);
     Interpreter.Assign(tryGetValueResult1, "innerField", arg1);
-    return CallHandlerResult.Processed(SemanticsApi.None);
+    Interpreter.TryGetValue(self, "innerObj", out var tryGetValueResult2);
+    Interpreter.TryGetValue(tryGetValueResult2, "innerField", out var tryGetResult1);
+    return CallHandlerResult.Processed(tryGetResult1);
 }
 CallHandlerResult localObjectFieldAssignmentHandler(Location location, FunctionCall functionCall)
 {

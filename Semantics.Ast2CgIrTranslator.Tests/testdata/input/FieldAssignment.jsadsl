@@ -10,8 +10,9 @@ object MyObject {
         self.field = arg1;
     }
 
-    func innerFieldAssignment(arg1: int) {
+    func innerFieldAssignment(arg1: int): int {
         self.innerObj.innerField = arg1;
+        return self.innerObj.innerField;
     }
 
     func localObjectFieldAssignment(arg1: int) {

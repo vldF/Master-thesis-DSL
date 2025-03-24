@@ -8,7 +8,8 @@ public static class ExpressionBuilder
     {
         return new QualifiedAccessPropertyAstNode(parent, name)
         {
-            Parent = parent
+            Parent = parent,
+            IsSyntatic = true
         };
     }
 

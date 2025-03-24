@@ -184,71 +184,14 @@ public class MethodEmitter(TranslatorContext ctx)
             }
         }
 
-        CgVarExpression effectiveRecieverCg;
-        string fieldName;
-        switch (reciever)
-        {
-            case VarExpressionAstNode varReciever:
-                // [self].property case
-                effectiveRecieverCg = new CgVarExpression("self");
-                fieldName = varReciever.VariableReference.Resolve()!.Name;
-                break;
-            case QualifiedAccessPropertyAstNode qualReciever:
-                // reciever.field case
-                effectiveRecieverCg = EmitReciever(qualReciever.QualifiedParent!);
-                fieldName = qualReciever.PropertyName;
-                break;
-            default:
-                throw new InvalidOperationException("unimplemented");
-        }
+        var (effectiveRecieverCg, fieldName) = _expressionsEmitter.EmitRecieverAndGet(reciever);
 
         var value = _expressionsEmitter.EmitExpression(assignmentAstNode.Value);
         var assignStatement = ctx.Semantics.InterpreterApi.CallMethod(
             "Assign",
             [effectiveRecieverCg.AsNoOutVar(), AsExpression(fieldName), value]);
+
         ctx.CurrentContainer!.Add(assignStatement);
-    }
-
-    private CgVarExpression EmitReciever(IExpressionAstNode expr)
-    {
-        switch (expr)
-        {
-            case VarExpressionAstNode varExpr:
-            {
-                var reference = varExpr.VariableReference;
-                var varDecl = reference.Resolve()!;
-                if (!varDecl.IsObjectField())
-                {
-                    return new CgVarExpression(varDecl.Name);
-                }
-
-                var selfVar = new CgVarExpression("self");
-                var tryGetValueResult = new CgVarExpression(ctx.GetFreshVarName("tryGetValueResult"), isOutVar: true);
-                var tryGetValueCall = ctx.Semantics.InterpreterApi.CallMethod(
-                    "TryGetValue",
-                    [selfVar, AsExpression(varDecl.Name), tryGetValueResult]);
-
-                ctx.CurrentContainer!.Add(tryGetValueCall);
-                return tryGetValueResult;
-            }
-
-            case QualifiedAccessPropertyAstNode qualExpr:
-            {
-                var parent = EmitReciever(qualExpr.QualifiedParent!);
-
-                var tryGetValueResult = new CgVarExpression(ctx.GetFreshVarName("tryGetValueResult"), isOutVar: true);
-                var tryGetValueCall = ctx.Semantics.InterpreterApi.CallMethod(
-                    "TryGetValue",
-                    [parent, AsExpression(qualExpr.PropertyName), tryGetValueResult]);
-
-                ctx.CurrentContainer!.Add(tryGetValueCall);
-
-                return tryGetValueResult;
-            }
-
-            default:
-                throw new InvalidOperationException("unimplemented");
-        }
     }
 
     private void EmitLocalVarAssignment(IExpressionAstNode expr, VarExpressionAstNode varExpressionAstNode)
