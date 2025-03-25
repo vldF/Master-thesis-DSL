@@ -2,7 +2,7 @@
 CallHandlerResult __init__Handler(Location location, FunctionCall functionCall)
 {
     var self = functionCall.Arguments[0];
-    Interpreter.Assign(self, "field", "test");
+    Interpreter.Assign(self, "field", SemanticsApi.CreateLiteral("test"));
     return CallHandlerResult.Processed(self);
 }
 var ContainerClassDescription = PythonTypes.CreateClass("Container").WithMethod("__init__", __init__Handler);

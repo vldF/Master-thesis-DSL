@@ -10,6 +10,7 @@ public class TransformersOrchestrator(IrContext rootContext)
 
     private readonly List<AbstractAstTransformer> _transformers =
     [
+        new IntrinsicArgumentsSyntetisizerTransformer(),
         new AddSelfArgumentTransformer(),
         new AddInitMethod(),
         new ReferenceSealer(),

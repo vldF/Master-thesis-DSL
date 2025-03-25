@@ -2,7 +2,7 @@
 CallHandlerResult __init__Handler(Location location, FunctionCall functionCall)
 {
     var self = functionCall.Arguments[0];
-    Interpreter.Assign(self, "field", 1);
+    Interpreter.Assign(self, "field", SemanticsApi.CreateLiteral(1));
     return CallHandlerResult.Processed(self);
 }
 CallHandlerResult GetHandler(Location location, FunctionCall functionCall)

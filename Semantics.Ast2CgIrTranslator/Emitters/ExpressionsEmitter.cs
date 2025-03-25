@@ -28,22 +28,46 @@ public class ExpressionsEmitter(TranslatorContext ctx)
 
     private ICgExpression EmitBoolLiteralAstNode(BoolLiteralAstNode boolLiteralAstNode)
     {
-        return new CgBoolLiteral(boolLiteralAstNode.Value);
+        var lit = new CgBoolLiteral(boolLiteralAstNode.Value);
+        if (boolLiteralAstNode.IsSyntetic)
+        {
+            return lit;
+        }
+
+        return ctx.Semantics.SemanticsApi.CallMethod("CreateLiteral", [lit]);
     }
 
     private ICgExpression EmitFloatLiteralAstNode(FloatLiteralAstNode floatLiteralAstNode)
     {
-        return new CgFloatLiteral(floatLiteralAstNode.Value);
+        var lit = new CgFloatLiteral(floatLiteralAstNode.Value);
+        if (floatLiteralAstNode.IsSyntetic)
+        {
+            return lit;
+        }
+
+        return ctx.Semantics.SemanticsApi.CallMethod("CreateLiteral", [lit]);
     }
 
     private ICgExpression EmitIntLiteralAstNode(IntLiteralAstNode intLiteralAstNode)
     {
-        return new CgIntLiteral(intLiteralAstNode.Value);
+        var lit = new CgIntLiteral(intLiteralAstNode.Value);
+        if (intLiteralAstNode.IsSyntetic)
+        {
+            return lit;
+        }
+
+        return ctx.Semantics.SemanticsApi.CallMethod("CreateLiteral", [lit]);
     }
 
     private ICgExpression EmitStringLiteralAstNode(StringLiteralAstNode stringLiteralAstNode)
     {
-        return new CgStringLiteral(stringLiteralAstNode.Value);
+        var lit = new CgStringLiteral(stringLiteralAstNode.Value);
+        if (stringLiteralAstNode.IsSyntetic)
+        {
+            return lit;
+        }
+
+        return ctx.Semantics.SemanticsApi.CallMethod("CreateLiteral", [lit]);
     }
 
     private ICgExpression EmitQualifiedAccessAstNodeBase(QualifiedAccessAstNodeBase qualifiedAccessAstNode)
@@ -67,7 +91,7 @@ public class ExpressionsEmitter(TranslatorContext ctx)
 
     private ICgExpression EmitQualifiedAccessPropertyAstNode(QualifiedAccessPropertyAstNode node)
     {
-        if (node.IsSyntatic)
+        if (node.IsSyntetic)
         {
             return new CgValueWithReciever(EmitExpression(node.QualifiedParent!), node.PropertyName);
         }

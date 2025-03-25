@@ -2,5 +2,5 @@
 CallHandlerResult fooHandler(Location location, FunctionCall functionCall)
 {
     var t = functionCall.Arguments[0];
-    return CallHandlerResult.Processed(1);
+    return CallHandlerResult.Processed(SemanticsApi.CreateLiteral(1));
 }

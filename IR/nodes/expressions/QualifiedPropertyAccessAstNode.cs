@@ -11,4 +11,6 @@ public class QualifiedAccessPropertyAstNode(
     {
         return $"({QualifiedParent?.String()}).{PropertyName}";
     }
+
+    public new bool IsSyntetic { get; set; }
 }

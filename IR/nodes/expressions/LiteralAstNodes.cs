@@ -8,6 +8,8 @@ public record IntLiteralAstNode(int Value) : IExpressionAstNode
     {
         return Value.ToString();
     }
+
+    public bool IsSyntetic { get; set; }
 }
 
 public record FloatLiteralAstNode(double Value) : IExpressionAstNode
@@ -16,6 +18,8 @@ public record FloatLiteralAstNode(double Value) : IExpressionAstNode
     {
         return Value.ToString(CultureInfo.InvariantCulture);
     }
+
+    public bool IsSyntetic { get; set; }
 }
 
 public record BoolLiteralAstNode(bool Value) : IExpressionAstNode
@@ -24,6 +28,8 @@ public record BoolLiteralAstNode(bool Value) : IExpressionAstNode
     {
         return Value.ToString();
     }
+
+    public bool IsSyntetic { get; set; }
 }
 
 public record StringLiteralAstNode(string Value) : IExpressionAstNode
@@ -32,4 +38,6 @@ public record StringLiteralAstNode(string Value) : IExpressionAstNode
     {
         return $"\"{Value}\"";
     }
+
+    public bool IsSyntetic { get; set; }
 }
