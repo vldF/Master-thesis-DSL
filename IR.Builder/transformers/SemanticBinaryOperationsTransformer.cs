@@ -33,6 +33,7 @@ public class SemanticBinaryOperationsTransformer : AbstractAstSemanticTransforme
         return new IntrinsicFunctionInvokationAstNode(
             Interpretor,
             "InvokeFunction",
-            [LocationArg, semanticEntityAccess, node.Left, node.Right]);
+            [LocationArg, semanticEntityAccess, node.Left, node.Right],
+            []);
     }
 }

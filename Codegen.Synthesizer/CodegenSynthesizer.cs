@@ -244,9 +244,34 @@ public class CodegenSynthesizer : AbstractTextSynthesizer
             case CgValueWithIndex cgValueWithIndex:
                 SynthValueWithIndex(cgValueWithIndex);
                 break;
+            case CgNewExpression cgNewExpression:
+                SynthNewExpression(cgNewExpression);
+                break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(expression));
         }
+    }
+
+    private void SynthNewExpression(CgNewExpression cgNewExpression)
+    {
+        Append("new");
+        AppendSpace();
+        Append(cgNewExpression.TypeName);
+        Append("(");
+        var argsDropLast = cgNewExpression.Args.SkipLast(1);
+        foreach (var cgExpression in argsDropLast)
+        {
+            SynthExpression(cgExpression);
+            Append(", ");
+        }
+
+        var lastArg = cgNewExpression.Args.LastOrDefault();
+        if (lastArg != null)
+        {
+            SynthExpression(lastArg);
+        }
+
+        Append(")");
     }
 
     private void SynthUnExpression(CgUnaryExpression cgUnaryExpression)

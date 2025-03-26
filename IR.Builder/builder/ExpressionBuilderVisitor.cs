@@ -14,6 +14,11 @@ public class ExpressionBuilderVisitor(IrContext irContext) : JSADSLBaseVisitor<I
             return VisitExpression(context.expr_in_paren);
         }
 
+        if (context.functionCall() != null)
+        {
+            return VisitFunctionCall(context.functionCall());
+        }
+
         if (context.op == null)
         {
             return VisitExpressionAtomic(context.atomic);
@@ -119,8 +124,13 @@ public class ExpressionBuilderVisitor(IrContext irContext) : JSADSLBaseVisitor<I
             .expression()
             .Select(VisitExpression)
             .ToArray();
+        var generics = context
+            .generic()
+            ?.ID()
+            ?.Select(id => new TypeReference(id.GetText(), irContext))
+            .ToArray() ?? [];
 
-        return new FunctionCallAstNode(qualifiedParent: null, functionReference, args);
+        return new FunctionCallAstNode(qualifiedParent: null, functionReference, generics, args);
     }
 
     public override IExpressionAstNode VisitQualifiedAccess(JSADSLParser.QualifiedAccessContext context)

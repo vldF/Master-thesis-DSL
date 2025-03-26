@@ -1,3 +1,3 @@
 namespace Codegen.IR.nodes.expressions;
 
-public class CgNewExpression(string TypeName) : ICgNode;
+public record CgNewExpression(string TypeName, IReadOnlyCollection<ICgExpression> Args) : ICgExpression;

@@ -1,0 +1,15 @@
+import "standard";
+
+object ServerResult {
+  var data: string;
+}
+
+object HttpClient {
+  func doPost(): ServerResult {
+    return CreateTaintedDataOfType<ServerResult>("Body");
+  }
+
+  func sink(res: ServerResult) {
+    Detect(res, "Server-Side Request Forgery", "HTTP URI");
+  }
+}

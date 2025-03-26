@@ -21,6 +21,7 @@ public class SemanticUnaryOperationsTransformer : AbstractAstSemanticTransformer
         return new IntrinsicFunctionInvokationAstNode(
             Interpretor,
             "InvokeFunction",
-            [LocationArg, semanticEntityAccess, node.Value]);
+            [LocationArg, semanticEntityAccess, node.Value],
+            []);
     }
 }

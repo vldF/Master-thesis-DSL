@@ -1,0 +1,11 @@
+import "standard";
+
+object Obj {
+  func Primitive(): int {
+    return CreateTaintedDataOfType<int>("Header");
+  }
+
+  func Object(): int {
+    return CreateTaintedDataOfType<Obj>("Cookie");
+  }
+}

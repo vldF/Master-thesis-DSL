@@ -19,7 +19,7 @@ public class FunctionCallTransformer : AbstractAstSemanticTransformer
     private IExpressionAstNode TransformIntrinsicFunctionCall(FunctionCallAstNode node)
     {
         var func = node.FunctionReference.Resolve()!;
-        return new IntrinsicFunctionInvokationAstNode(null, func.Name, node.Args.ToList());
+        return new IntrinsicFunctionInvokationAstNode(null, func.Name, node.Args.ToList(), node.Generics.ToList());
     }
 
     private IExpressionAstNode TransformFunctionCall(FunctionCallAstNode node)

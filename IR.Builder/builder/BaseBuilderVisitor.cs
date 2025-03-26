@@ -7,6 +7,7 @@ using me.vldf.jsa.dsl.ir.nodes.declarations;
 using me.vldf.jsa.dsl.ir.nodes.expressions;
 using me.vldf.jsa.dsl.ir.nodes.statements;
 using me.vldf.jsa.dsl.ir.references;
+using me.vldf.jsa.dsl.ir.types;
 using me.vldf.jsa.dsl.parser;
 
 namespace me.vldf.jsa.dsl.ir.builder.builder;
@@ -90,10 +91,6 @@ public class BaseBuilderVisitor(IrContext irContext) : JSADSLBaseVisitor<IAstNod
             var argName = argContext.name.Text;
             var argTypeName = argContext.type?.Text;
             var argType = argTypeName == null ? irContext.AnyTypeRef : new TypeReference(argTypeName, irContext);
-            if (argType == null)
-            {
-                throw new UnresolvedTypeException(argTypeName!);
-            }
             var arg = new FunctionArgAstNode(argName, argType, argIndex++);
 
             args.Add(arg);
@@ -109,11 +106,24 @@ public class BaseBuilderVisitor(IrContext irContext) : JSADSLBaseVisitor<IAstNod
             throw new UnresolvedTypeException(resultTypeName);
         }
 
+        var generics = context
+            .generic()
+            ?.ID()
+            ?.Select(id => new GenericType(id.GetText()))
+            .ToArray() ?? [];
+
+        foreach (var genericType in generics)
+        {
+            irContext.SaveNewType(genericType);
+        }
+
         var functionAstNode = new IntrinsicFunctionAstNode(
             name,
             args,
+            generics,
             resultTypeRef,
             (ObjectAstNode?)irContext.AstNode);
+
         irContext.SaveNewFunc(functionAstNode);
 
         return functionAstNode;
@@ -252,8 +262,13 @@ public class BaseBuilderVisitor(IrContext irContext) : JSADSLBaseVisitor<IAstNod
             .expression()
             .Select(argExpr => _expessionBuilderVisitor.VisitExpression(argExpr))
             .ToArray();
+        var generics = context
+            .generic()
+            ?.ID()
+            ?.Select(id => new TypeReference(id.GetText(), irContext))
+            .ToArray() ?? [];
 
-        return new FunctionCallAstNode(qualifiedParent: null, funcRef, args);
+        return new FunctionCallAstNode(qualifiedParent: null, funcRef, generics, args);
     }
 
     public override IAstNode VisitImportDecl(JSADSLParser.ImportDeclContext context)

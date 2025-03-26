@@ -1,0 +1,23 @@
+#load "Standard.jsa"
+CallHandlerResult __init__Handler(Location location, FunctionCall functionCall)
+{
+    var self = functionCall.Arguments[0];
+    return CallHandlerResult.Processed(self);
+}
+var ServerResultClassDescription = PythonTypes.CreateClass("ServerResult").WithMethod("__init__", __init__Handler);
+CallHandlerResult doPostHandler(Location location, FunctionCall functionCall)
+{
+    var self = functionCall.Arguments[0];
+    var teintData1 = SemanticsApi.CreateObjectDescriptor("<<dsl_teinted_data_0>>").With(new TaintOrigin("Body"));
+    return CallHandlerResult.Processed(teintData1);
+}
+CallHandlerResult sinkHandler(Location location, FunctionCall functionCall)
+{
+    var self = functionCall.Arguments[0];
+    var res = functionCall.Arguments[1];
+    Detect(location, res, "Server-Side Request Forgery", "HTTP URI");
+    return CallHandlerResult.Processed(SemanticsApi.None);
+}
+var HttpClientClassDescription = PythonTypes.CreateClass("HttpClient").WithMethod("doPost", doPostHandler).WithMethod("sink", sinkHandler);
+Interpreter.Assign(ModuleDescriptor, "ServerResult", ServerResultClassDescription.ClassDescriptor);
+Interpreter.Assign(ModuleDescriptor, "HttpClient", HttpClientClassDescription.ClassDescriptor);

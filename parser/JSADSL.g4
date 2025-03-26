@@ -11,7 +11,7 @@ topLevelDecl
 
 funcDecl : FUNC_KW name=ID L_PAREN (functionArgs) R_PAREN (COLON resultType=ID)? L_BRACE statementsBlock R_BRACE;
 
-intrinsicFuncDecl : INTRINSIC_KW FUNC_KW name=ID L_PAREN (functionArgs) R_PAREN (COLON resultType=ID)?;
+intrinsicFuncDecl : INTRINSIC_KW FUNC_KW name=ID generic? L_PAREN (functionArgs) R_PAREN (COLON resultType=ID)?;
 
 functionArgs : functionArg? (COMMA functionArg)* COMMA?;
 
@@ -43,7 +43,8 @@ variableExpression : name=ID;
 newExpression : NEW_KW name=ID L_PAREN expressionList R_PAREN;
 
 expression
-   :   L_PAREN expr_in_paren=expression R_PAREN
+   :   functionCall
+   |   L_PAREN expr_in_paren=expression R_PAREN
    |   left=expression op=(ASTERISK | SLASH) right=expression
    |   left=expression op=PERCENT right=expression
    |   left=expression op=(PLUS | MINUS) right=expression
@@ -58,7 +59,6 @@ expressionAtomic
    :   primitiveLiteral
    |   newExpression
    |   variableExpression
-   |   functionCall
    |   qualifiedAccess
    ;
 
@@ -91,7 +91,7 @@ stringLiteral
    ;
 
 functionCall
-   :   name=ID L_PAREN args=expressionList R_PAREN
+   :   name=ID generic? L_PAREN args=expressionList R_PAREN
    ;
 
 objectDecl : OBJECT_KW name=ID L_BRACE objectBody R_BRACE;
@@ -105,6 +105,8 @@ objectBodyStatement
 
 importDecl : IMPORT_KW package=DoubleQuotedString SEMI_COLON;
 packageDecl : PACKAGE_KW package=DoubleQuotedString SEMI_COLON;
+
+generic : LESS ID (COMMA ID?)* GREAT;
 
 INTRINSIC_KW : 'intrinsic';
 FUNC_KW : 'func';

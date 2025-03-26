@@ -6,6 +6,8 @@ namespace Semantics.Ast2CgIrTranslator.Emitters;
 
 public class ExpressionsEmitter(TranslatorContext ctx)
 {
+    private IntrinsicFunctionsCallWithNoImplEmitter _entrinsicFunctionsCallWithNoImplEmitter = new(ctx);
+
     public ICgExpression EmitExpression(IExpressionAstNode expression)
     {
         return expression switch
@@ -153,8 +155,13 @@ public class ExpressionsEmitter(TranslatorContext ctx)
         return ctx.Semantics.CreateInstance(obj.Name, args);
     }
 
-    private CgMethodCall EmitIntrinsicFunctionInvokationAstNode(IntrinsicFunctionInvokationAstNode intrinsicFunctionInvokationAstNode)
+    private ICgExpression EmitIntrinsicFunctionInvokationAstNode(IntrinsicFunctionInvokationAstNode intrinsicFunctionInvokationAstNode)
     {
+        if (_entrinsicFunctionsCallWithNoImplEmitter.IsApplicable(intrinsicFunctionInvokationAstNode))
+        {
+            return _entrinsicFunctionsCallWithNoImplEmitter.Emit(intrinsicFunctionInvokationAstNode);
+        }
+
         var qualifiedExpr = intrinsicFunctionInvokationAstNode.Reciever != null
             ? EmitExpression(intrinsicFunctionInvokationAstNode.Reciever)
             : null;

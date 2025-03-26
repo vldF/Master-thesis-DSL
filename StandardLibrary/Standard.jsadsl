@@ -3,4 +3,6 @@ package "standard";
 intrinsic func Detect(expression: any, type: string, grammar: string)
 
 // todo: use generics here
-intrinsic func WithTaintMark(expression: any, origin: string): any
+intrinsic func WithTaintMark(expression: any, taintOrigin: string): any
+
+intrinsic func CreateTaintedDataOfType<T>(taintOrigin: string): T

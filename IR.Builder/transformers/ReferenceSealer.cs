@@ -165,4 +165,28 @@ public class ReferenceSealer : AbstractAstTransformer
             Args = node.Args.Select(TransformExpressionAstNode).ToList()
         };
     }
+
+    protected override IExpressionAstNode TransformFunctionCallAstNode(FunctionCallAstNode node)
+    {
+        var func = node.FunctionReference.Resolve();
+        if (func == null)
+        {
+            throw new UnresolvedFunctionException(node.FunctionReference.Name);
+        }
+
+        node.FunctionReference.SealedValue = func;
+
+        foreach (var funcGenericRef in node.Generics)
+        {
+            var resolvedGenericType = funcGenericRef.Resolve();
+            if (resolvedGenericType == null)
+            {
+                throw new UnresolvedFunctionException(funcGenericRef.Name);
+            }
+
+            funcGenericRef.SealedValue = resolvedGenericType;
+        }
+
+        return node;
+    }
 }

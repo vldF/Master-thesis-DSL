@@ -15,7 +15,7 @@ public static class ExpressionBuilder
 
     public static IntrinsicFunctionInvokationAstNode Function(this VarExpressionAstNode parent, string name, params IExpressionAstNode[] args)
     {
-        return new IntrinsicFunctionInvokationAstNode(parent, name, args.ToList())
+        return new IntrinsicFunctionInvokationAstNode(parent, name, args.ToList(), [])
         {
             Parent = parent
         };

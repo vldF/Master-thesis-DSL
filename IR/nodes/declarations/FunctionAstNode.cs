@@ -21,7 +21,7 @@ public class FunctionAstNode(
         var argsAsString = string.Join(", ", Args.Select(x => x.String()));
         var returnTypeAsStr = ReturnTypeRef != null ? ": " + ReturnTypeRef.AsString() : "";
         return $$"""
-                func {Name} ({{argsAsString}}) {{returnTypeAsStr}} \{
+                func {{Name}} ({{argsAsString}}) {{returnTypeAsStr}} {
                 {{AddIndent(Body.String())}}
                 }
                 """;

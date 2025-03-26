@@ -1,0 +1,15 @@
+#load "Standard.jsa"
+CallHandlerResult PrimitiveHandler(Location location, FunctionCall functionCall)
+{
+    var self = functionCall.Arguments[0];
+    var teintData1 = SemanticsApi.CreateObjectDescriptor("<<dsl_teinted_data_0>>").WithType(SemanticsApi.LongType).With(new TaintOrigin("Header"));
+    return CallHandlerResult.Processed(teintData1);
+}
+CallHandlerResult ObjectHandler(Location location, FunctionCall functionCall)
+{
+    var self = functionCall.Arguments[0];
+    var teintData2 = SemanticsApi.CreateObjectDescriptor("<<dsl_teinted_data_1>>").With(new TaintOrigin("Cookie"));
+    return CallHandlerResult.Processed(teintData2);
+}
+var ObjClassDescription = PythonTypes.CreateClass("Obj").WithMethod("Primitive", PrimitiveHandler).WithMethod("Object", ObjectHandler);
+Interpreter.Assign(ModuleDescriptor, "Obj", ObjClassDescription.ClassDescriptor);

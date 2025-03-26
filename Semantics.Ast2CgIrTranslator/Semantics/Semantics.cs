@@ -8,6 +8,7 @@ public class Semantics
     public CgVarExpression Types = new("PythonTypes");
     public CgVarExpression SemanticsApi = new("SemanticsApi");
     public CgVarExpression InterpreterApi = new("Interpreter");
+    public CgVarExpression TaintOrigin = new("TaintOrigin");
 
     private CgVarExpression _location = new("Location");
     private CgVarExpression _functionCall = new("functionCall");
