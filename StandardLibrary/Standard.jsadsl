@@ -1,3 +1,6 @@
 package "standard";
 
-intrinsic func Detect(expression: any, type: string, grammar: string);
+intrinsic func Detect(expression: any, type: string, grammar: string)
+
+// todo: use generics here
+intrinsic func WithTaintMark(expression: any, origin: string): any

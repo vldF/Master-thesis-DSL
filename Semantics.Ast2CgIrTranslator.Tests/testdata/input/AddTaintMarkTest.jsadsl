@@ -1,0 +1,9 @@
+import "standard";
+
+object Object {
+    func foo(): any {
+        var newString: string = "";
+        var s: string = newString + "";
+        return WithTaintMark(newString + "test", "Function argument");
+    }
+}
