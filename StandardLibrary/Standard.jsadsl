@@ -1,8 +1,11 @@
 package "standard";
 
-intrinsic func Detect(expression: any, type: string, grammar: string)
+// todo: make a enumish something for vulnerabilityType
+intrinsic func Detect(expression: any, vulnerabilityType: string, grammar: string)
 
-// todo: use generics here
-intrinsic func WithTaintMark(expression: any, taintOrigin: string): any
+intrinsic func WithTaintMark<T>(expression: T, taintOrigin: string): T
 
 intrinsic func CreateTaintedDataOfType<T>(taintOrigin: string): T
+
+// todo: make a enumish something for vulnerabilityType
+intrinsic func WithoutVulnerability<T>(expression: T, vulnerabilityType: string): T

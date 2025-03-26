@@ -9,6 +9,10 @@ object HttpClient {
     return CreateTaintedDataOfType<ServerResult>("Body");
   }
 
+  func escapeData(res: ServerResult): ServerResult {
+    return WithoutVulnerability(res, "Server-Side Request Forgery");
+  }
+
   func sink(res: ServerResult) {
     Detect(res, "Server-Side Request Forgery", "HTTP URI");
   }

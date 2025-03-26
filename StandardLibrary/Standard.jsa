@@ -25,3 +25,11 @@ TExpr WithTaintMark<TExpr>(Location location, TExpr expression, string origin) w
 
     return expression.With(taintOrigin);
 }
+
+SymbolicExpression WithoutVulnerability(
+      Location location,
+      SymbolicExpression expression,
+      string vulnerabilityType)
+{
+    return expression.AddFilteredVulnerability((VulnerabilityType)vulnerabilityType);
+}
