@@ -375,8 +375,6 @@ public class TypeChecker(ErrorManager errorManager) : AbstractChecker<AstType>
 
     protected override AstType? CheckExpression(IExpressionAstNode expressionAstNode)
     {
-        base.CheckExpression(expressionAstNode);
-
         switch (expressionAstNode)
         {
             case BinaryExpressionAstNode binaryExpressionAstNode:
