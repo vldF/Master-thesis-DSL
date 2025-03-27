@@ -11,6 +11,12 @@ CallHandlerResult doPostHandler(Location location, FunctionCall functionCall)
     var teintData1 = SemanticsApi.CreateObjectDescriptor("<<dsl_teinted_data_0>>").With(new TaintOrigin("Body"));
     return CallHandlerResult.Processed(teintData1);
 }
+CallHandlerResult escapeDataHandler(Location location, FunctionCall functionCall)
+{
+    var self = functionCall.Arguments[0];
+    var res = functionCall.Arguments[1];
+    return CallHandlerResult.Processed(WithoutVulnerability(location, res, "Server-Side Request Forgery"));
+}
 CallHandlerResult sinkHandler(Location location, FunctionCall functionCall)
 {
     var self = functionCall.Arguments[0];
@@ -18,6 +24,6 @@ CallHandlerResult sinkHandler(Location location, FunctionCall functionCall)
     Detect(location, res, "Server-Side Request Forgery", "HTTP URI");
     return CallHandlerResult.Processed(SemanticsApi.None);
 }
-var HttpClientClassDescription = PythonTypes.CreateClass("HttpClient").WithMethod("doPost", doPostHandler).WithMethod("sink", sinkHandler);
+var HttpClientClassDescription = PythonTypes.CreateClass("HttpClient").WithMethod("doPost", doPostHandler).WithMethod("escapeData", escapeDataHandler).WithMethod("sink", sinkHandler);
 Interpreter.Assign(ModuleDescriptor, "ServerResult", ServerResultClassDescription.ClassDescriptor);
 Interpreter.Assign(ModuleDescriptor, "HttpClient", HttpClientClassDescription.ClassDescriptor);

@@ -29,7 +29,7 @@ public class IntrinsicFunctionsCallWithNoImplEmitter(TranslatorContext ctx)
 
     class CreateTaintedDataOfTypeEmitter(TranslatorContext ctx) : IFunctionEmitter
     {
-        private static int _idCounter = 0;
+        private int _idCounter = 0;
 
         private static Dictionary<string, string> _buildInTypesMappint = new()
         {

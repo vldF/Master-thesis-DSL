@@ -1,38 +1,36 @@
-object Type {}
-
 object MyObject {
-    func InnerFunc(arg1: Type) {
-        var result: Type;
+    func InnerFunc(arg1: int) {
+        var result: int;
         if (arg1 == 1) {
-            var temp: Type = 2;
+            var temp: int = 2;
             result = 2 + temp;
         }
 
         if (arg1 == 2) {
-            var temp: Type = 2;
+            var temp: int = 2;
             result = 2 + temp;
         } else {
-            var temp2: Type = 3;
+            var temp2: int = 3;
             result = 3 + temp2;
             return result;
         }
 
         if (arg1 == 2) {
-            var temp: Type = 2;
+            var temp: int = 2;
             result = 2 + temp;
         } else if (arg1 == 3) {
-            var temp3: Type = 3;
+            var temp3: int = 3;
             result = 3 + temp3;
         }
 
         if (arg1 == 2) {
-            var temp: Type = 2;
+            var temp: int = 2;
             result = 2 + temp;
         } else if (arg1 == 3) {
-            var temp3: Type = 3;
+            var temp3: int = 3;
             result = 3 + temp3;
         } else {
-            var temp4: Type = 3;
+            var temp4: int = 3;
             result = 3 + temp4;
         }
 

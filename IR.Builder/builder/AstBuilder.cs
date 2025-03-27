@@ -1,5 +1,6 @@
 using Antlr4.Runtime;
 using me.vldf.jsa.dsl.ast.types;
+using me.vldf.jsa.dsl.ir.builder.checkers;
 using me.vldf.jsa.dsl.ir.builder.transformers;
 using me.vldf.jsa.dsl.ir.context;
 using me.vldf.jsa.dsl.ir.nodes.declarations;
@@ -9,14 +10,12 @@ namespace me.vldf.jsa.dsl.ir.builder.builder;
 
 public class AstBuilder
 {
-    public IReadOnlyCollection<FileAstNode> FromStrings(IReadOnlyCollection<(string name, string code)> codes)
+    public AstBuildingResult FromStrings(IReadOnlyCollection<(string name, string code)> codes)
     {
         var rootContext = new IrContext(null);
         rootContext.SaveNewType(SimpleAstType.Any);
         rootContext.SaveNewType(SimpleAstType.Int);
         rootContext.SaveNewType(SimpleAstType.StringT);
-
-        var transOrhestrator = new TransformersOrchestrator(rootContext);
 
         var parseResult = codes
             .Select(c => Parse(c, rootContext))
@@ -31,10 +30,22 @@ public class AstBuilder
             fileIrContext.InitializeImports(allContexts);
         }
 
-        return parseResult
+        var checkersOrchestrator = new CheckersOrchestrator();
+        var errors = parseResult.Aggregate(new List<Error>(), (acc, p) =>
+            acc.Concat(checkersOrchestrator.Check(p.fileAstNode)).ToList());
+
+        if (errors.Count != 0)
+        {
+            return new AstBuildingResult(Files: null, Errors: errors);
+        }
+
+        var transformersOrhestrator = new TransformersOrchestrator(rootContext);
+        var files = parseResult
             .Select(f => f.fileAstNode)
-            .Select(f => (FileAstNode)transOrhestrator.Transform(f))
+            .Select(f => (FileAstNode)transformersOrhestrator.Transform(f))
             .ToList();
+
+        return new AstBuildingResult(Files: files, Errors: null);
     }
 
     private (FileAstNode fileAstNode, IrContext fileIrContext) Parse((string name, string code) file, IrContext rootContext)

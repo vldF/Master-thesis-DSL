@@ -42,8 +42,16 @@ public class PackageTests : PackageCodegenTestBase
         var standardLibraryFileName = Path.GetFileNameWithoutExtension(standardLibraryPath);
         codes.Add((standardLibraryFileName, standardLibraryCode));
 
-        var file = astBuilder.FromStrings(codes);
-        foreach (var fileAstNode in file)
+        var astBuildingResult = astBuilder.FromStrings(codes);
+        var errors = astBuildingResult.Errors;
+        if (errors != null && errors.Count != 0)
+        {
+            var formattedErrors = errors.Aggregate("", (s, error) => s + "\n\n" + error.Format());
+            Assert.Fail(formattedErrors);
+            return;
+        }
+
+        foreach (var fileAstNode in astBuildingResult.Files!)
         {
             if (fileAstNode.FileName == standardLibraryFileName)
             {
