@@ -1,11 +1,10 @@
 #load "Standard.jsa"
-var TypeClassDescription = PythonTypes.CreateClass("Type");
 CallHandlerResult InnerFuncHandler(Location location, FunctionCall functionCall)
 {
     var self = functionCall.Arguments[0];
     var arg1 = functionCall.Arguments[1];
     var returnValueBuilder1 = Interpreter.CreateReturnedValuesBuilder();
-    Type result;
+    SymbolicExpression result;
     var condition2 = SemanticsApi.CreateCastToBoolOperator(Interpreter.InvokeFunction(location, SemanticsApi.EqDescriptor, arg1, SemanticsApi.CreateLiteral(1)));
     Engine.TryEnterBranch(condition2, out var branchId3);
     var temp = SemanticsApi.CreateLiteral(2);
@@ -59,5 +58,4 @@ CallHandlerResult InnerFuncHandler(Location location, FunctionCall functionCall)
     return CallHandlerResult.Processed(returnValueBuilder1);
 }
 var MyObjectClassDescription = PythonTypes.CreateClass("MyObject").WithMethod("InnerFunc", InnerFuncHandler);
-Interpreter.Assign(ModuleDescriptor, "Type", TypeClassDescription.ClassDescriptor);
 Interpreter.Assign(ModuleDescriptor, "MyObject", MyObjectClassDescription.ClassDescriptor);

@@ -31,7 +31,7 @@ CallHandlerResult localObjectFieldAssignmentHandler(Location location, FunctionC
 {
     var self = functionCall.Arguments[0];
     var arg1 = functionCall.Arguments[1];
-    InnerObject local;
+    SymbolicExpression local;
     Interpreter.Assign(local, "innerField", arg1);
     return CallHandlerResult.Processed(SemanticsApi.None);
 }

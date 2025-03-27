@@ -154,20 +154,21 @@ public class MethodEmitter(TranslatorContext ctx)
     {
         if (varDeclAstNode.Init != null)
         {
-            var initValue = _expressionsEmitter.EmitExpression(varDeclAstNode.Init!);
+            var initValue = _expressionsEmitter.EmitExpression(varDeclAstNode.Init);
+
             VarDeclaration(
                 ctx.CurrentContainer!,
                 varDeclAstNode.Name,
+                type: null,
                 init: initValue);
         }
         else
         {
-            var typeName = varDeclAstNode.TypeReference!.SealedValue!.Name;
-            var type = new CgSimpleType(typeName);
+            var symbolicType = new CgSimpleType("SymbolicExpression");
             VarDeclaration(
                 ctx.CurrentContainer!,
                 varDeclAstNode.Name,
-                type: type,
+                type: symbolicType,
                 init: null);
         }
     }
