@@ -1,15 +1,12 @@
-object number {} // todo: introduce primary types
-
 object MyObject {
-    func InnerFunc(arg1: number, arg2: number) {
-        var sum: number = arg1 + arg2;
-        var sub: number = arg1 - arg2;
-        var mul: number = arg1 * arg2;
-        var div: number = arg1 / arg2;
-        var unaryMinus: number = -arg1;
-        var unaryNot: number = !arg1;
-        var parens: number = (sum + sub);
-        var complex: number = (sum + sub) * mul / div + parens;
+    func InnerFunc(arg1: int, arg2: int) {
+        var sum: int = arg1 + arg2;
+        var sub: int = arg1 - arg2;
+        var mul: int = arg1 * arg2;
+        var div: int = arg1 / arg2;
+        var unaryMinus: int = -arg1;
+        var parens: int = (sum + sub);
+        var complex: int = (sum + sub) * mul / div + parens;
         return complex;
     }
 }

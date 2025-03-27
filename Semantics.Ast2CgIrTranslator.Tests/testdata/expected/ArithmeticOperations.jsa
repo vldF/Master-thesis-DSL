@@ -1,5 +1,4 @@
 #load "Standard.jsa"
-var numberClassDescription = PythonTypes.CreateClass("number");
 CallHandlerResult InnerFuncHandler(Location location, FunctionCall functionCall)
 {
     var self = functionCall.Arguments[0];
@@ -10,11 +9,9 @@ CallHandlerResult InnerFuncHandler(Location location, FunctionCall functionCall)
     var mul = Interpreter.InvokeFunction(location, SemanticsApi.MultiplyDescriptor, arg1, arg2);
     var div = Interpreter.InvokeFunction(location, SemanticsApi.DivDescriptor, arg1, arg2);
     var unaryMinus = Interpreter.InvokeFunction(location, SemanticsApi.NegDescriptor, arg1);
-    var unaryNot = Interpreter.InvokeFunction(location, SemanticsApi.NotDescriptor, arg1);
     var parens = Interpreter.InvokeFunction(location, SemanticsApi.AddDescriptor, sum, sub);
     var complex = Interpreter.InvokeFunction(location, SemanticsApi.AddDescriptor, Interpreter.InvokeFunction(location, SemanticsApi.DivDescriptor, Interpreter.InvokeFunction(location, SemanticsApi.MultiplyDescriptor, Interpreter.InvokeFunction(location, SemanticsApi.AddDescriptor, sum, sub), mul), div), parens);
     return CallHandlerResult.Processed(complex);
 }
 var MyObjectClassDescription = PythonTypes.CreateClass("MyObject").WithMethod("InnerFunc", InnerFuncHandler);
-Interpreter.Assign(ModuleDescriptor, "number", numberClassDescription.ClassDescriptor);
 Interpreter.Assign(ModuleDescriptor, "MyObject", MyObjectClassDescription.ClassDescriptor);

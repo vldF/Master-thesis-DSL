@@ -3,7 +3,6 @@ import "standard";
 object Object {
     func foo(): any {
         var newString: string = "";
-        var s: string = newString + "";
-        return WithTaintMark(s, "Function argument");
+        return WithTaintMark(newString, "Function argument");
     }
 }

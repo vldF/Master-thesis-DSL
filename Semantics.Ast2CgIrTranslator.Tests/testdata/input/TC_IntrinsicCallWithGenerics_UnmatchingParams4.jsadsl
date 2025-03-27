@@ -1,0 +1,7 @@
+intrinsic func callee1<T1, T2>(arg1: T1, arg2: T2): T1
+
+object O {
+  func f() {
+    var t: int = callee1<string, int>(1, "str");
+  }
+}

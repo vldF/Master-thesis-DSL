@@ -1,0 +1,12 @@
+intrinsic func callee1<T>(arg: T): T
+intrinsic func callee2<T1, T2>(arg1: T1, arg2: T2): T2
+
+object O {
+  func f() {
+    var t: int = callee1<int>(1);
+    t = callee1(1);
+
+    var s: string = callee2<int, string>(1, "test");
+    s = callee2(1, "test");
+  }
+}

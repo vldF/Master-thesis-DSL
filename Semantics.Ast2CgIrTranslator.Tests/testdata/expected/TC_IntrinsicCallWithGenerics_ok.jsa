@@ -1,0 +1,12 @@
+#load "Standard.jsa"
+CallHandlerResult fHandler(Location location, FunctionCall functionCall)
+{
+    var self = functionCall.Arguments[0];
+    var t = callee1(location, 1);
+    t = callee1(location, 1);
+    var s = callee2(location, 1, "test");
+    s = callee2(location, 1, "test");
+    return CallHandlerResult.Processed(SemanticsApi.None);
+}
+var OClassDescription = PythonTypes.CreateClass("O").WithMethod("f", fHandler);
+Interpreter.Assign(ModuleDescriptor, "O", OClassDescription.ClassDescriptor);

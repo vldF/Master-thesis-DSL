@@ -15,6 +15,8 @@ public class Error(ErrorCode error, object[] args)
     public static Error UnexpectedReturnExpression(IExpressionAstNode expr) => new(ErrorCode.TypeMissmatch, [expr]);
     public static Error NoReturnExpression() => new(ErrorCode.NoReturnExpression, []);
     public static Error NumericTypeExpected(AstType actual) => new(ErrorCode.NumericTypeExpected, [actual]);
+    public static Error UnexpectedGenericsCount(int expected, int actual) => new(ErrorCode.UnexpectedGenericsCount, [expected, actual]);
+    public static Error CanNotInferReturnType(string funcName) => new(ErrorCode.CanNotInferReturnType, [funcName]);
 
     public string Format()
     {
@@ -24,7 +26,7 @@ public class Error(ErrorCode error, object[] args)
             throw new InvalidOperationException($"unknown error {ErrorCode}");
         }
 
-        return string.Format(messageTemplate, args.Select(FormatArg).ToArray<object?>());
+        return string.Format(messageTemplate, Args.Select(FormatArg).ToArray<object?>());
     }
 
     private string FormatArg(object arg)
@@ -60,6 +62,8 @@ public class Error(ErrorCode error, object[] args)
         { ErrorCode.UnexpectedReturnExpression, "Function {0} shouldn't return anythyng but it returns {1}" },
         { ErrorCode.NoReturnExpression, "Function {0} returns {1} but return without expression found" },
         { ErrorCode.NumericTypeExpected, "Expected arithmetic type but got {0}" },
+        { ErrorCode.UnexpectedGenericsCount, "Expected {0} type parameters but got {1}" },
+        { ErrorCode.CanNotInferReturnType, "Can't infer return type of function {0}" },
     };
 }
 
@@ -71,4 +75,6 @@ public enum ErrorCode
     UnexpectedReturnExpression,
     NoReturnExpression,
     NumericTypeExpected,
+    UnexpectedGenericsCount,
+    CanNotInferReturnType,
 }

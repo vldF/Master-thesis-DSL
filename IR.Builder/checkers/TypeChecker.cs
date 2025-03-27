@@ -3,6 +3,7 @@ using me.vldf.jsa.dsl.ir.nodes;
 using me.vldf.jsa.dsl.ir.nodes.declarations;
 using me.vldf.jsa.dsl.ir.nodes.expressions;
 using me.vldf.jsa.dsl.ir.nodes.statements;
+using me.vldf.jsa.dsl.ir.types;
 
 namespace me.vldf.jsa.dsl.ir.builder.checkers;
 
@@ -178,14 +179,54 @@ public class TypeChecker(ErrorManager errorManager) : AbstractChecker<AstType>
 
             if (!CheckTypes(expectedType, actualType))
             {
+                errorManager.Report(Error.TypeMissmatch(expectedType, actualType));
                 return null;
             }
         }
 
-        var generics = functionCallAstNode.Generics.ToList();
-        for (var i = 0; i < generics.Count; i++)
+        var callGenerics = functionCallAstNode.Generics.ToList();
+        var genericInfo = new Dictionary<GenericType, AstType>();
+
+        if (callGenerics.Count != 0)
         {
-            var actualTypeRef = generics[i];
+            if (func is not IntrinsicFunctionAstNode calleeIntrinsicFunc)
+            {
+                errorManager.Report(Error.UnexpectedGenericsCount(0, callGenerics.Count));
+                return null;
+            }
+
+            var calleeGenerics = calleeIntrinsicFunc.Generics.ToList();
+
+            if (callGenerics.Count != calleeGenerics.Count)
+            {
+                errorManager.Report(Error.UnexpectedGenericsCount(calleeGenerics.Count, callGenerics.Count));
+                return null;
+            }
+
+            for (var i = 0; i < callGenerics.Count; i++)
+            {
+                var actualGenericSubstitutionRef = callGenerics[i];
+                var actualGenericSubstitution = actualGenericSubstitutionRef.Resolve()!;
+
+                var expectedGeneric = calleeGenerics[i];
+                if (genericInfo.TryGetValue(expectedGeneric, out var existingSubstitution))
+                {
+                    if (!CheckTypes(existingSubstitution, actualGenericSubstitution))
+                    {
+                        errorManager.Report(Error.TypeMissmatch(existingSubstitution, actualGenericSubstitution));
+                        return null;
+                    }
+                }
+                else
+                {
+                    genericInfo[expectedGeneric] = actualGenericSubstitution;
+                }
+            }
+        }
+
+        for (var i = 0; i < callGenerics.Count; i++)
+        {
+            var actualTypeRef = callGenerics[i];
             var actualType = actualTypeRef.Resolve();
 
             if (actualType == null)
@@ -194,26 +235,72 @@ public class TypeChecker(ErrorManager errorManager) : AbstractChecker<AstType>
                 return null;
             }
         }
-        // todo: check generics match
 
-        var returnTypeRef = func.ReturnTypeRef;
-        if (returnTypeRef != null)
+        for (var i = 0; i < func.Args.Count; i++)
         {
-            var returnType = returnTypeRef.Resolve();
-            if (returnType == null)
+            var typeReference = func.Args[i].TypeReference;
+            if (typeReference == null)
             {
-                errorManager.Report(Error.UnresolvedType(returnTypeRef.Name));
-                return null;
+                continue;
             }
 
+            var argType = typeReference.Resolve()!;
+            if (argType is not GenericType expectedGenericType)
+            {
+                continue;
+            }
+
+            var actialType = CheckExpression(functionCallAstNode.Args[i])!;
+            if (genericInfo.TryGetValue(expectedGenericType, out var existingAssociatedType))
+            {
+                if (!CheckTypes(existingAssociatedType, actialType))
+                {
+                    errorManager.Report(Error.TypeMissmatch(existingAssociatedType, actialType));
+                    return null;
+                }
+            }
+            else
+            {
+                genericInfo[expectedGenericType] = actialType;
+            }
+        }
+
+        var returnTypeRef = func.ReturnTypeRef;
+        if (returnTypeRef == null)
+        {
+            return SimpleAstType.Any;
+        }
+
+        var returnType = returnTypeRef.Resolve();
+        if (returnType == null)
+        {
+            errorManager.Report(Error.UnresolvedType(returnTypeRef.Name));
+            return null;
+        }
+
+        if (returnType is not GenericType returnGenericType)
+        {
             return returnType;
         }
 
-        return SimpleAstType.Any;
+        if (!genericInfo.TryGetValue(returnGenericType, out var existingAssociatedReturnType))
+        {
+            errorManager.Report(Error.CanNotInferReturnType(func.Name));
+            return null;
+        }
+
+
+        return existingAssociatedReturnType;
     }
 
     protected override AstType? CheckVarDecl(VarDeclAstNode varDeclAstNode)
     {
+        AstType? valueType = null;
+        if (varDeclAstNode.Init != null)
+        {
+            valueType = CheckExpression(varDeclAstNode.Init);
+        }
+
         var typeRef = varDeclAstNode.TypeReference;
         if (typeRef == null)
         {
@@ -227,7 +314,13 @@ public class TypeChecker(ErrorManager errorManager) : AbstractChecker<AstType>
             return null;
         }
 
-        return type;
+        if (valueType != null && !CheckTypes(type, valueType))
+        {
+            errorManager.Report(Error.TypeMissmatch(type, valueType));
+            return null;
+        }
+
+        return null;
     }
 
     protected override AstType? CheckIntrinsicFunction(IntrinsicFunctionAstNode intrinsicFunctionAstNode)
@@ -469,7 +562,7 @@ public class TypeChecker(ErrorManager errorManager) : AbstractChecker<AstType>
 
     private bool CheckTypes(AstType expected, AstType actual)
     {
-        return expected == SimpleAstType.Any || expected == actual;
+        return expected is GenericType || expected == SimpleAstType.Any || expected == actual;
     }
 
     private bool CheckCollection<TE>(
