@@ -1,11 +1,15 @@
+using System.Text;
 using me.vldf.jsa.dsl.ir.builder.builder;
 using NUnit.Framework;
+using Semantics.Ast2CgIrTranslator.Tests.options;
 using TestPlatform;
 
 namespace Semantics.Ast2CgIrTranslator.Tests;
 
 public class Tests : SingleFileCodegenTestBase
 {
+    private readonly InputDataOptionsParser _optionsParser = new();
+
     [SetUp]
     public void Setup()
     {
@@ -30,6 +34,8 @@ public class Tests : SingleFileCodegenTestBase
         var standardLibraryCode = File.ReadAllText(standardLibraryPath);
 
         var inputPath = _testDataProvider.GetInputCodePath(testName);
+        var options = _optionsParser.ParseFileOptions(inputPath);
+
         var inputCode = File.ReadAllText(inputPath);
 
         var astBuilder = new AstBuilder();
@@ -38,11 +44,42 @@ public class Tests : SingleFileCodegenTestBase
             (Path.GetFileNameWithoutExtension(standardLibraryPath), standardLibraryCode)
         ]);
 
-        var errors = astBuildingResult.Errors;
-        if (errors != null && errors.Count != 0)
+        var actualTypeCheckErrors = astBuildingResult.Errors?.ToList().Select(x => x.ErrorCode).ToList() ?? [];
+        var expectedTypeCheckErrors = options.OfType<ExpectedTypeCheckErrors>().SelectMany(x => x.Codes).ToList();
+
+        if (actualTypeCheckErrors.Count != expectedTypeCheckErrors.Count)
         {
-            var formattedErrors = errors.Aggregate("", (s, error) => s + "\n\n" + error.Format());
-            Assert.Fail(formattedErrors);
+            var missingErrors = expectedTypeCheckErrors.ToList();
+            foreach (var actualTypeCheckError in actualTypeCheckErrors)
+            {
+                missingErrors.Remove(actualTypeCheckError);
+            }
+
+            var extraErrors = actualTypeCheckErrors.ToList();
+            foreach (var expectedTypeCheckError in expectedTypeCheckErrors)
+            {
+                extraErrors.Remove(expectedTypeCheckError);
+            }
+
+            var error = new StringBuilder();
+            error.AppendLine("missing errors:");
+            foreach (var missingError in missingErrors)
+            {
+                error.AppendLine($" {missingError}");
+            }
+
+            error.AppendLine();
+            error.AppendLine("extra errors:");
+            foreach (var extraError in extraErrors)
+            {
+                error.AppendLine($" {extraError}");
+            }
+
+            Assert.Fail(error.ToString());
+        }
+
+        if (expectedTypeCheckErrors.Count != 0)
+        {
             return;
         }
 

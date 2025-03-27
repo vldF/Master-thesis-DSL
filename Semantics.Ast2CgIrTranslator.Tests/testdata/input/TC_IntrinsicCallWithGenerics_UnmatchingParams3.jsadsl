@@ -1,3 +1,5 @@
+// #expected-tc-errors(TypeMissmatch)
+
 intrinsic func callee1<T>(arg: T): T
 
 object O {
