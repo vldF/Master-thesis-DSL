@@ -29,7 +29,6 @@ statement
 
 assignmentStatement : assignee=expression EQ value=expression;
 
-// todo: make the type optional
 varDeclarationStatement : VAR_KW varName=ID (COLON type=ID)? (EQ initValue=expression)?;
 
 ifStatement : IF_KW L_PAREN cond=expression R_PAREN L_BRACE mainBlock=statementsBlock R_BRACE ((ELSE_KW elseIfStatement=ifStatement)|(ELSE_KW L_BRACE elseBlock=statementsBlock R_BRACE))?;
@@ -91,7 +90,7 @@ stringLiteral
    ;
 
 functionCall
-   :   name=ID generic? L_PAREN args=expressionList R_PAREN
+   :   (entryName=ID '.')* name=ID generic? L_PAREN args=expressionList R_PAREN
    ;
 
 objectDecl : OBJECT_KW name=ID L_BRACE objectBody R_BRACE;

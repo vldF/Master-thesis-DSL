@@ -130,7 +130,15 @@ public class ExpressionBuilderVisitor(IrContext irContext) : JSADSLBaseVisitor<I
             ?.Select(id => new TypeReference(id.GetText(), irContext))
             .ToArray() ?? [];
 
-        return new FunctionCallAstNode(qualifiedParent: null, functionReference, generics, args);
+        var baseVarName = context.ID()[0].GetText();
+        var @base = new VarExpressionAstNode(new VariableReference(baseVarName, irContext));
+        IExpressionAstNode qualified = @base;
+        foreach (var entry in context.ID().Skip(1))
+        {
+            qualified = new QualifiedAccessPropertyAstNode(qualified, entry.GetText());
+        }
+
+        return new FunctionCallAstNode(qualifiedParent: qualified, functionReference, generics, args);
     }
 
     public override IExpressionAstNode VisitQualifiedAccess(JSADSLParser.QualifiedAccessContext context)

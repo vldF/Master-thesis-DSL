@@ -268,7 +268,15 @@ public class BaseBuilderVisitor(IrContext irContext) : JSADSLBaseVisitor<IAstNod
             ?.Select(id => new TypeReference(id.GetText(), irContext))
             .ToArray() ?? [];
 
-        return new FunctionCallAstNode(qualifiedParent: null, funcRef, generics, args);
+        var baseVarName = context.ID()[0].GetText();
+        var @base = new VarExpressionAstNode(new VariableReference(baseVarName, irContext));
+        IExpressionAstNode qualified = @base;
+        foreach (var entry in context.ID().Skip(1))
+        {
+            qualified = new QualifiedAccessPropertyAstNode(qualified, entry.GetText());
+        }
+
+        return new FunctionCallAstNode(qualifiedParent: qualified, funcRef, generics, args);
     }
 
     public override IAstNode VisitImportDecl(JSADSLParser.ImportDeclContext context)
