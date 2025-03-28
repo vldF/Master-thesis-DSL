@@ -1,11 +1,14 @@
 using me.vldf.jsa.dsl.ir.builder.builder;
 using NUnit.Framework;
+using Semantics.Ast2CgIrTranslator.Tests.options;
 using TestPlatform;
 
 namespace Semantics.Ast2CgIrTranslator.Tests;
 
 public class PackageTests : PackageCodegenTestBase
 {
+    private readonly InputDataOptionsParser _optionsParser = new();
+
     [SetUp]
     public void Setup()
     {
@@ -43,12 +46,15 @@ public class PackageTests : PackageCodegenTestBase
         codes.Add((standardLibraryFileName, standardLibraryCode));
 
         var astBuildingResult = astBuilder.FromStrings(codes);
-        var errors = astBuildingResult.Errors;
-        if (errors != null && errors.Count != 0)
+        var options = _optionsParser.ParseDirOptions(inputDataDir);
+
+        var actualTypeCheckErrors = astBuildingResult.Errors?.ToList().Select(x => x.ErrorCode).ToList() ?? [];
+        var expectedTypeCheckErrors = options.OfType<ExpectedTypeCheckErrors>().SelectMany(x => x.Codes).ToList();
+
+        if (actualTypeCheckErrors.Count != expectedTypeCheckErrors.Count)
         {
-            var formattedErrors = errors.Aggregate("", (s, error) => s + "\n\n" + error.Format());
-            Assert.Fail(formattedErrors);
-            return;
+            var errorsDiffText = Utils.FormatTypeCheckerErrors(expectedTypeCheckErrors, actualTypeCheckErrors);
+            Assert.Fail(errorsDiffText);
         }
 
         foreach (var fileAstNode in astBuildingResult.Files!)

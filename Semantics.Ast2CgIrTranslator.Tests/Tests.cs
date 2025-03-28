@@ -1,4 +1,3 @@
-using System.Text;
 using me.vldf.jsa.dsl.ir.builder.builder;
 using NUnit.Framework;
 using Semantics.Ast2CgIrTranslator.Tests.options;
@@ -49,33 +48,8 @@ public class Tests : SingleFileCodegenTestBase
 
         if (actualTypeCheckErrors.Count != expectedTypeCheckErrors.Count)
         {
-            var missingErrors = expectedTypeCheckErrors.ToList();
-            foreach (var actualTypeCheckError in actualTypeCheckErrors)
-            {
-                missingErrors.Remove(actualTypeCheckError);
-            }
-
-            var extraErrors = actualTypeCheckErrors.ToList();
-            foreach (var expectedTypeCheckError in expectedTypeCheckErrors)
-            {
-                extraErrors.Remove(expectedTypeCheckError);
-            }
-
-            var error = new StringBuilder();
-            error.AppendLine("missing errors:");
-            foreach (var missingError in missingErrors)
-            {
-                error.AppendLine($" {missingError}");
-            }
-
-            error.AppendLine();
-            error.AppendLine("extra errors:");
-            foreach (var extraError in extraErrors)
-            {
-                error.AppendLine($" {extraError}");
-            }
-
-            Assert.Fail(error.ToString());
+            var errorsDiffText = Utils.FormatTypeCheckerErrors(expectedTypeCheckErrors, actualTypeCheckErrors);
+            Assert.Fail(errorsDiffText);
         }
 
         if (expectedTypeCheckErrors.Count != 0)
