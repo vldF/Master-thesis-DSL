@@ -9,6 +9,7 @@ public interface IInputDataOption
         return name switch
         {
             ExpectedTypeCheckErrors.Name => new ExpectedTypeCheckErrors(args.Select(Enum.Parse<ErrorCode>).ToList()),
+            DumpIr.Name => new DumpIr(),
             _ => throw new InvalidOperationException($"unknown option {name}")
         };
     }
@@ -17,4 +18,9 @@ public interface IInputDataOption
 public record ExpectedTypeCheckErrors(IReadOnlyCollection<ErrorCode> Codes) : IInputDataOption
 {
     public const string Name = "expected-tc-errors";
+}
+
+public record DumpIr : IInputDataOption
+{
+    public const string Name = "dump-ir";
 }

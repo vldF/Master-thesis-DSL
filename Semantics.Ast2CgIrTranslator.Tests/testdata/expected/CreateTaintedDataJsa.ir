@@ -1,0 +1,33 @@
+file (
+package: 
+  object ServerResult (
+    func __init__ (arg[self]: TypeRef[ServerResult]) : TypeRef[ServerResult] {
+      {
+        return var(@VariableRef[self])
+      }
+    }
+    
+    @data: @TypeRef[string]
+  )
+  
+  object HttpClient (
+    func doPost (arg[self]: TypeRef[HttpClient]) : TypeRef[ServerResult] {
+      {
+        return intrinsic[.CreateTaintedDataOfType<TypeRef[ServerResult]>(var(@VariableRef[location]),"Body")]
+      }
+    }
+    
+    func escapeData (arg[self]: TypeRef[HttpClient], arg[res]: TypeRef[ServerResult]) : TypeRef[ServerResult] {
+      {
+        return intrinsic[.WithoutVulnerability<>(var(@VariableRef[location]),var(@VariableRef[res]),"Server-Side Request Forgery")]
+      }
+    }
+    
+    func sink (arg[self]: TypeRef[HttpClient], arg[res]: TypeRef[ServerResult]) : TypeRef[any] {
+      {
+        intrinsic[.Detect<>(var(@VariableRef[location]),var(@VariableRef[res]),"Server-Side Request Forgery","HTTP URI")]
+        return (var(@VariableRef[SemanticsApi])).None
+      }
+    }
+  )
+)

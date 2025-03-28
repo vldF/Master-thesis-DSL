@@ -1,5 +1,5 @@
 object MyObject {
-    func InnerFunc(arg1: int, arg2: int) {
+    func withoutTypeInfer(arg1: int, arg2: int) {
         var sum: int = arg1 + arg2;
         var sub: int = arg1 - arg2;
         var mul: int = arg1 * arg2;
@@ -7,6 +7,17 @@ object MyObject {
         var unaryMinus: int = -arg1;
         var parens: int = (sum + sub);
         var complex: int = (sum + sub) * mul / div + parens;
+        return complex;
+    }
+
+    func withTypeInfer(arg1: int, arg2: int) {
+        var sum = arg1 + arg2;
+        var sub = arg1 - arg2;
+        var mul = arg1 * arg2;
+        var div = arg1 / arg2;
+        var unaryMinus = -arg1;
+        var parens = (sum + sub);
+        var complex = (sum + sub) * mul / div + parens;
         return complex;
     }
 }

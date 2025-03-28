@@ -1,0 +1,17 @@
+file (
+package: 
+  object Type (
+    
+  )
+  
+  object MyObject (
+    func InnerFunc (arg[self]: TypeRef[MyObject], arg[arg1]: TypeRef[Type]) : TypeRef[any] {
+      {
+        @test1: @TypeRef[Type] = var(@VariableRef[arg1])
+        @test2: @TypeRef[Type] = var(@VariableRef[test1])
+        @var(@VariableRef[test1]) = var(@VariableRef[test2])
+        return var(@VariableRef[test1])
+      }
+    }
+  )
+)

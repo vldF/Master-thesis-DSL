@@ -1,4 +1,6 @@
 using me.vldf.jsa.dsl.ir.builder.builder;
+using me.vldf.jsa.dsl.ir.builder.checkers;
+using me.vldf.jsa.dsl.ir.nodes.declarations;
 using NUnit.Framework;
 using Semantics.Ast2CgIrTranslator.Tests.options;
 using TestPlatform;
@@ -43,18 +45,15 @@ public class Tests : SingleFileCodegenTestBase
             (Path.GetFileNameWithoutExtension(standardLibraryPath), standardLibraryCode)
         ]);
 
-        var actualTypeCheckErrors = astBuildingResult.Errors?.ToList().Select(x => x.ErrorCode).ToList() ?? [];
-        var expectedTypeCheckErrors = options.OfType<ExpectedTypeCheckErrors>().SelectMany(x => x.Codes).ToList();
-
-        if (actualTypeCheckErrors.Count != expectedTypeCheckErrors.Count)
-        {
-            var errorsDiffText = Utils.FormatTypeCheckerErrors(expectedTypeCheckErrors, actualTypeCheckErrors);
-            Assert.Fail(errorsDiffText);
-        }
-
-        if (expectedTypeCheckErrors.Count != 0)
+        var expectedErrorCodes = options.OfType<ExpectedTypeCheckErrors>().SelectMany(x => x.Codes).ToList();
+        if (!CheckTypeErrors(astBuildingResult, expectedErrorCodes))
         {
             return;
+        }
+
+        if (options.Any(x => x is DumpIr))
+        {
+            DumpIr(astBuildingResult.Files!.First());
         }
 
         var file = astBuildingResult.Files!.First();
@@ -64,5 +63,30 @@ public class Tests : SingleFileCodegenTestBase
         var cgFile = translator.Translate(file);
 
         Validate(cgFile);
+    }
+
+    private static bool CheckTypeErrors(
+        AstBuildingResult astBuildingResult,
+        IReadOnlyCollection<ErrorCode> expectedErrors)
+    {
+        var actualTypeCheckErrors = astBuildingResult.Errors?.Select(x => x.ErrorCode).ToList() ?? [];
+        var expectedTypeCheckErrors = expectedErrors.ToList();
+
+        if (actualTypeCheckErrors.Count == expectedTypeCheckErrors.Count)
+        {
+            return expectedTypeCheckErrors.Count == 0;
+        }
+
+        var errorsDiffText = Utils.FormatTypeCheckerErrors(expectedTypeCheckErrors, actualTypeCheckErrors);
+        Assert.Fail(errorsDiffText);
+
+        return false;
+    }
+
+    private void DumpIr(FileAstNode file)
+    {
+        var resultDir = _testDataProvider.GetExpectedDirPath();
+
+        Utils.DumpIr(file, resultDir);
     }
 }

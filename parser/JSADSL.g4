@@ -30,7 +30,7 @@ statement
 assignmentStatement : assignee=expression EQ value=expression;
 
 // todo: make the type optional
-varDeclarationStatement : VAR_KW varName=ID (COLON type=ID) (EQ initValue=expression)?;
+varDeclarationStatement : VAR_KW varName=ID (COLON type=ID)? (EQ initValue=expression)?;
 
 ifStatement : IF_KW L_PAREN cond=expression R_PAREN L_BRACE mainBlock=statementsBlock R_BRACE ((ELSE_KW elseIfStatement=ifStatement)|(ELSE_KW L_BRACE elseBlock=statementsBlock R_BRACE))?;
 

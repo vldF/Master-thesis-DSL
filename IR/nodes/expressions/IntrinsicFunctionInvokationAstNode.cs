@@ -12,8 +12,9 @@ public record IntrinsicFunctionInvokationAstNode(
 {
     public string String()
     {
-        var generics = string.Join(",", Generics);
-        return $"intrinsic[{Reciever?.String() ?? ""}.{Name}<{generics}>({string.Join(",", Args)})]";
+        var generics = string.Join(",", Generics.Select(x => x.AsString()));
+        var args = string.Join(",", Args.Select(x => x.String()));
+        return $"intrinsic[{Reciever?.String() ?? ""}.{Name}<{generics}>({args})]";
     }
 
     public IAstNode? Parent { get; set; } = null;

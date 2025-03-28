@@ -40,7 +40,7 @@ public class TestDataProvider
         return Path.Combine(GetDirectoryInSolutionRoot("StandardLibrary"), "Standard.jsadsl");
     }
 
-    private string GetExpectedDirPath()
+    public string GetExpectedDirPath()
     {
         var testdataPath = GetDirectoryInProjectRoot(_testdataRelPath);
         return Path.Combine(testdataPath, "expected");

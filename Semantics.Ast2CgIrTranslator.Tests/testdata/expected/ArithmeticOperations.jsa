@@ -1,5 +1,5 @@
 #load "Standard.jsa"
-CallHandlerResult InnerFuncHandler(Location location, FunctionCall functionCall)
+CallHandlerResult withoutTypeInferHandler(Location location, FunctionCall functionCall)
 {
     var self = functionCall.Arguments[0];
     var arg1 = functionCall.Arguments[1];
@@ -13,5 +13,19 @@ CallHandlerResult InnerFuncHandler(Location location, FunctionCall functionCall)
     var complex = Interpreter.InvokeFunction(location, SemanticsApi.AddDescriptor, Interpreter.InvokeFunction(location, SemanticsApi.DivDescriptor, Interpreter.InvokeFunction(location, SemanticsApi.MultiplyDescriptor, Interpreter.InvokeFunction(location, SemanticsApi.AddDescriptor, sum, sub), mul), div), parens);
     return CallHandlerResult.Processed(complex);
 }
-var MyObjectClassDescription = PythonTypes.CreateClass("MyObject").WithMethod("InnerFunc", InnerFuncHandler);
+CallHandlerResult withTypeInferHandler(Location location, FunctionCall functionCall)
+{
+    var self = functionCall.Arguments[0];
+    var arg1 = functionCall.Arguments[1];
+    var arg2 = functionCall.Arguments[2];
+    var sum = Interpreter.InvokeFunction(location, SemanticsApi.AddDescriptor, arg1, arg2);
+    var sub = Interpreter.InvokeFunction(location, SemanticsApi.SubDescriptor, arg1, arg2);
+    var mul = Interpreter.InvokeFunction(location, SemanticsApi.MultiplyDescriptor, arg1, arg2);
+    var div = Interpreter.InvokeFunction(location, SemanticsApi.DivDescriptor, arg1, arg2);
+    var unaryMinus = Interpreter.InvokeFunction(location, SemanticsApi.NegDescriptor, arg1);
+    var parens = Interpreter.InvokeFunction(location, SemanticsApi.AddDescriptor, sum, sub);
+    var complex = Interpreter.InvokeFunction(location, SemanticsApi.AddDescriptor, Interpreter.InvokeFunction(location, SemanticsApi.DivDescriptor, Interpreter.InvokeFunction(location, SemanticsApi.MultiplyDescriptor, Interpreter.InvokeFunction(location, SemanticsApi.AddDescriptor, sum, sub), mul), div), parens);
+    return CallHandlerResult.Processed(complex);
+}
+var MyObjectClassDescription = PythonTypes.CreateClass("MyObject").WithMethod("withoutTypeInfer", withoutTypeInferHandler).WithMethod("withTypeInfer", withTypeInferHandler);
 Interpreter.Assign(ModuleDescriptor, "MyObject", MyObjectClassDescription.ClassDescriptor);

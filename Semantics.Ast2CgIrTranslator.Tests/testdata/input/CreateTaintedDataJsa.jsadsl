@@ -1,3 +1,4 @@
+// #dump-ir
 import "standard";
 
 object ServerResult {

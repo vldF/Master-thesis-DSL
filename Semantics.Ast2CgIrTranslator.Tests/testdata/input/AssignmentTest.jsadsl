@@ -1,3 +1,4 @@
+// #dump-ir
 object Type {}
 
 object MyObject {

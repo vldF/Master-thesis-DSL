@@ -1,3 +1,4 @@
+// #dump-ir
 intrinsic func callee1<T>(arg: T): T
 intrinsic func callee2<T1, T2>(arg1: T1, arg2: T2): T2
 

@@ -1,0 +1,18 @@
+file (
+package: 
+  intrinsic func callee1<T>(arg[arg]: TypeRef[T]) : TypeRef[T]
+  
+  intrinsic func callee2<T1, T2>(arg[arg1]: TypeRef[T1], arg[arg2]: TypeRef[T2]) : TypeRef[T2]
+  
+  object O (
+    func f (arg[self]: TypeRef[O]) : TypeRef[any] {
+      {
+        @t: @TypeRef[int] = intrinsic[.callee1<TypeRef[int]>(var(@VariableRef[location]),1)]
+        @var(@VariableRef[t]) = intrinsic[.callee1<>(var(@VariableRef[location]),1)]
+        @s: @TypeRef[string] = intrinsic[.callee2<TypeRef[int],TypeRef[string]>(var(@VariableRef[location]),1,"test")]
+        @var(@VariableRef[s]) = intrinsic[.callee2<>(var(@VariableRef[location]),1,"test")]
+        return (var(@VariableRef[SemanticsApi])).None
+      }
+    }
+  )
+)

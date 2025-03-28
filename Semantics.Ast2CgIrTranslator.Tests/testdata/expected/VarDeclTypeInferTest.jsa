@@ -1,0 +1,15 @@
+#load "Standard.jsa"
+CallHandlerResult fooHandler(Location location, FunctionCall functionCall)
+{
+    var self = functionCall.Arguments[0];
+    var arg = functionCall.Arguments[1];
+    var v1 = arg;
+    var v2 = arg;
+    var v3 = SemanticsApi.CreateLiteral("str");
+    var intVar1 = SemanticsApi.CreateLiteral(1);
+    var intVar2 = SemanticsApi.CreateLiteral(2);
+    var intVar3 = Interpreter.InvokeFunction(location, SemanticsApi.AddDescriptor, intVar1, intVar2);
+    return CallHandlerResult.Processed(SemanticsApi.None);
+}
+var OClassDescription = PythonTypes.CreateClass("O").WithMethod("foo", fooHandler);
+Interpreter.Assign(ModuleDescriptor, "O", OClassDescription.ClassDescriptor);

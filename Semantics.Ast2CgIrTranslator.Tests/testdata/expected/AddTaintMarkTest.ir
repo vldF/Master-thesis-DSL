@@ -1,0 +1,11 @@
+file (
+package: 
+  object Object (
+    func foo (arg[self]: TypeRef[Object]) : TypeRef[any] {
+      {
+        @newString: @TypeRef[string] = ""
+        return intrinsic[.WithTaintMark<>(var(@VariableRef[location]),var(@VariableRef[newString]),"Function argument")]
+      }
+    }
+  )
+)
