@@ -1,0 +1,11 @@
+object O {
+  func foo(arg: string) {
+    var v1: string = arg; // string
+    var v2 = arg;         // string
+    var v3 = "str";       // string
+
+    var intVar1: int = 1;            // int
+    var intVar2 = 2;                 // int
+    var intVar3 = intVar1 + intVar2; // int
+  }
+}

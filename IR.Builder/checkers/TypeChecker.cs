@@ -1,4 +1,5 @@
 using me.vldf.jsa.dsl.ast.types;
+using me.vldf.jsa.dsl.ir.builder.transformers.utils;
 using me.vldf.jsa.dsl.ir.nodes;
 using me.vldf.jsa.dsl.ir.nodes.declarations;
 using me.vldf.jsa.dsl.ir.nodes.expressions;
@@ -299,12 +300,31 @@ public class TypeChecker(ErrorManager errorManager) : AbstractChecker<AstType>
         if (varDeclAstNode.Init != null)
         {
             valueType = CheckExpression(varDeclAstNode.Init);
+            if (valueType == null)
+            {
+                return null;
+            }
         }
 
         var typeRef = varDeclAstNode.TypeReference;
+
+        if (valueType == null && typeRef == null)
+        {
+            errorManager.Report(Error.CanNotInferVarType(varDeclAstNode.Name));
+            return null;
+        }
+
         if (typeRef == null)
         {
-            return SimpleAstType.Any;
+            var contextOrNull = varDeclAstNode.GetNearestContext();
+            if (contextOrNull == null)
+            {
+                errorManager.Report(Error.CanNotInferVarType(varDeclAstNode.Name));
+                return null;
+            }
+
+            varDeclAstNode.TypeReference = valueType!.GetReference(contextOrNull);
+            return null;
         }
 
         var type = typeRef.Resolve();

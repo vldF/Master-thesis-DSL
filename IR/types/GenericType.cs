@@ -1,4 +1,6 @@
 using me.vldf.jsa.dsl.ast.types;
+using me.vldf.jsa.dsl.ir.context;
+using me.vldf.jsa.dsl.ir.references;
 
 namespace me.vldf.jsa.dsl.ir.types;
 
@@ -25,4 +27,6 @@ public class GenericType(
     {
         return name.GetHashCode();
     }
+
+    public override TypeReference GetReference(IrContext context) => new(Name, context);
 }

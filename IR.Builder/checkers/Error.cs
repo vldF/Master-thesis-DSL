@@ -17,6 +17,7 @@ public class Error(ErrorCode error, object[] args)
     public static Error NumericTypeExpected(AstType actual) => new(ErrorCode.NumericTypeExpected, [actual]);
     public static Error UnexpectedGenericsCount(int expected, int actual) => new(ErrorCode.UnexpectedGenericsCount, [expected, actual]);
     public static Error CanNotInferReturnType(string funcName) => new(ErrorCode.CanNotInferReturnType, [funcName]);
+    public static Error CanNotInferVarType(string varName) => new(ErrorCode.CanNotInferVarType, [varName]);
 
     public string Format()
     {
@@ -64,6 +65,7 @@ public class Error(ErrorCode error, object[] args)
         { ErrorCode.NumericTypeExpected, "Expected arithmetic type but got {0}" },
         { ErrorCode.UnexpectedGenericsCount, "Expected {0} type parameters but got {1}" },
         { ErrorCode.CanNotInferReturnType, "Can't infer return type of function {0}" },
+        { ErrorCode.CanNotInferVarType, "Can't infer type of variable {0}" },
     };
 }
 
@@ -77,4 +79,5 @@ public enum ErrorCode
     NumericTypeExpected,
     UnexpectedGenericsCount,
     CanNotInferReturnType,
+    CanNotInferVarType,
 }

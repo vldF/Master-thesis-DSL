@@ -1,3 +1,6 @@
+using me.vldf.jsa.dsl.ir.context;
+using me.vldf.jsa.dsl.ir.references;
+
 namespace me.vldf.jsa.dsl.ast.types;
 
 public class SimpleAstType(string name) : AstType
@@ -14,4 +17,6 @@ public class SimpleAstType(string name) : AstType
     {
         return $"Type({Name})";
     }
+
+    public override TypeReference GetReference(IrContext context) => new(Name, context);
 }
