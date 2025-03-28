@@ -1,5 +1,5 @@
 // #dump-ir
-import "standard";
+import "Standard";
 
 object Object {
     func foo(): any {

@@ -1,4 +1,4 @@
-#load "Standard.jsa"
+#load "package2.jsa"
 CallHandlerResult fooHandler(Location location, FunctionCall functionCall)
 {
     var t = functionCall.Arguments[0];

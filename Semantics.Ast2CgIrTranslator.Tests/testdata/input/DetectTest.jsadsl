@@ -1,4 +1,4 @@
-import "standard";
+import "Standard";
 
 object HttpClient {
     func DoPost(url: string): string {

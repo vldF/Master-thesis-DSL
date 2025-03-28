@@ -18,7 +18,7 @@ public class BaseBuilderVisitor(IrContext irContext) : JSADSLBaseVisitor<IAstNod
 
     public override FileAstNode VisitFile(JSADSLParser.FileContext context)
     {
-        var package = context.packageDecl()?.package?.Text;
+        var package = context.packageDecl()?.package?.Text.Trim('"');
         var result = context
             .topLevelDecl()
             .Select(Visit)
@@ -273,10 +273,10 @@ public class BaseBuilderVisitor(IrContext irContext) : JSADSLBaseVisitor<IAstNod
 
     public override IAstNode VisitImportDecl(JSADSLParser.ImportDeclContext context)
     {
-        var package = context.package.Text;
+        var package = context.package.Text.Trim('"');
         irContext.SaveImport(package);
 
-        return default;
+        return new ImportAstNode(package);
     }
 
     public override IStatementAstNode VisitStatement(JSADSLParser.StatementContext context)

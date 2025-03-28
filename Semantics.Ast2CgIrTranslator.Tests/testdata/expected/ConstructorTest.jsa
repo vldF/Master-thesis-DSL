@@ -1,4 +1,3 @@
-#load "Standard.jsa"
 CallHandlerResult __init__Handler(Location location, FunctionCall functionCall)
 {
     var self = functionCall.Arguments[0];

@@ -1,4 +1,3 @@
-#load "Standard.jsa"
 CallHandlerResult FooHandler(Location location, FunctionCall functionCall)
 {
     return CallHandlerResult.Processed(SemanticsApi.None);

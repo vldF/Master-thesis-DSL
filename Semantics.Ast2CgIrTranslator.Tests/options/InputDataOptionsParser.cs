@@ -26,7 +26,7 @@ public partial class InputDataOptionsParser
         var directoryInfo = new DirectoryInfo(dirPath);
         return directoryInfo
             .EnumerateFiles("*.jsadsl", new EnumerationOptions())
-            .SelectMany(f => ParseFileOptions(f.DirectoryName!))
+            .SelectMany(f => ParseFileOptions(f.FullName))
             .ToList();
     }
 

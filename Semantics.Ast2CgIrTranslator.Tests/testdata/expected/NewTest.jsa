@@ -1,4 +1,3 @@
-#load "Standard.jsa"
 var Type1ClassDescription = PythonTypes.CreateClass("Type1");
 CallHandlerResult InnerFuncHandler(Location location, FunctionCall functionCall)
 {

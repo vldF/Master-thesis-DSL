@@ -1,5 +1,7 @@
 file (
 package: 
+  import "Standard"
+  
   object Object (
     func foo (arg[self]: TypeRef[Object]) : TypeRef[any] {
       {

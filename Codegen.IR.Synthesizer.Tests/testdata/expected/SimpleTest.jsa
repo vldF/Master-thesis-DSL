@@ -1,4 +1,3 @@
-#load "Standard.jsa"
 void testMethod(int arg1, int arg2)
 {
     int testVarOfInt;

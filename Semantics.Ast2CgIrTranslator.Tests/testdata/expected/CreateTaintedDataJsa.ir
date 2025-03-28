@@ -1,5 +1,7 @@
 file (
 package: 
+  import "Standard"
+  
   object ServerResult (
     func __init__ (arg[self]: TypeRef[ServerResult]) : TypeRef[ServerResult] {
       {

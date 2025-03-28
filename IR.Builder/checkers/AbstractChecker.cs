@@ -212,6 +212,8 @@ public abstract class AbstractChecker<TR> : AbstractCheckerBase
                 return CheckReturn(returnStatementAstNode);
             case StatementsBlockAstNode statementsBlockAstNode:
                 return CheckStatementsBlock(statementsBlockAstNode);
+            case ImportAstNode:
+                return default;
             default:
                 throw new ArgumentOutOfRangeException(nameof(statement));
         }

@@ -1,5 +1,5 @@
 // #dump-ir
-import "standard";
+import "Standard";
 
 object ServerResult {
   var data: string;

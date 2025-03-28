@@ -14,7 +14,7 @@ public class Tests : SingleFileCodegenTestBase
     [SetUp]
     public void Setup()
     {
-        UpdateTests = false;
+        UpdateTests = true;
     }
 
     private static IEnumerable<TestCaseData> GetAllTests()

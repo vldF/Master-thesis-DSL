@@ -1,4 +1,4 @@
-package "standard";
+package "Standard";
 
 // todo: make a enumish something for vulnerabilityType
 intrinsic func Detect(expression: any, vulnerabilityType: string, grammar: string)

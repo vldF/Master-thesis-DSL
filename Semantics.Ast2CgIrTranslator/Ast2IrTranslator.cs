@@ -1,5 +1,6 @@
 using Codegen.IR.nodes;
 using Codegen.IR.nodes.expressions;
+using Codegen.IR.nodes.statements;
 using me.vldf.jsa.dsl.ast.visitors;
 using me.vldf.jsa.dsl.ir.nodes.declarations;
 using me.vldf.jsa.dsl.ir.nodes.expressions;
@@ -86,6 +87,11 @@ public class Ast2IrTranslator : IAstVisitor
             init: _ctx.CurrentBuilder);
 
         _ctx.ClassDescriptorVariables[node.Name] = classDescriptorVariable.AsValue();
+    }
+
+    public void VisitImportAstNode(ImportAstNode importAstNode)
+    {
+        _ctx.File.Statements.Add(new CgDirectiveStatement("load", importAstNode.FileName + ".jsa"));
     }
 
     public void VisitVarDeclAstNode(VarDeclAstNode node)

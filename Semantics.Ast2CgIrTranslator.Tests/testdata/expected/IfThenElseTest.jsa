@@ -1,4 +1,3 @@
-#load "Standard.jsa"
 CallHandlerResult InnerFuncHandler(Location location, FunctionCall functionCall)
 {
     var self = functionCall.Arguments[0];

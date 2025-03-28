@@ -1,3 +1,2 @@
-#load "Standard.jsa"
 var TypeClassDescription = PythonTypes.CreateClass("Type");
 Interpreter.Assign(ModuleDescriptor, "Type", TypeClassDescription.ClassDescriptor);

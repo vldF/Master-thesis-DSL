@@ -1,4 +1,3 @@
-#load "Standard.jsa"
 CallHandlerResult CompHandler(Location location, FunctionCall functionCall)
 {
     var arg1 = functionCall.Arguments[0];
