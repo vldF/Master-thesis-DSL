@@ -90,7 +90,7 @@ stringLiteral
    ;
 
 functionCall
-   :   (entryName=ID '.')* name=ID generic? L_PAREN args=expressionList R_PAREN
+   :   qualifiedAccess generic? L_PAREN args=expressionList R_PAREN
    ;
 
 objectDecl : OBJECT_KW name=ID L_BRACE objectBody R_BRACE;

@@ -1,4 +1,4 @@
-CallHandlerResult CompHandler(Location location, FunctionCall functionCall)
+CallHandlerResult global_Comp_Handler(Location location, FunctionCall functionCall)
 {
     var arg1 = functionCall.Arguments[0];
     var arg2 = functionCall.Arguments[1];
@@ -20,3 +20,4 @@ CallHandlerResult CompHandler(Location location, FunctionCall functionCall)
     returnValueBuilder0.AddOption(currentCond2, SemanticsApi.CreateLiteral(1));
     return CallHandlerResult.Processed(returnValueBuilder0);
 }
+var global_Comp_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("Comp").AssignTo().WithHandler(global_Comp_Handler).BuildAndRegister();

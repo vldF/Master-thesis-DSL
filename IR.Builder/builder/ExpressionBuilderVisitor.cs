@@ -117,8 +117,23 @@ public class ExpressionBuilderVisitor(IrContext irContext) : JSADSLBaseVisitor<I
 
     public override FunctionCallAstNode VisitFunctionCall(JSADSLParser.FunctionCallContext context)
     {
-        var name = context.name.Text;
-        var functionReference = new FunctionReference(name, irContext);
+        var qualifiedAccess = VisitQualifiedAccess(context.qualifiedAccess());
+        string funcName;
+        switch (qualifiedAccess)
+        {
+            case QualifiedAccessPropertyAstNode qa:
+                funcName = qa.PropertyName;
+                qualifiedAccess = qa.QualifiedParent;
+                break;
+            case VarExpressionAstNode varExpressionAstNode:
+                funcName = varExpressionAstNode.VariableReference.Name;
+                qualifiedAccess = null;
+                break;
+            default:
+                throw new InvalidOperationException();
+        }
+
+        var functionReference = new FunctionReference(funcName, irContext);
 
         var args = context.args
             .expression()
@@ -130,15 +145,8 @@ public class ExpressionBuilderVisitor(IrContext irContext) : JSADSLBaseVisitor<I
             ?.Select(id => new TypeReference(id.GetText(), irContext))
             .ToArray() ?? [];
 
-        var baseVarName = context.ID()[0].GetText();
-        var @base = new VarExpressionAstNode(new VariableReference(baseVarName, irContext));
-        IExpressionAstNode qualified = @base;
-        foreach (var entry in context.ID().Skip(1))
-        {
-            qualified = new QualifiedAccessPropertyAstNode(qualified, entry.GetText());
-        }
 
-        return new FunctionCallAstNode(qualifiedParent: qualified, functionReference, generics, args);
+        return new FunctionCallAstNode(qualifiedParent: qualifiedAccess, functionReference, generics, args);
     }
 
     public override IExpressionAstNode VisitQualifiedAccess(JSADSLParser.QualifiedAccessContext context)

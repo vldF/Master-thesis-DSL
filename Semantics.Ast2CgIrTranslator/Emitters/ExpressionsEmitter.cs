@@ -84,11 +84,19 @@ public class ExpressionsEmitter(TranslatorContext ctx)
 
     private ICgExpression EmitQualifiedFunctionCallAstNode(FunctionCallAstNode node)
     {
-        var qualifiedExpr = node.QualifiedParent != null ? EmitExpression(node.QualifiedParent) : null;
-        return new CgMethodCall(
-            qualifiedExpr,
-            node.FunctionReference.SealedValue!.Name,
-            node.Args.Select(EmitExpression).ToArray());
+        var resolvedFunc = node.FunctionReference.Resolve()!;
+
+        var locationArg = new CgVarExpression("location");
+        var selfArg = new CgVarExpression("self");
+
+        var args = node.Args.Select(EmitExpression).ToList();
+
+        var handlerName = resolvedFunc.GetMethodDescriptorName();
+        var handlerVar = new CgVarExpression(handlerName);
+
+        var invokeFuncArgs = new List<ICgExpression> { locationArg, handlerVar, selfArg };
+        invokeFuncArgs.AddRange(args);
+        return ctx.Semantics.InterpreterApi.CallMethod("InvokeFunction", invokeFuncArgs);
     }
 
     private ICgExpression EmitQualifiedAccessPropertyAstNode(QualifiedAccessPropertyAstNode node)

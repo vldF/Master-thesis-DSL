@@ -12,6 +12,10 @@ object HttpClient {
     }
 
     func Method2() {
-        Detect(container.field, "Server-Side Request Forgery", "HTTP URI");
+        unsafe(container.field);
+    }
+
+    func unsafe(str: string) {
+        Detect(str, "Server-Side Request Forgery", "HTTP URI");
     }
 }

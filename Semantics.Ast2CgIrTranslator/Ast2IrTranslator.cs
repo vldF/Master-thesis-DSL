@@ -45,25 +45,6 @@ public class Ast2IrTranslator : IAstVisitor
         {
             ((IAstVisitor)this).VisitStatementAstNode(nodeTopLevelDeclaration);
         }
-
-        foreach (var decl in objectDeclarations)
-        {
-            var objectDecl = decl as ObjectAstNode;
-
-            var classDescriptorVariable = _ctx.ClassDescriptorVariables[objectDecl!.Name];
-
-            var interpreterVar = new CgVarExpression("Interpreter");
-            var moduleDescriptorVar = new CgVarExpression("ModuleDescriptor");
-            var moduleAssignmentStatement = new CgMethodCall(interpreterVar,
-                "Assign",
-                [
-                    moduleDescriptorVar,
-                    new CgStringLiteral(objectDecl.Name),
-                    classDescriptorVariable.Property("ClassDescriptor")
-                ]);
-
-            _ctx.File.Statements.Add(moduleAssignmentStatement);
-        }
     }
 
     public void VisitFunctionArgAstNode(FunctionArgAstNode node) {}
@@ -75,18 +56,32 @@ public class Ast2IrTranslator : IAstVisitor
 
     public void VisitObjectAstNode(ObjectAstNode node)
     {
-        _ctx.CurrentBuilder = _ctx.Semantics.CreateClass(node.Name);
+        var classDescriptorVariableExpr = _ctx.Semantics.SemanticsApi.CallMethod(
+            "CreateClassObjectDescriptor",
+            [AsExpression(node.Name)]);
+
+        var classDescriptorVariable = _ctx.File.AddVarDecl(
+            node.GetDescriptionVarName(),
+            init: classDescriptorVariableExpr).AsValue();
+
+        _ctx.ClassDescriptorVariables[node.Name] = classDescriptorVariable;
+        _ctx.CurrentClassDescriptor = classDescriptorVariable;
 
         foreach (var child in node.Children)
         {
             ((IAstVisitor)this).Visit(child);
         }
 
-        var classDescriptorVariable = _ctx.File.AddVarDecl(
-            node.GetDescriptionVarName(),
-            init: _ctx.CurrentBuilder);
+        var moduleDescr = _ctx.Semantics.ModuleDescriptorVar;
+        var moduleAssignStatement = _ctx.Semantics.InterpreterApi.CallMethod(
+            "Assign",
+            [moduleDescr, AsExpression(node.Name), classDescriptorVariable]);
+        _ctx.File.Statements.Add(moduleAssignStatement);
 
-        _ctx.ClassDescriptorVariables[node.Name] = classDescriptorVariable.AsValue();
+        var pythonBuildClassStatement = _ctx.Semantics.Types.CallMethod(
+            "BuildClass",
+            [classDescriptorVariable]);
+        _ctx.File.Statements.Add(pythonBuildClassStatement);
     }
 
     public void VisitImportAstNode(ImportAstNode importAstNode)

@@ -1,10 +1,19 @@
 #load "Standard.jsa"
+#load "Standard.jsa"
 var HttpClientClassDescription = SemanticsApi.CreateClassObjectDescriptor("HttpClient");
+CallHandlerResult HttpClient_foo_Handler(Location location, FunctionCall functionCall)
+{
+    var self = functionCall.Arguments[0];
+    var str = functionCall.Arguments[1];
+    Detect(location, str, "Server-Side Request Forgery", "HTTP URI");
+    return CallHandlerResult.Processed(SemanticsApi.None);
+}
+var HttpClient_foo_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("foo").AssignTo(HttpClientClassDescription).WithHandler(HttpClient_foo_Handler).BuildAndRegister();
 CallHandlerResult HttpClient_DoPost_Handler(Location location, FunctionCall functionCall)
 {
     var self = functionCall.Arguments[0];
     var url = functionCall.Arguments[1];
-    Detect(location, url, "Server-Side Request Forgery", "HTTP URI");
+    Interpreter.InvokeFunction(location, HttpClient_foo_MethodDescriptor, self, url);
     return CallHandlerResult.Processed(SemanticsApi.None);
 }
 var HttpClient_DoPost_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("DoPost").AssignTo(HttpClientClassDescription).WithHandler(HttpClient_DoPost_Handler).BuildAndRegister();

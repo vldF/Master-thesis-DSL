@@ -1,22 +1,28 @@
-CallHandlerResult __init__Handler(Location location, FunctionCall functionCall)
+var InnerObjectClassDescription = SemanticsApi.CreateClassObjectDescriptor("InnerObject");
+CallHandlerResult InnerObject___init___Handler(Location location, FunctionCall functionCall)
 {
     var self = functionCall.Arguments[0];
     return CallHandlerResult.Processed(self);
 }
-var InnerObjectClassDescription = PythonTypes.CreateClass("InnerObject").WithMethod("__init__", __init__Handler);
-CallHandlerResult __init__Handler(Location location, FunctionCall functionCall)
+var InnerObject___init___MethodDescriptor = ProcessorApi.CreateFunctionBuilder("__init__").AssignTo(InnerObjectClassDescription).WithHandler(InnerObject___init___Handler).BuildAndRegister();
+Interpreter.Assign(ModuleDescriptor, "InnerObject", InnerObjectClassDescription);
+PythonTypes.BuildClass(InnerObjectClassDescription);
+var MyObjectClassDescription = SemanticsApi.CreateClassObjectDescriptor("MyObject");
+CallHandlerResult MyObject___init___Handler(Location location, FunctionCall functionCall)
 {
     var self = functionCall.Arguments[0];
     return CallHandlerResult.Processed(self);
 }
-CallHandlerResult simpleFieldAssignmentHandler(Location location, FunctionCall functionCall)
+var MyObject___init___MethodDescriptor = ProcessorApi.CreateFunctionBuilder("__init__").AssignTo(MyObjectClassDescription).WithHandler(MyObject___init___Handler).BuildAndRegister();
+CallHandlerResult MyObject_simpleFieldAssignment_Handler(Location location, FunctionCall functionCall)
 {
     var self = functionCall.Arguments[0];
     var arg1 = functionCall.Arguments[1];
     Interpreter.Assign(self, "field", arg1);
     return CallHandlerResult.Processed(SemanticsApi.None);
 }
-CallHandlerResult innerFieldAssignmentHandler(Location location, FunctionCall functionCall)
+var MyObject_simpleFieldAssignment_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("simpleFieldAssignment").AssignTo(MyObjectClassDescription).WithHandler(MyObject_simpleFieldAssignment_Handler).BuildAndRegister();
+CallHandlerResult MyObject_innerFieldAssignment_Handler(Location location, FunctionCall functionCall)
 {
     var self = functionCall.Arguments[0];
     var arg1 = functionCall.Arguments[1];
@@ -26,7 +32,8 @@ CallHandlerResult innerFieldAssignmentHandler(Location location, FunctionCall fu
     Interpreter.TryGetValue(tryGetValueResult2, "innerField", out var tryGetResult1);
     return CallHandlerResult.Processed(tryGetResult1);
 }
-CallHandlerResult localObjectFieldAssignmentHandler(Location location, FunctionCall functionCall)
+var MyObject_innerFieldAssignment_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("innerFieldAssignment").AssignTo(MyObjectClassDescription).WithHandler(MyObject_innerFieldAssignment_Handler).BuildAndRegister();
+CallHandlerResult MyObject_localObjectFieldAssignment_Handler(Location location, FunctionCall functionCall)
 {
     var self = functionCall.Arguments[0];
     var arg1 = functionCall.Arguments[1];
@@ -34,6 +41,6 @@ CallHandlerResult localObjectFieldAssignmentHandler(Location location, FunctionC
     Interpreter.Assign(local, "innerField", arg1);
     return CallHandlerResult.Processed(SemanticsApi.None);
 }
-var MyObjectClassDescription = PythonTypes.CreateClass("MyObject").WithMethod("__init__", __init__Handler).WithMethod("simpleFieldAssignment", simpleFieldAssignmentHandler).WithMethod("innerFieldAssignment", innerFieldAssignmentHandler).WithMethod("localObjectFieldAssignment", localObjectFieldAssignmentHandler);
-Interpreter.Assign(ModuleDescriptor, "InnerObject", InnerObjectClassDescription.ClassDescriptor);
-Interpreter.Assign(ModuleDescriptor, "MyObject", MyObjectClassDescription.ClassDescriptor);
+var MyObject_localObjectFieldAssignment_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("localObjectFieldAssignment").AssignTo(MyObjectClassDescription).WithHandler(MyObject_localObjectFieldAssignment_Handler).BuildAndRegister();
+Interpreter.Assign(ModuleDescriptor, "MyObject", MyObjectClassDescription);
+PythonTypes.BuildClass(MyObjectClassDescription);

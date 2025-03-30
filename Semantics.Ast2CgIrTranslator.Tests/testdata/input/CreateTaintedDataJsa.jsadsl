@@ -15,6 +15,10 @@ object HttpClient {
   }
 
   func sink(res: ServerResult) {
-    Detect(res, "Server-Side Request Forgery", "HTTP URI");
+    detectDelegate(res);
+  }
+
+  func detectDelegate(data: ServerResult) {
+    Detect(data, "Server-Side Request Forgery", "HTTP URI");
   }
 }

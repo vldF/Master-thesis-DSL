@@ -27,7 +27,14 @@ package:
     
     func sink (arg[self]: TypeRef[HttpClient], arg[res]: TypeRef[ServerResult]) : TypeRef[any] {
       {
-        intrinsic[.Detect<>(var(@VariableRef[location]),var(@VariableRef[res]),"Server-Side Request Forgery","HTTP URI")]
+        ().FunctionRef[detectDelegate](me.vldf.jsa.dsl.ir.nodes.expressions.VarExpressionAstNode)
+        return (var(@VariableRef[SemanticsApi])).None
+      }
+    }
+    
+    func detectDelegate (arg[self]: TypeRef[HttpClient], arg[data]: TypeRef[ServerResult]) : TypeRef[any] {
+      {
+        intrinsic[.Detect<>(var(@VariableRef[location]),var(@VariableRef[data]),"Server-Side Request Forgery","HTTP URI")]
         return (var(@VariableRef[SemanticsApi])).None
       }
     }

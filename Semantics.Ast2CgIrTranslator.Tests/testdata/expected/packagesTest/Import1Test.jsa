@@ -1,6 +1,7 @@
 #load "package2.jsa"
-CallHandlerResult fooHandler(Location location, FunctionCall functionCall)
+CallHandlerResult global_foo_Handler(Location location, FunctionCall functionCall)
 {
     var t = functionCall.Arguments[0];
     return CallHandlerResult.Processed(SemanticsApi.CreateLiteral(1));
 }
+var global_foo_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("foo").AssignTo().WithHandler(global_foo_Handler).BuildAndRegister();

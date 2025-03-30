@@ -6,9 +6,16 @@ namespace Semantics.Ast2CgIrTranslator;
 
 public static class Utils
 {
-    public static string GetHandlerName(this FunctionAstNode node)
+    public static string GetHandlerName(this FunctionAstNodeBase node)
     {
-        return node.Name + "Handler";
+        var objectNameOrNull = node.Parent as ObjectAstNode;
+        return (objectNameOrNull?.Name ?? "global") + "_" + node.Name + "_" + "Handler";
+    }
+
+    public static string GetMethodDescriptorName(this FunctionAstNodeBase node)
+    {
+        var objectNameOrNull = node.Parent as ObjectAstNode;
+        return (objectNameOrNull?.Name ?? "global") + "_" + node.Name + "_" + "MethodDescriptor";
     }
 
     public static string GetDescriptionVarName(this ObjectAstNode node)

@@ -1,16 +1,19 @@
-CallHandlerResult __init__Handler(Location location, FunctionCall functionCall)
+var MyObjectClassDescription = SemanticsApi.CreateClassObjectDescriptor("MyObject");
+CallHandlerResult MyObject___init___Handler(Location location, FunctionCall functionCall)
 {
     var self = functionCall.Arguments[0];
     Interpreter.Assign(self, "field", SemanticsApi.CreateLiteral(1));
     return CallHandlerResult.Processed(self);
 }
-CallHandlerResult GetHandler(Location location, FunctionCall functionCall)
+var MyObject___init___MethodDescriptor = ProcessorApi.CreateFunctionBuilder("__init__").AssignTo(MyObjectClassDescription).WithHandler(MyObject___init___Handler).BuildAndRegister();
+CallHandlerResult MyObject_Get_Handler(Location location, FunctionCall functionCall)
 {
     var self = functionCall.Arguments[0];
     Interpreter.TryGetValue(self, "field", out var tryGetResult1);
     return CallHandlerResult.Processed(tryGetResult1);
 }
-CallHandlerResult SetAndGetHandler(Location location, FunctionCall functionCall)
+var MyObject_Get_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("Get").AssignTo(MyObjectClassDescription).WithHandler(MyObject_Get_Handler).BuildAndRegister();
+CallHandlerResult MyObject_SetAndGet_Handler(Location location, FunctionCall functionCall)
 {
     var self = functionCall.Arguments[0];
     var value = functionCall.Arguments[1];
@@ -18,5 +21,6 @@ CallHandlerResult SetAndGetHandler(Location location, FunctionCall functionCall)
     Interpreter.TryGetValue(self, "field", out var tryGetResult2);
     return CallHandlerResult.Processed(tryGetResult2);
 }
-var MyObjectClassDescription = PythonTypes.CreateClass("MyObject").WithMethod("__init__", __init__Handler).WithMethod("Get", GetHandler).WithMethod("SetAndGet", SetAndGetHandler);
-Interpreter.Assign(ModuleDescriptor, "MyObject", MyObjectClassDescription.ClassDescriptor);
+var MyObject_SetAndGet_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("SetAndGet").AssignTo(MyObjectClassDescription).WithHandler(MyObject_SetAndGet_Handler).BuildAndRegister();
+Interpreter.Assign(ModuleDescriptor, "MyObject", MyObjectClassDescription);
+PythonTypes.BuildClass(MyObjectClassDescription);

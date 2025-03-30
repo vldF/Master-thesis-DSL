@@ -6,7 +6,7 @@ namespace Semantics.Ast2CgIrTranslator;
 public class TranslatorContext
 {
     public CgFile File;
-    public ICgExpression CurrentBuilder;
+    public ICgExpression CurrentClassDescriptor;
     public CgMethod HandlerMethod;
     public ICgStatementsContainer? CurrentContainer { get; private set; }
 

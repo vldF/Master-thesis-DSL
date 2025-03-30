@@ -1,19 +1,25 @@
-CallHandlerResult InnerFuncHandler(Location location, FunctionCall functionCall)
+var MyObjectClassDescription = SemanticsApi.CreateClassObjectDescriptor("MyObject");
+CallHandlerResult MyObject_InnerFunc_Handler(Location location, FunctionCall functionCall)
 {
     var self = functionCall.Arguments[0];
     var arg1 = functionCall.Arguments[1];
     return CallHandlerResult.Processed(SemanticsApi.None);
 }
-CallHandlerResult InnerFunc2Handler(Location location, FunctionCall functionCall)
+var MyObject_InnerFunc_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("InnerFunc").AssignTo(MyObjectClassDescription).WithHandler(MyObject_InnerFunc_Handler).BuildAndRegister();
+CallHandlerResult MyObject_InnerFunc2_Handler(Location location, FunctionCall functionCall)
 {
     var self = functionCall.Arguments[0];
     return CallHandlerResult.Processed(SemanticsApi.None);
 }
-var MyObjectClassDescription = PythonTypes.CreateClass("MyObject").WithMethod("InnerFunc", InnerFuncHandler).WithMethod("InnerFunc2", InnerFunc2Handler);
-var Type1ClassDescription = PythonTypes.CreateClass("Type1");
-var Type2ClassDescription = PythonTypes.CreateClass("Type2");
-var ReturnTypeClassDescription = PythonTypes.CreateClass("ReturnType");
-Interpreter.Assign(ModuleDescriptor, "MyObject", MyObjectClassDescription.ClassDescriptor);
-Interpreter.Assign(ModuleDescriptor, "Type1", Type1ClassDescription.ClassDescriptor);
-Interpreter.Assign(ModuleDescriptor, "Type2", Type2ClassDescription.ClassDescriptor);
-Interpreter.Assign(ModuleDescriptor, "ReturnType", ReturnTypeClassDescription.ClassDescriptor);
+var MyObject_InnerFunc2_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("InnerFunc2").AssignTo(MyObjectClassDescription).WithHandler(MyObject_InnerFunc2_Handler).BuildAndRegister();
+Interpreter.Assign(ModuleDescriptor, "MyObject", MyObjectClassDescription);
+PythonTypes.BuildClass(MyObjectClassDescription);
+var Type1ClassDescription = SemanticsApi.CreateClassObjectDescriptor("Type1");
+Interpreter.Assign(ModuleDescriptor, "Type1", Type1ClassDescription);
+PythonTypes.BuildClass(Type1ClassDescription);
+var Type2ClassDescription = SemanticsApi.CreateClassObjectDescriptor("Type2");
+Interpreter.Assign(ModuleDescriptor, "Type2", Type2ClassDescription);
+PythonTypes.BuildClass(Type2ClassDescription);
+var ReturnTypeClassDescription = SemanticsApi.CreateClassObjectDescriptor("ReturnType");
+Interpreter.Assign(ModuleDescriptor, "ReturnType", ReturnTypeClassDescription);
+PythonTypes.BuildClass(ReturnTypeClassDescription);

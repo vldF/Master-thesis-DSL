@@ -14,10 +14,6 @@ public class MethodEmitter(TranslatorContext ctx)
 
     public void Emit(FunctionAstNode func)
     {
-        ctx.CurrentBuilder = ctx.CurrentBuilder.CallMethod(
-            "WithMethod",
-            [AsExpression(func.Name), new CgVarExpression(func.GetHandlerName())]);
-
         var locationArgName = "location";
         var locationArgType = new CgSimpleType("Location");
 
@@ -43,6 +39,15 @@ public class MethodEmitter(TranslatorContext ctx)
         EmitStatementBlockAstNode(func.Body);
 
         ctx.PopContainer();
+
+        var methodDescrName = func.GetMethodDescriptorName();
+        var buildAndRegisterExpr = ctx.Semantics.ProcessorApi
+            .CallMethod("CreateFunctionBuilder", [AsExpression(func.Name)])
+            .CallMethod("AssignTo", [ctx.CurrentClassDescriptor])
+            .CallMethod("WithHandler", [new CgVarExpression(func.GetHandlerName())])
+            .CallMethod("BuildAndRegister", []);
+
+        ctx.File.AddVarDecl(methodDescrName, type: null, init: buildAndRegisterExpr);
     }
 
     private void EmitArg(FunctionArgAstNode argNode)
@@ -90,14 +95,8 @@ public class MethodEmitter(TranslatorContext ctx)
 
     private void EmitQualifiedFunctionCallAstNode(FunctionCallAstNode astCall)
     {
-        var qualifiedExpr = astCall.QualifiedParent != null
-            ? _expressionsEmitter.EmitExpression(astCall.QualifiedParent)
-            : null;
-        var call = new CgMethodCall(
-            qualifiedExpr,
-            astCall.FunctionReference.SealedValue!.Name,
-            astCall.Args.Select(_expressionsEmitter.EmitExpression).ToArray());
-        ctx.CurrentContainer!.Add(call);
+        var callStatement = (CgMethodCall)_expressionsEmitter.EmitExpression(astCall);
+        ctx.CurrentContainer!.Add(callStatement);
     }
 
     private void EmitStatementBlockAstNode(StatementsBlockAstNode statementsBlockAstNode)

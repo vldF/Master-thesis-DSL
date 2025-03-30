@@ -1,2 +1,3 @@
-var TypeClassDescription = PythonTypes.CreateClass("Type");
-Interpreter.Assign(ModuleDescriptor, "Type", TypeClassDescription.ClassDescriptor);
+var TypeClassDescription = SemanticsApi.CreateClassObjectDescriptor("Type");
+Interpreter.Assign(ModuleDescriptor, "Type", TypeClassDescription);
+PythonTypes.BuildClass(TypeClassDescription);

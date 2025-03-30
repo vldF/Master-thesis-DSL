@@ -1,4 +1,5 @@
-CallHandlerResult fooHandler(Location location, FunctionCall functionCall)
+var OClassDescription = SemanticsApi.CreateClassObjectDescriptor("O");
+CallHandlerResult O_foo_Handler(Location location, FunctionCall functionCall)
 {
     var self = functionCall.Arguments[0];
     var arg = functionCall.Arguments[1];
@@ -10,5 +11,6 @@ CallHandlerResult fooHandler(Location location, FunctionCall functionCall)
     var intVar3 = Interpreter.InvokeFunction(location, SemanticsApi.AddDescriptor, intVar1, intVar2);
     return CallHandlerResult.Processed(SemanticsApi.None);
 }
-var OClassDescription = PythonTypes.CreateClass("O").WithMethod("foo", fooHandler);
-Interpreter.Assign(ModuleDescriptor, "O", OClassDescription.ClassDescriptor);
+var O_foo_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("foo").AssignTo(OClassDescription).WithHandler(O_foo_Handler).BuildAndRegister();
+Interpreter.Assign(ModuleDescriptor, "O", OClassDescription);
+PythonTypes.BuildClass(OClassDescription);

@@ -1,29 +1,43 @@
 #load "Standard.jsa"
-CallHandlerResult __init__Handler(Location location, FunctionCall functionCall)
+var ServerResultClassDescription = SemanticsApi.CreateClassObjectDescriptor("ServerResult");
+CallHandlerResult ServerResult___init___Handler(Location location, FunctionCall functionCall)
 {
     var self = functionCall.Arguments[0];
     return CallHandlerResult.Processed(self);
 }
-var ServerResultClassDescription = PythonTypes.CreateClass("ServerResult").WithMethod("__init__", __init__Handler);
-CallHandlerResult doPostHandler(Location location, FunctionCall functionCall)
+var ServerResult___init___MethodDescriptor = ProcessorApi.CreateFunctionBuilder("__init__").AssignTo(ServerResultClassDescription).WithHandler(ServerResult___init___Handler).BuildAndRegister();
+Interpreter.Assign(ModuleDescriptor, "ServerResult", ServerResultClassDescription);
+PythonTypes.BuildClass(ServerResultClassDescription);
+var HttpClientClassDescription = SemanticsApi.CreateClassObjectDescriptor("HttpClient");
+CallHandlerResult HttpClient_doPost_Handler(Location location, FunctionCall functionCall)
 {
     var self = functionCall.Arguments[0];
     var teintData1 = SemanticsApi.CreateObjectDescriptor("<<dsl_teinted_data_0>>").With(new TaintOrigin("Body"));
     return CallHandlerResult.Processed(teintData1);
 }
-CallHandlerResult escapeDataHandler(Location location, FunctionCall functionCall)
+var HttpClient_doPost_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("doPost").AssignTo(HttpClientClassDescription).WithHandler(HttpClient_doPost_Handler).BuildAndRegister();
+CallHandlerResult HttpClient_escapeData_Handler(Location location, FunctionCall functionCall)
 {
     var self = functionCall.Arguments[0];
     var res = functionCall.Arguments[1];
     return CallHandlerResult.Processed(WithoutVulnerability(location, res, "Server-Side Request Forgery"));
 }
-CallHandlerResult sinkHandler(Location location, FunctionCall functionCall)
+var HttpClient_escapeData_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("escapeData").AssignTo(HttpClientClassDescription).WithHandler(HttpClient_escapeData_Handler).BuildAndRegister();
+CallHandlerResult HttpClient_sink_Handler(Location location, FunctionCall functionCall)
 {
     var self = functionCall.Arguments[0];
     var res = functionCall.Arguments[1];
-    Detect(location, res, "Server-Side Request Forgery", "HTTP URI");
+    Interpreter.InvokeFunction(location, HttpClient_detectDelegate_MethodDescriptor, self, res);
     return CallHandlerResult.Processed(SemanticsApi.None);
 }
-var HttpClientClassDescription = PythonTypes.CreateClass("HttpClient").WithMethod("doPost", doPostHandler).WithMethod("escapeData", escapeDataHandler).WithMethod("sink", sinkHandler);
-Interpreter.Assign(ModuleDescriptor, "ServerResult", ServerResultClassDescription.ClassDescriptor);
-Interpreter.Assign(ModuleDescriptor, "HttpClient", HttpClientClassDescription.ClassDescriptor);
+var HttpClient_sink_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("sink").AssignTo(HttpClientClassDescription).WithHandler(HttpClient_sink_Handler).BuildAndRegister();
+CallHandlerResult HttpClient_detectDelegate_Handler(Location location, FunctionCall functionCall)
+{
+    var self = functionCall.Arguments[0];
+    var data = functionCall.Arguments[1];
+    Detect(location, data, "Server-Side Request Forgery", "HTTP URI");
+    return CallHandlerResult.Processed(SemanticsApi.None);
+}
+var HttpClient_detectDelegate_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("detectDelegate").AssignTo(HttpClientClassDescription).WithHandler(HttpClient_detectDelegate_Handler).BuildAndRegister();
+Interpreter.Assign(ModuleDescriptor, "HttpClient", HttpClientClassDescription);
+PythonTypes.BuildClass(HttpClientClassDescription);
