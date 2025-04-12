@@ -1,5 +1,6 @@
 using me.vldf.jsa.dsl.ast.types;
 using me.vldf.jsa.dsl.ir.builder.transformers.utils;
+using me.vldf.jsa.dsl.ir.builder.utils;
 using me.vldf.jsa.dsl.ir.nodes;
 using me.vldf.jsa.dsl.ir.nodes.declarations;
 using me.vldf.jsa.dsl.ir.nodes.expressions;
@@ -144,7 +145,44 @@ public class TypeChecker(ErrorManager errorManager) : AbstractChecker<AstType>
 
     protected override AstType? CheckFunctionCall(FunctionCallAstNode functionCallAstNode)
     {
-        var func = functionCallAstNode.FunctionReference.Resolve();
+        FunctionAstNodeBase? func;
+
+        var qualifiedAccess = functionCallAstNode.QualifiedParent;
+        if (qualifiedAccess != null)
+        {
+            var qualifiedAccessType = CheckExpression(qualifiedAccess);
+            if (qualifiedAccessType == null)
+            {
+                return null;
+            }
+
+            if (qualifiedAccessType is not ObjectAstType qualifiedAccessTypeObject)
+            {
+                errorManager.Report(Error.RecieverTypeCanNotBeGeneric(qualifiedAccessType));
+                return null;
+            }
+
+            var ctx = functionCallAstNode.GetNearestContext();
+            if (ctx == null)
+            {
+                throw new Exception("can't get context");
+            }
+
+            var obj = ctx.ResolveObjectByType(qualifiedAccessTypeObject);
+            if (obj == null)
+            {
+                errorManager.Report(Error.CanNotResolveRecieverType(qualifiedAccessType));
+                return null;
+            }
+
+            func = functionCallAstNode.FunctionReference.Resolve(obj.Context);
+            functionCallAstNode.FunctionReference.SealedValue = func;
+        }
+        else
+        {
+            func = functionCallAstNode.FunctionReference.Resolve();
+        }
+
         if (func == null)
         {
             errorManager.Report(Error.UnresolvedFunction(functionCallAstNode.FunctionReference.Name));

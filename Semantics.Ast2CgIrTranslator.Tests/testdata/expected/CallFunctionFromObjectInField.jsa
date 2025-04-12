@@ -1,0 +1,32 @@
+#load "Standard.jsa"
+var HttpProcessorClassDescription = SemanticsApi.CreateClassObjectDescriptor("HttpProcessor");
+CallHandlerResult HttpProcessor_process_Handler(Location location, FunctionCall functionCall)
+{
+    var self = functionCall.Arguments[0];
+    var data = functionCall.Arguments[1];
+    Detect(location, data, "Server-Side Request Forgery", "HTTP URI");
+    return CallHandlerResult.Processed(SemanticsApi.None);
+}
+var HttpProcessor_process_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("process").AssignTo(HttpProcessorClassDescription).WithHandler(HttpProcessor_process_Handler).BuildAndRegister();
+Interpreter.Assign(ModuleDescriptor, "HttpProcessor", HttpProcessorClassDescription);
+PythonTypes.BuildClass(HttpProcessorClassDescription);
+var HttpClientClassDescription = SemanticsApi.CreateClassObjectDescriptor("HttpClient");
+CallHandlerResult HttpClient___init___Handler(Location location, FunctionCall functionCall)
+{
+    var self = functionCall.Arguments[0];
+    Interpreter.Assign(self, "processor", SemanticsApi.CreateObjectDescriptor("<HttpProcessor>"));
+    return CallHandlerResult.Processed(self);
+}
+var HttpClient___init___MethodDescriptor = ProcessorApi.CreateFunctionBuilder("__init__").AssignTo(HttpClientClassDescription).WithHandler(HttpClient___init___Handler).BuildAndRegister();
+CallHandlerResult HttpClient_GetData_Handler(Location location, FunctionCall functionCall)
+{
+    var self = functionCall.Arguments[0];
+    var teintData1 = SemanticsApi.CreateObjectDescriptor("<<dsl_teinted_data_0>>").WithType(SemanticsApi.StringType).With(new TaintOrigin("Body"));
+    var data = teintData1;
+    Interpreter.TryGetValue(self, "processor", out var tryGetValueResult1);
+    Interpreter.InvokeFunction(location, HttpProcessor_process_MethodDescriptor, out var tryGetValueResult1, data);
+    return CallHandlerResult.Processed(SemanticsApi.None);
+}
+var HttpClient_GetData_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("GetData").AssignTo(HttpClientClassDescription).WithHandler(HttpClient_GetData_Handler).BuildAndRegister();
+Interpreter.Assign(ModuleDescriptor, "HttpClient", HttpClientClassDescription);
+PythonTypes.BuildClass(HttpClientClassDescription);

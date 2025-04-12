@@ -18,6 +18,8 @@ public class Error(ErrorCode error, object[] args)
     public static Error UnexpectedGenericsCount(int expected, int actual) => new(ErrorCode.UnexpectedGenericsCount, [expected, actual]);
     public static Error CanNotInferReturnType(string funcName) => new(ErrorCode.CanNotInferReturnType, [funcName]);
     public static Error CanNotInferVarType(string varName) => new(ErrorCode.CanNotInferVarType, [varName]);
+    public static Error RecieverTypeCanNotBeGeneric(AstType type) => new(ErrorCode.RecieverTypeCanNotBeGeneric, [type]);
+    public static Error CanNotResolveRecieverType(AstType type) => new(ErrorCode.CanNotResolveRecieverType, [type]);
 
     public string Format()
     {
@@ -80,4 +82,6 @@ public enum ErrorCode
     UnexpectedGenericsCount,
     CanNotInferReturnType,
     CanNotInferVarType,
+    RecieverTypeCanNotBeGeneric,
+    CanNotResolveRecieverType,
 }

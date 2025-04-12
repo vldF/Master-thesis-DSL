@@ -86,15 +86,18 @@ public class ExpressionsEmitter(TranslatorContext ctx)
     {
         var resolvedFunc = node.FunctionReference.Resolve()!;
 
+        var reciever = node.QualifiedParent != null
+            ? EmitReciever(node.QualifiedParent)
+            : new CgVarExpression("self");
+
         var locationArg = new CgVarExpression("location");
-        var selfArg = new CgVarExpression("self");
 
         var args = node.Args.Select(EmitExpression).ToList();
 
         var handlerName = resolvedFunc.GetMethodDescriptorName();
         var handlerVar = new CgVarExpression(handlerName);
 
-        var invokeFuncArgs = new List<ICgExpression> { locationArg, handlerVar, selfArg };
+        var invokeFuncArgs = new List<ICgExpression> { locationArg, handlerVar, reciever };
         invokeFuncArgs.AddRange(args);
         return ctx.Semantics.InterpreterApi.CallMethod("InvokeFunction", invokeFuncArgs);
     }

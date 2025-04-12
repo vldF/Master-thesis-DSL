@@ -1,3 +1,4 @@
+using me.vldf.jsa.dsl.ast.types;
 using me.vldf.jsa.dsl.ir.context;
 using me.vldf.jsa.dsl.ir.nodes.declarations;
 using me.vldf.jsa.dsl.ir.nodes.expressions;
@@ -28,5 +29,11 @@ public static class AstHelpers
     public static VarExpressionAstNode GetVarExpr(this VarDeclAstNode varDecl, IrContext irContext)
     {
         return new VarExpressionAstNode(varDecl.GetVarRef(irContext));
+    }
+
+    public static ObjectAstNode? ResolveObjectByType(this IrContext context, ObjectAstType obj)
+    {
+        var objReference = new ObjectReference(obj.Name, context);
+        return objReference.Resolve();
     }
 }

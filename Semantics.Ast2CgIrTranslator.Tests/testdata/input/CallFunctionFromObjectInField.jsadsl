@@ -1,0 +1,16 @@
+import "Standard";
+
+object HttpProcessor {
+  func process(data) {
+    Detect(data, "Server-Side Request Forgery", "HTTP URI");
+  }
+}
+
+object HttpClient {
+  var processor = new HttpProcessor();
+
+  func GetData(): string {
+    var data = CreateTaintedDataOfType<string>("Body");
+    processor.process(data);
+  }
+}

@@ -160,6 +160,7 @@ public class BaseBuilderVisitor(IrContext irContext) : JSADSLBaseVisitor<IAstNod
 
         var type = new ObjectAstType(result);
         irContext.SaveNewType(type);
+        irContext.SaveNewObject(result);
 
         return result;
     }

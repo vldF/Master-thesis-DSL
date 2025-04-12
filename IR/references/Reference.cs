@@ -10,7 +10,7 @@ namespace me.vldf.jsa.dsl.ir.references;
 
 public abstract class Reference<T>()
 {
-    public abstract T? Resolve();
+    public abstract T? Resolve(IrContext? ctx = null);
 
     public abstract string AsString();
     public T? SealedValue { get; set; } = default;
@@ -25,14 +25,14 @@ public abstract class Reference<T>()
 
 public class TypeReference(string id, IrContext context) : Reference<AstType>()
 {
-    public override AstType? Resolve()
+    public override AstType? Resolve(IrContext? ctx = null)
     {
         if (SealedValue != null)
         {
             return SealedValue;
         }
 
-        return context.ResolveType(id);
+        return ctx?.ResolveType(id) ?? context.ResolveType(id);
     }
 
     public override string AsString() => $"TypeRef[{id}]";
@@ -41,14 +41,14 @@ public class TypeReference(string id, IrContext context) : Reference<AstType>()
 
 public class FunctionReference(string id, IrContext context) : Reference<FunctionAstNodeBase>()
 {
-    public override FunctionAstNodeBase? Resolve()
+    public override FunctionAstNodeBase? Resolve(IrContext? ctx = null)
     {
         if (SealedValue != null)
         {
             return SealedValue;
         }
 
-        return context.ResolveFunc(id);
+        return ctx?.ResolveFunc(id) ?? context.ResolveFunc(id);
     }
 
     public override string AsString() => $"FunctionRef[{id}]";
@@ -57,14 +57,14 @@ public class FunctionReference(string id, IrContext context) : Reference<Functio
 
 public class ObjectReference(string id, IrContext context) : Reference<ObjectAstNode>()
 {
-    public override ObjectAstNode? Resolve()
+    public override ObjectAstNode? Resolve(IrContext? ctx = null)
     {
         if (SealedValue != null)
         {
             return SealedValue;
         }
 
-        return context.ResolveObject(id);
+        return ctx?.ResolveObject(id) ?? context.ResolveObject(id);
     }
 
     public override string AsString() => $"ObjectRef[{id}]";
@@ -75,7 +75,7 @@ public class VariableReference(string Id, IrContext context) : Reference<VarDecl
 {
     public readonly IrContext Context = context;
 
-    public override VarDeclAstNode? Resolve()
+    public override VarDeclAstNode? Resolve(IrContext? ctx = null)
     {
         if (SealedValue != null)
         {
