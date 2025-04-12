@@ -244,3 +244,5 @@ public abstract class AbstractChecker<TR> : AbstractCheckerBase
         return default;
     }
 }
+
+public class Unit;

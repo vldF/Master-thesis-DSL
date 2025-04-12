@@ -1,0 +1,5 @@
+// #expected-tc-errors(InitFuncCanReturnOnlyObjectType)
+
+object Obj {
+    func __init__(): int {}
+}

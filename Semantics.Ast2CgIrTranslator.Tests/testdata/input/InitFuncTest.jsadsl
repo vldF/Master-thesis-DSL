@@ -1,0 +1,8 @@
+object Obj {
+    var field = 1;
+    var fieldWithoutInit: int;
+
+    func __init__(arg: int) {
+        fieldWithoutInit = arg;
+    }
+}

@@ -93,12 +93,15 @@ functionCall
    :   qualifiedAccess generic? L_PAREN args=expressionList R_PAREN
    ;
 
+constructorDecl : CONSTRUCTOR_KW L_PAREN (functionArgs) R_PAREN L_BRACE statementsBlock R_BRACE ;
+
 objectDecl : OBJECT_KW name=ID L_BRACE objectBody R_BRACE;
 
 objectBody : objectBodyStatement*;
 
 objectBodyStatement
    :   funcDecl
+   |   constructorDecl
    |   varDeclarationStatement SEMI_COLON
    ;
 
@@ -119,6 +122,7 @@ TRUE_KW : 'true';
 FALSE_KW : 'false';
 PACKAGE_KW : 'package';
 IMPORT_KW : 'import';
+CONSTRUCTOR_KW : 'constructor';
 
 L_PAREN : '(';
 R_PAREN : ')';

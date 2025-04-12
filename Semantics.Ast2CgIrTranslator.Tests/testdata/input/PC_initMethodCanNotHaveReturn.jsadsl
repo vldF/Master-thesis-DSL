@@ -1,0 +1,7 @@
+// #expected-tc-errors(InitFuncCanNotHaveReturn)
+
+object Obj {
+    func __init__() {
+        return 1;
+    }
+}

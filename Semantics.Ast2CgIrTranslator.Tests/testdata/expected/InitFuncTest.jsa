@@ -1,0 +1,12 @@
+var ObjClassDescription = SemanticsApi.CreateClassObjectDescriptor("Obj");
+CallHandlerResult Obj___init___Handler(Location location, FunctionCall functionCall)
+{
+    var self = functionCall.Arguments[0];
+    var arg = functionCall.Arguments[1];
+    Interpreter.Assign(self, "field", SemanticsApi.CreateLiteral(1));
+    Interpreter.Assign(self, "fieldWithoutInit", arg);
+    return CallHandlerResult.Processed(self);
+}
+var Obj___init___MethodDescriptor = ProcessorApi.CreateFunctionBuilder("__init__").AssignTo(ObjClassDescription).WithHandler(Obj___init___Handler).BuildAndRegister();
+Interpreter.Assign(ModuleDescriptor, "Obj", ObjClassDescription);
+PythonTypes.BuildClass(ObjClassDescription);

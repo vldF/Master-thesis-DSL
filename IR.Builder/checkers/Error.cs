@@ -21,6 +21,10 @@ public class Error(ErrorCode error, object[] args)
     public static Error RecieverTypeCanNotBeGeneric(AstType type) => new(ErrorCode.RecieverTypeCanNotBeGeneric, [type]);
     public static Error CanNotResolveRecieverType(AstType type) => new(ErrorCode.CanNotResolveRecieverType, [type]);
 
+    // python specific
+    public static Error InitFuncCanNotHaveReturn(string objectName) => new(ErrorCode.InitFuncCanNotHaveReturn, [objectName]);
+    public static Error InitFuncCanReturnOnlyObjectType(string objectName) => new(ErrorCode.InitFuncCanReturnOnlyObjectType, [objectName]);
+
     public string Format()
     {
         var messageTemplate = _messages.GetValueOrDefault(ErrorCode);
@@ -68,6 +72,10 @@ public class Error(ErrorCode error, object[] args)
         { ErrorCode.UnexpectedGenericsCount, "Expected {0} type parameters but got {1}" },
         { ErrorCode.CanNotInferReturnType, "Can't infer return type of function {0}" },
         { ErrorCode.CanNotInferVarType, "Can't infer type of variable {0}" },
+        { ErrorCode.RecieverTypeCanNotBeGeneric, "reciever can not have generic type {0}" },
+        { ErrorCode.CanNotResolveRecieverType, "reciever type {0} is unresolved" },
+        { ErrorCode.InitFuncCanNotHaveReturn, "init function can not have return statement, but it have in object {0}" },
+        { ErrorCode.InitFuncCanReturnOnlyObjectType, "init function must have no return type or its type must match its object, but it is violated for {0}" },
     };
 }
 
@@ -84,4 +92,6 @@ public enum ErrorCode
     CanNotInferVarType,
     RecieverTypeCanNotBeGeneric,
     CanNotResolveRecieverType,
+    InitFuncCanNotHaveReturn,
+    InitFuncCanReturnOnlyObjectType,
 }
