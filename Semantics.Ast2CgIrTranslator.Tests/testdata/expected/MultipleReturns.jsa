@@ -21,3 +21,4 @@ CallHandlerResult global_Comp_Handler(Location location, FunctionCall functionCa
     return CallHandlerResult.Processed(returnValueBuilder0);
 }
 var global_Comp_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("Comp").AssignTo().WithHandler(global_Comp_Handler).BuildAndRegister();
+CreateModuleFunction("Comp", global_Comp_MethodDescriptor);

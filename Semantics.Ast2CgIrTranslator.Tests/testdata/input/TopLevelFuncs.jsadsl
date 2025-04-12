@@ -1,0 +1,3 @@
+func id(arg: int): int {
+    return arg;
+}

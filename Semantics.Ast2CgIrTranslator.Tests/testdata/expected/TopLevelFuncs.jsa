@@ -1,0 +1,7 @@
+CallHandlerResult global_id_Handler(Location location, FunctionCall functionCall)
+{
+    var arg = functionCall.Arguments[0];
+    return CallHandlerResult.Processed(arg);
+}
+var global_id_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("id").AssignTo().WithHandler(global_id_Handler).BuildAndRegister();
+CreateModuleFunction("id", global_id_MethodDescriptor);

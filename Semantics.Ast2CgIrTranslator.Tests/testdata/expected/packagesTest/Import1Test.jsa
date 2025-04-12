@@ -5,3 +5,4 @@ CallHandlerResult global_foo_Handler(Location location, FunctionCall functionCal
     return CallHandlerResult.Processed(SemanticsApi.CreateLiteral(1));
 }
 var global_foo_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("foo").AssignTo().WithHandler(global_foo_Handler).BuildAndRegister();
+CreateModuleFunction("foo", global_foo_MethodDescriptor);
