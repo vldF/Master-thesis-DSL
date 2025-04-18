@@ -1,7 +1,8 @@
 CallHandlerResult global_id_Handler(Location location, FunctionCall functionCall)
 {
-    var arg = functionCall.Arguments[0];
+    var handledArguments = ProcessorApi.ProcessKeywordArguments(functionCall);
+    handledArguments.TryGetValue("arg", out var arg);
     return CallHandlerResult.Processed(arg);
 }
-var global_id_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("id").AssignTo().WithHandler(global_id_Handler).BuildAndRegister();
+var global_id_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("id").AssignTo().WithHandler(global_id_Handler).WithArgumentsInfo(new ArgumentsInfo(["arg", ], 1, false, false, 0, 0)).BuildAndRegister();
 CreateModuleFunction("id", global_id_MethodDescriptor);

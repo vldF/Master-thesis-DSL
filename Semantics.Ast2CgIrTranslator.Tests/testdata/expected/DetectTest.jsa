@@ -2,11 +2,12 @@
 var HttpClientClassDescription = SemanticsApi.CreateClassObjectDescriptor("HttpClient");
 CallHandlerResult HttpClient_DoPost_Handler(Location location, FunctionCall functionCall)
 {
-    var self = functionCall.Arguments[0];
-    var url = functionCall.Arguments[1];
+    var handledArguments = ProcessorApi.ProcessKeywordArguments(functionCall);
+    handledArguments.TryGetValue("self", out var self);
+    handledArguments.TryGetValue("url", out var url);
     Detect(location, url, "Server-Side Request Forgery", "HTTP URI");
     return CallHandlerResult.Processed(SemanticsApi.None);
 }
-var HttpClient_DoPost_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("DoPost").AssignTo(HttpClientClassDescription).WithHandler(HttpClient_DoPost_Handler).BuildAndRegister();
+var HttpClient_DoPost_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("DoPost").AssignTo(HttpClientClassDescription).WithHandler(HttpClient_DoPost_Handler).WithArgumentsInfo(new ArgumentsInfo(["self", "url", ], 2, false, false, 0, 0)).BuildAndRegister();
 Interpreter.Assign(ModuleDescriptor, "HttpClient", HttpClientClassDescription);
 PythonTypes.BuildClass(HttpClientClassDescription);

@@ -1,9 +1,10 @@
 var MyObjectClassDescription = SemanticsApi.CreateClassObjectDescriptor("MyObject");
 CallHandlerResult MyObject_withoutTypeInfer_Handler(Location location, FunctionCall functionCall)
 {
-    var self = functionCall.Arguments[0];
-    var arg1 = functionCall.Arguments[1];
-    var arg2 = functionCall.Arguments[2];
+    var handledArguments = ProcessorApi.ProcessKeywordArguments(functionCall);
+    handledArguments.TryGetValue("self", out var self);
+    handledArguments.TryGetValue("arg1", out var arg1);
+    handledArguments.TryGetValue("arg2", out var arg2);
     var sum = Interpreter.InvokeFunction(location, SemanticsApi.AddDescriptor, arg1, arg2);
     var sub = Interpreter.InvokeFunction(location, SemanticsApi.SubDescriptor, arg1, arg2);
     var mul = Interpreter.InvokeFunction(location, SemanticsApi.MultiplyDescriptor, arg1, arg2);
@@ -13,12 +14,13 @@ CallHandlerResult MyObject_withoutTypeInfer_Handler(Location location, FunctionC
     var complex = Interpreter.InvokeFunction(location, SemanticsApi.AddDescriptor, Interpreter.InvokeFunction(location, SemanticsApi.DivDescriptor, Interpreter.InvokeFunction(location, SemanticsApi.MultiplyDescriptor, Interpreter.InvokeFunction(location, SemanticsApi.AddDescriptor, sum, sub), mul), div), parens);
     return CallHandlerResult.Processed(complex);
 }
-var MyObject_withoutTypeInfer_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("withoutTypeInfer").AssignTo(MyObjectClassDescription).WithHandler(MyObject_withoutTypeInfer_Handler).BuildAndRegister();
+var MyObject_withoutTypeInfer_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("withoutTypeInfer").AssignTo(MyObjectClassDescription).WithHandler(MyObject_withoutTypeInfer_Handler).WithArgumentsInfo(new ArgumentsInfo(["self", "arg1", "arg2", ], 3, false, false, 0, 0)).BuildAndRegister();
 CallHandlerResult MyObject_withTypeInfer_Handler(Location location, FunctionCall functionCall)
 {
-    var self = functionCall.Arguments[0];
-    var arg1 = functionCall.Arguments[1];
-    var arg2 = functionCall.Arguments[2];
+    var handledArguments = ProcessorApi.ProcessKeywordArguments(functionCall);
+    handledArguments.TryGetValue("self", out var self);
+    handledArguments.TryGetValue("arg1", out var arg1);
+    handledArguments.TryGetValue("arg2", out var arg2);
     var sum = Interpreter.InvokeFunction(location, SemanticsApi.AddDescriptor, arg1, arg2);
     var sub = Interpreter.InvokeFunction(location, SemanticsApi.SubDescriptor, arg1, arg2);
     var mul = Interpreter.InvokeFunction(location, SemanticsApi.MultiplyDescriptor, arg1, arg2);
@@ -28,6 +30,6 @@ CallHandlerResult MyObject_withTypeInfer_Handler(Location location, FunctionCall
     var complex = Interpreter.InvokeFunction(location, SemanticsApi.AddDescriptor, Interpreter.InvokeFunction(location, SemanticsApi.DivDescriptor, Interpreter.InvokeFunction(location, SemanticsApi.MultiplyDescriptor, Interpreter.InvokeFunction(location, SemanticsApi.AddDescriptor, sum, sub), mul), div), parens);
     return CallHandlerResult.Processed(complex);
 }
-var MyObject_withTypeInfer_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("withTypeInfer").AssignTo(MyObjectClassDescription).WithHandler(MyObject_withTypeInfer_Handler).BuildAndRegister();
+var MyObject_withTypeInfer_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("withTypeInfer").AssignTo(MyObjectClassDescription).WithHandler(MyObject_withTypeInfer_Handler).WithArgumentsInfo(new ArgumentsInfo(["self", "arg1", "arg2", ], 3, false, false, 0, 0)).BuildAndRegister();
 Interpreter.Assign(ModuleDescriptor, "MyObject", MyObjectClassDescription);
 PythonTypes.BuildClass(MyObjectClassDescription);

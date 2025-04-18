@@ -2,46 +2,51 @@
 var ContainerClassDescription = SemanticsApi.CreateClassObjectDescriptor("Container");
 CallHandlerResult Container___init___Handler(Location location, FunctionCall functionCall)
 {
-    var self = functionCall.Arguments[0];
+    var handledArguments = ProcessorApi.ProcessKeywordArguments(functionCall);
+    handledArguments.TryGetValue("self", out var self);
     Interpreter.Assign(self, "field", SemanticsApi.CreateLiteral("test"));
     return CallHandlerResult.Processed(self);
 }
-var Container___init___MethodDescriptor = ProcessorApi.CreateFunctionBuilder("__init__").AssignTo(ContainerClassDescription).WithHandler(Container___init___Handler).BuildAndRegister();
+var Container___init___MethodDescriptor = ProcessorApi.CreateFunctionBuilder("__init__").AssignTo(ContainerClassDescription).WithHandler(Container___init___Handler).WithArgumentsInfo(new ArgumentsInfo(["self", ], 1, false, false, 0, 0)).BuildAndRegister();
 Interpreter.Assign(ModuleDescriptor, "Container", ContainerClassDescription);
 PythonTypes.BuildClass(ContainerClassDescription);
 var HttpClientClassDescription = SemanticsApi.CreateClassObjectDescriptor("HttpClient");
 CallHandlerResult HttpClient___init___Handler(Location location, FunctionCall functionCall)
 {
-    var self = functionCall.Arguments[0];
+    var handledArguments = ProcessorApi.ProcessKeywordArguments(functionCall);
+    handledArguments.TryGetValue("self", out var self);
     Interpreter.Assign(self, "container", SemanticsApi.CreateObjectDescriptor("<Container>"));
     return CallHandlerResult.Processed(self);
 }
-var HttpClient___init___MethodDescriptor = ProcessorApi.CreateFunctionBuilder("__init__").AssignTo(HttpClientClassDescription).WithHandler(HttpClient___init___Handler).BuildAndRegister();
+var HttpClient___init___MethodDescriptor = ProcessorApi.CreateFunctionBuilder("__init__").AssignTo(HttpClientClassDescription).WithHandler(HttpClient___init___Handler).WithArgumentsInfo(new ArgumentsInfo(["self", ], 1, false, false, 0, 0)).BuildAndRegister();
 CallHandlerResult HttpClient_Method1_Handler(Location location, FunctionCall functionCall)
 {
-    var self = functionCall.Arguments[0];
-    var str = functionCall.Arguments[1];
+    var handledArguments = ProcessorApi.ProcessKeywordArguments(functionCall);
+    handledArguments.TryGetValue("self", out var self);
+    handledArguments.TryGetValue("str", out var str);
     Interpreter.TryGetValue(self, "container", out var tryGetValueResult1);
     Interpreter.Assign(tryGetValueResult1, "field", str);
     return CallHandlerResult.Processed(SemanticsApi.None);
 }
-var HttpClient_Method1_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("Method1").AssignTo(HttpClientClassDescription).WithHandler(HttpClient_Method1_Handler).BuildAndRegister();
+var HttpClient_Method1_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("Method1").AssignTo(HttpClientClassDescription).WithHandler(HttpClient_Method1_Handler).WithArgumentsInfo(new ArgumentsInfo(["self", "str", ], 2, false, false, 0, 0)).BuildAndRegister();
 CallHandlerResult HttpClient_Method2_Handler(Location location, FunctionCall functionCall)
 {
-    var self = functionCall.Arguments[0];
+    var handledArguments = ProcessorApi.ProcessKeywordArguments(functionCall);
+    handledArguments.TryGetValue("self", out var self);
     Interpreter.TryGetValue(self, "container", out var tryGetValueResult2);
     Interpreter.TryGetValue(tryGetValueResult2, "field", out var tryGetResult1);
     Interpreter.InvokeFunction(location, HttpClient_unsafe_MethodDescriptor, self, tryGetResult1);
     return CallHandlerResult.Processed(SemanticsApi.None);
 }
-var HttpClient_Method2_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("Method2").AssignTo(HttpClientClassDescription).WithHandler(HttpClient_Method2_Handler).BuildAndRegister();
+var HttpClient_Method2_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("Method2").AssignTo(HttpClientClassDescription).WithHandler(HttpClient_Method2_Handler).WithArgumentsInfo(new ArgumentsInfo(["self", ], 1, false, false, 0, 0)).BuildAndRegister();
 CallHandlerResult HttpClient_unsafe_Handler(Location location, FunctionCall functionCall)
 {
-    var self = functionCall.Arguments[0];
-    var str = functionCall.Arguments[1];
+    var handledArguments = ProcessorApi.ProcessKeywordArguments(functionCall);
+    handledArguments.TryGetValue("self", out var self);
+    handledArguments.TryGetValue("str", out var str);
     Detect(location, str, "Server-Side Request Forgery", "HTTP URI");
     return CallHandlerResult.Processed(SemanticsApi.None);
 }
-var HttpClient_unsafe_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("unsafe").AssignTo(HttpClientClassDescription).WithHandler(HttpClient_unsafe_Handler).BuildAndRegister();
+var HttpClient_unsafe_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("unsafe").AssignTo(HttpClientClassDescription).WithHandler(HttpClient_unsafe_Handler).WithArgumentsInfo(new ArgumentsInfo(["self", "str", ], 2, false, false, 0, 0)).BuildAndRegister();
 Interpreter.Assign(ModuleDescriptor, "HttpClient", HttpClientClassDescription);
 PythonTypes.BuildClass(HttpClientClassDescription);

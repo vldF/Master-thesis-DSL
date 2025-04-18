@@ -247,9 +247,23 @@ public class CodegenSynthesizer : AbstractTextSynthesizer
             case CgNewExpression cgNewExpression:
                 SynthNewExpression(cgNewExpression);
                 break;
+            case CgListLiteralExpression cgListLiteralExpression:
+                SynthListLiteralExpression(cgListLiteralExpression);
+                break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(expression));
         }
+    }
+
+    private void SynthListLiteralExpression(CgListLiteralExpression cgListLiteralExpression)
+    {
+        Append("[");
+        foreach (var cgExpression in cgListLiteralExpression.elements)
+        {
+            SynthExpression(cgExpression);
+            Append(", ");
+        }
+        Append("]");
     }
 
     private void SynthNewExpression(CgNewExpression cgNewExpression)

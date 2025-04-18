@@ -2,10 +2,11 @@
 var ObjectClassDescription = SemanticsApi.CreateClassObjectDescriptor("Object");
 CallHandlerResult Object_foo_Handler(Location location, FunctionCall functionCall)
 {
-    var self = functionCall.Arguments[0];
+    var handledArguments = ProcessorApi.ProcessKeywordArguments(functionCall);
+    handledArguments.TryGetValue("self", out var self);
     var newString = SemanticsApi.CreateLiteral("");
     return CallHandlerResult.Processed(WithTaintMark(location, newString, "Function argument"));
 }
-var Object_foo_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("foo").AssignTo(ObjectClassDescription).WithHandler(Object_foo_Handler).BuildAndRegister();
+var Object_foo_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("foo").AssignTo(ObjectClassDescription).WithHandler(Object_foo_Handler).WithArgumentsInfo(new ArgumentsInfo(["self", ], 1, false, false, 0, 0)).BuildAndRegister();
 Interpreter.Assign(ModuleDescriptor, "Object", ObjectClassDescription);
 PythonTypes.BuildClass(ObjectClassDescription);

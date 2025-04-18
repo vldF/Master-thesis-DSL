@@ -38,11 +38,6 @@ public class Semantics
         return new CgVarExpression("CallHandlerResult").CallMethod("Processed", [res]);
     }
 
-    public ICgExpression GetArgument(int idx)
-    {
-        return _functionCall.Property("Arguments").Index(idx);
-    }
-
     public ICgExpression GetSelf()
     {
         return new CgVarExpression("self");

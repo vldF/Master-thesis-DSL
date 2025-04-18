@@ -4,11 +4,12 @@ PythonTypes.BuildClass(TypeClassDescription);
 var MyObjectClassDescription = SemanticsApi.CreateClassObjectDescriptor("MyObject");
 CallHandlerResult MyObject_InnerFunc_Handler(Location location, FunctionCall functionCall)
 {
-    var self = functionCall.Arguments[0];
-    var arg1 = functionCall.Arguments[1];
+    var handledArguments = ProcessorApi.ProcessKeywordArguments(functionCall);
+    handledArguments.TryGetValue("self", out var self);
+    handledArguments.TryGetValue("arg1", out var arg1);
     MyIntrinsicFunction(location, arg1);
     return CallHandlerResult.Processed(MyIntrinsicFunction(location, arg1));
 }
-var MyObject_InnerFunc_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("InnerFunc").AssignTo(MyObjectClassDescription).WithHandler(MyObject_InnerFunc_Handler).BuildAndRegister();
+var MyObject_InnerFunc_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("InnerFunc").AssignTo(MyObjectClassDescription).WithHandler(MyObject_InnerFunc_Handler).WithArgumentsInfo(new ArgumentsInfo(["self", "arg1", ], 2, false, false, 0, 0)).BuildAndRegister();
 Interpreter.Assign(ModuleDescriptor, "MyObject", MyObjectClassDescription);
 PythonTypes.BuildClass(MyObjectClassDescription);

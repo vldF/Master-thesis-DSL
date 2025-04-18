@@ -1,7 +1,8 @@
 CallHandlerResult global_Comp_Handler(Location location, FunctionCall functionCall)
 {
-    var arg1 = functionCall.Arguments[0];
-    var arg2 = functionCall.Arguments[1];
+    var handledArguments = ProcessorApi.ProcessKeywordArguments(functionCall);
+    handledArguments.TryGetValue("arg1", out var arg1);
+    handledArguments.TryGetValue("arg2", out var arg2);
     var returnValueBuilder0 = Interpreter.CreateReturnedValuesBuilder();
     var condition1 = SemanticsApi.CreateCastToBoolOperator(Interpreter.InvokeFunction(location, SemanticsApi.GreaterDescriptor, arg1, arg2));
     Engine.TryEnterBranch(condition1, out var branchId1);
@@ -20,5 +21,5 @@ CallHandlerResult global_Comp_Handler(Location location, FunctionCall functionCa
     returnValueBuilder0.AddOption(currentCond2, SemanticsApi.CreateLiteral(1));
     return CallHandlerResult.Processed(returnValueBuilder0);
 }
-var global_Comp_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("Comp").AssignTo().WithHandler(global_Comp_Handler).BuildAndRegister();
+var global_Comp_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("Comp").AssignTo().WithHandler(global_Comp_Handler).WithArgumentsInfo(new ArgumentsInfo(["arg1", "arg2", ], 2, false, false, 0, 0)).BuildAndRegister();
 CreateModuleFunction("Comp", global_Comp_MethodDescriptor);

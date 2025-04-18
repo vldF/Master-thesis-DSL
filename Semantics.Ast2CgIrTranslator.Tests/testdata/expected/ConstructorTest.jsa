@@ -1,26 +1,29 @@
 var MyObjectClassDescription = SemanticsApi.CreateClassObjectDescriptor("MyObject");
 CallHandlerResult MyObject___init___Handler(Location location, FunctionCall functionCall)
 {
-    var self = functionCall.Arguments[0];
+    var handledArguments = ProcessorApi.ProcessKeywordArguments(functionCall);
+    handledArguments.TryGetValue("self", out var self);
     Interpreter.Assign(self, "field", SemanticsApi.CreateLiteral(1));
     return CallHandlerResult.Processed(self);
 }
-var MyObject___init___MethodDescriptor = ProcessorApi.CreateFunctionBuilder("__init__").AssignTo(MyObjectClassDescription).WithHandler(MyObject___init___Handler).BuildAndRegister();
+var MyObject___init___MethodDescriptor = ProcessorApi.CreateFunctionBuilder("__init__").AssignTo(MyObjectClassDescription).WithHandler(MyObject___init___Handler).WithArgumentsInfo(new ArgumentsInfo(["self", ], 1, false, false, 0, 0)).BuildAndRegister();
 CallHandlerResult MyObject_Get_Handler(Location location, FunctionCall functionCall)
 {
-    var self = functionCall.Arguments[0];
+    var handledArguments = ProcessorApi.ProcessKeywordArguments(functionCall);
+    handledArguments.TryGetValue("self", out var self);
     Interpreter.TryGetValue(self, "field", out var tryGetResult1);
     return CallHandlerResult.Processed(tryGetResult1);
 }
-var MyObject_Get_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("Get").AssignTo(MyObjectClassDescription).WithHandler(MyObject_Get_Handler).BuildAndRegister();
+var MyObject_Get_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("Get").AssignTo(MyObjectClassDescription).WithHandler(MyObject_Get_Handler).WithArgumentsInfo(new ArgumentsInfo(["self", ], 1, false, false, 0, 0)).BuildAndRegister();
 CallHandlerResult MyObject_SetAndGet_Handler(Location location, FunctionCall functionCall)
 {
-    var self = functionCall.Arguments[0];
-    var value = functionCall.Arguments[1];
+    var handledArguments = ProcessorApi.ProcessKeywordArguments(functionCall);
+    handledArguments.TryGetValue("self", out var self);
+    handledArguments.TryGetValue("value", out var value);
     Interpreter.Assign(self, "field", value);
     Interpreter.TryGetValue(self, "field", out var tryGetResult2);
     return CallHandlerResult.Processed(tryGetResult2);
 }
-var MyObject_SetAndGet_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("SetAndGet").AssignTo(MyObjectClassDescription).WithHandler(MyObject_SetAndGet_Handler).BuildAndRegister();
+var MyObject_SetAndGet_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("SetAndGet").AssignTo(MyObjectClassDescription).WithHandler(MyObject_SetAndGet_Handler).WithArgumentsInfo(new ArgumentsInfo(["self", "value", ], 2, false, false, 0, 0)).BuildAndRegister();
 Interpreter.Assign(ModuleDescriptor, "MyObject", MyObjectClassDescription);
 PythonTypes.BuildClass(MyObjectClassDescription);

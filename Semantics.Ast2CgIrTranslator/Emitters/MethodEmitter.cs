@@ -31,31 +31,41 @@ public class MethodEmitter(TranslatorContext ctx)
         ctx.HandlerMethod = ctx.File.CreateMethod(func.GetHandlerName(), args, returnType);
         ctx.PushContainer(ctx.HandlerMethod);
 
+        var handledArgs = VarDeclaration(
+            ctx.CurrentContainer!,
+            "handledArguments",
+            init: ctx.Semantics.ProcessorApi.CallMethod("ProcessKeywordArguments", [new CgVarExpression(functionCallName)]));
         foreach (var arg in func.Args)
         {
-            EmitArg(arg);
+            var initExpression = handledArgs.CallMethod(
+                "TryGetValue",
+                [AsExpression(arg.Name), new CgVarExpression(arg.Name, isOutVar: true)]);
+
+            ctx.CurrentContainer!.Add(initExpression);
         }
 
         EmitStatementBlockAstNode(func.Body);
 
         ctx.PopContainer();
 
+        var argsAsList = func.Args.Select(a => AsExpression(a.Name)).ToList();
+        var argInfo = new CgNewExpression("ArgumentsInfo", [
+            new CgListLiteralExpression(argsAsList),
+            AsExpression(argsAsList.Count),
+            AsExpression(false),
+            AsExpression(false),
+            AsExpression(0),
+            AsExpression(0),
+        ]);
         var methodDescrName = func.GetMethodDescriptorName();
         var buildAndRegisterExpr = ctx.Semantics.ProcessorApi
             .CallMethod("CreateFunctionBuilder", [AsExpression(func.Name)])
             .CallMethod("AssignTo", [ctx.CurrentClassDescriptor])
             .CallMethod("WithHandler", [new CgVarExpression(func.GetHandlerName())])
+            .CallMethod("WithArgumentsInfo", [argInfo])
             .CallMethod("BuildAndRegister", []);
 
         ctx.File.AddVarDecl(methodDescrName, type: null, init: buildAndRegisterExpr);
-    }
-
-    private void EmitArg(FunctionArgAstNode argNode)
-    {
-        // todo: desugar it in preprocessing stages
-        var initExpression = ctx.Semantics.GetArgument(argNode.Index);
-
-        VarDeclaration(ctx.CurrentContainer!, argNode.Name, init: initExpression);
     }
 
     private void EmitStatement(IStatementAstNode bodyChild)
