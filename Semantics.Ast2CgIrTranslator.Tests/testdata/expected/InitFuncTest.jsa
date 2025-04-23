@@ -8,6 +8,6 @@ CallHandlerResult Obj___init___Handler(Location location, FunctionCall functionC
     Interpreter.Assign(self, "fieldWithoutInit", arg);
     return CallHandlerResult.Processed(self);
 }
-var Obj___init___MethodDescriptor = ProcessorApi.CreateFunctionBuilder("__init__").AssignTo(ObjClassDescription).WithHandler(Obj___init___Handler).WithArgumentsInfo(new ArgumentsInfo(["self", "arg", ], 2, false, false, 0, 0)).BuildAndRegister();
+var Obj___init___MethodDescriptor = ProcessorApi.CreateFunctionBuilder("__init__").WithHandler(Obj___init___Handler).WithArgumentsInfo(new ArgumentsInfo(["self", "arg", ], 2, false, false, 0, 0)).AssignTo(ObjClassDescription).BuildAndRegister();
 Interpreter.Assign(ModuleDescriptor, "Obj", ObjClassDescription);
 PythonTypes.BuildClass(ObjClassDescription);

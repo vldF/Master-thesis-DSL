@@ -15,13 +15,13 @@ CallHandlerResult MyObject_InnerFunc_Handler(Location location, FunctionCall fun
     handledArguments.TryGetValue("arg1", out var arg1);
     return CallHandlerResult.Processed(SemanticsApi.None);
 }
-var MyObject_InnerFunc_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("InnerFunc").AssignTo(MyObjectClassDescription).WithHandler(MyObject_InnerFunc_Handler).WithArgumentsInfo(new ArgumentsInfo(["self", "arg1", ], 2, false, false, 0, 0)).BuildAndRegister();
+var MyObject_InnerFunc_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("InnerFunc").WithHandler(MyObject_InnerFunc_Handler).WithArgumentsInfo(new ArgumentsInfo(["self", "arg1", ], 2, false, false, 0, 0)).AssignTo(MyObjectClassDescription).BuildAndRegister();
 CallHandlerResult MyObject_InnerFunc2_Handler(Location location, FunctionCall functionCall)
 {
     var handledArguments = ProcessorApi.ProcessKeywordArguments(functionCall);
     handledArguments.TryGetValue("self", out var self);
     return CallHandlerResult.Processed(SemanticsApi.None);
 }
-var MyObject_InnerFunc2_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("InnerFunc2").AssignTo(MyObjectClassDescription).WithHandler(MyObject_InnerFunc2_Handler).WithArgumentsInfo(new ArgumentsInfo(["self", ], 1, false, false, 0, 0)).BuildAndRegister();
+var MyObject_InnerFunc2_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("InnerFunc2").WithHandler(MyObject_InnerFunc2_Handler).WithArgumentsInfo(new ArgumentsInfo(["self", ], 1, false, false, 0, 0)).AssignTo(MyObjectClassDescription).BuildAndRegister();
 Interpreter.Assign(ModuleDescriptor, "MyObject", MyObjectClassDescription);
 PythonTypes.BuildClass(MyObjectClassDescription);

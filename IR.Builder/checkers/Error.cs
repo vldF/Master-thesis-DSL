@@ -10,7 +10,8 @@ public class Error(ErrorCode error, object[] args)
     public object[] Args { get; } = args;
 
     public static Error UnresolvedFunction(string name) => new(ErrorCode.UnresolvedFunction, [name]);
-    public static Error UnresolvedType(string name) => new(ErrorCode.UnresolvedFunction, [name]);
+    public static Error UnresolvedType(string name) => new(ErrorCode.UnresolvedType, [name]);
+    public static Error UnresolvedVar(string name) => new(ErrorCode.UnresolvedVar, [name]);
     public static Error TypeMissmatch(AstType expected, AstType actual) => new(ErrorCode.TypeMissmatch, [expected, actual]);
     public static Error UnexpectedReturnExpression(IExpressionAstNode expr) => new(ErrorCode.TypeMissmatch, [expr]);
     public static Error NoReturnExpression() => new(ErrorCode.NoReturnExpression, []);
@@ -65,6 +66,7 @@ public class Error(ErrorCode error, object[] args)
     {
         { ErrorCode.UnresolvedFunction, "Unresolved function {0}" },
         { ErrorCode.UnresolvedType, "Unresolved type {0}" },
+        { ErrorCode.UnresolvedVar, "Unresolved var {0}" },
         { ErrorCode.TypeMissmatch, "Expected type {0} but got {1}" },
         { ErrorCode.UnexpectedReturnExpression, "Function {0} shouldn't return anythyng but it returns {1}" },
         { ErrorCode.NoReturnExpression, "Function {0} returns {1} but return without expression found" },
@@ -83,6 +85,7 @@ public enum ErrorCode
 {
     UnresolvedFunction,
     UnresolvedType,
+    UnresolvedVar,
     TypeMissmatch,
     UnexpectedReturnExpression,
     NoReturnExpression,

@@ -1,0 +1,20 @@
+#load "Standard.jsa"
+#load "urllib3.response.jsa"
+CallHandlerResult global_request_Handler(Location location, FunctionCall functionCall)
+{
+    var handledArguments = ProcessorApi.ProcessKeywordArguments(functionCall);
+    handledArguments.TryGetValue("method", out var method);
+    handledArguments.TryGetValue("url", out var url);
+    handledArguments.TryGetValue("body", out var body);
+    handledArguments.TryGetValue("fields", out var fields);
+    handledArguments.TryGetValue("headers", out var headers);
+    handledArguments.TryGetValue("json", out var json);
+    Detect(location, url, "Server-Side Request Forgery", "HTTP URI");
+    Detect(location, headers, "Server-Side Request Forgery", "HTTP URI");
+    Detect(location, headers, "Information Exposure", "Serialized JSON data");
+    Detect(location, fields, "Information Exposure", "Field");
+    Detect(location, json, "Information Exposure", "HTTP header value");
+
+    return CallHandlerResult.Processed(SemanticsApi.CreateObjectDescriptor("<HTTPResponse>"));
+}
+var global_request_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("request").WithHandler(global_request_Handler).WithArgumentsInfo(new ArgumentsInfo(["method", "url", "body", "fields", "headers", "json", ], 6, false, false, 0, 0)).AssignTo(ModuleDescriptor).BuildAndRegister();

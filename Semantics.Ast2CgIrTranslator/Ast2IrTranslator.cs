@@ -52,18 +52,6 @@ public class Ast2IrTranslator : IAstVisitor
     public void VisitFunctionAstNode(FunctionAstNode node)
     {
         _methodEmitter.Emit(node);
-
-        if (node.Parent == null)
-        {
-            var moduleAssignStatement = new CgMethodCall(
-                Reciever: null,
-                Name: "CreateModuleFunction",
-                [
-                    AsExpression(node.Name),
-                    new CgVarExpression(node.GetMethodDescriptorName())
-                ]);
-            _ctx.File.Statements.Add(moduleAssignStatement);
-        }
     }
 
     public void VisitObjectAstNode(ObjectAstNode node)

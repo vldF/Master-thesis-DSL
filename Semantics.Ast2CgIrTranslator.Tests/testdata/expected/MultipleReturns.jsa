@@ -21,5 +21,4 @@ CallHandlerResult global_Comp_Handler(Location location, FunctionCall functionCa
     returnValueBuilder0.AddOption(currentCond2, SemanticsApi.CreateLiteral(1));
     return CallHandlerResult.Processed(returnValueBuilder0);
 }
-var global_Comp_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("Comp").AssignTo().WithHandler(global_Comp_Handler).WithArgumentsInfo(new ArgumentsInfo(["arg1", "arg2", ], 2, false, false, 0, 0)).BuildAndRegister();
-CreateModuleFunction("Comp", global_Comp_MethodDescriptor);
+var global_Comp_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("Comp").WithHandler(global_Comp_Handler).WithArgumentsInfo(new ArgumentsInfo(["arg1", "arg2", ], 2, false, false, 0, 0)).AssignTo(ModuleDescriptor).BuildAndRegister();

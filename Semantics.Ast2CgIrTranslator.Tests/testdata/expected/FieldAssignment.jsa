@@ -5,7 +5,7 @@ CallHandlerResult InnerObject___init___Handler(Location location, FunctionCall f
     handledArguments.TryGetValue("self", out var self);
     return CallHandlerResult.Processed(self);
 }
-var InnerObject___init___MethodDescriptor = ProcessorApi.CreateFunctionBuilder("__init__").AssignTo(InnerObjectClassDescription).WithHandler(InnerObject___init___Handler).WithArgumentsInfo(new ArgumentsInfo(["self", ], 1, false, false, 0, 0)).BuildAndRegister();
+var InnerObject___init___MethodDescriptor = ProcessorApi.CreateFunctionBuilder("__init__").WithHandler(InnerObject___init___Handler).WithArgumentsInfo(new ArgumentsInfo(["self", ], 1, false, false, 0, 0)).AssignTo(InnerObjectClassDescription).BuildAndRegister();
 Interpreter.Assign(ModuleDescriptor, "InnerObject", InnerObjectClassDescription);
 PythonTypes.BuildClass(InnerObjectClassDescription);
 var MyObjectClassDescription = SemanticsApi.CreateClassObjectDescriptor("MyObject");
@@ -15,7 +15,7 @@ CallHandlerResult MyObject___init___Handler(Location location, FunctionCall func
     handledArguments.TryGetValue("self", out var self);
     return CallHandlerResult.Processed(self);
 }
-var MyObject___init___MethodDescriptor = ProcessorApi.CreateFunctionBuilder("__init__").AssignTo(MyObjectClassDescription).WithHandler(MyObject___init___Handler).WithArgumentsInfo(new ArgumentsInfo(["self", ], 1, false, false, 0, 0)).BuildAndRegister();
+var MyObject___init___MethodDescriptor = ProcessorApi.CreateFunctionBuilder("__init__").WithHandler(MyObject___init___Handler).WithArgumentsInfo(new ArgumentsInfo(["self", ], 1, false, false, 0, 0)).AssignTo(MyObjectClassDescription).BuildAndRegister();
 CallHandlerResult MyObject_simpleFieldAssignment_Handler(Location location, FunctionCall functionCall)
 {
     var handledArguments = ProcessorApi.ProcessKeywordArguments(functionCall);
@@ -24,7 +24,7 @@ CallHandlerResult MyObject_simpleFieldAssignment_Handler(Location location, Func
     Interpreter.Assign(self, "field", arg1);
     return CallHandlerResult.Processed(SemanticsApi.None);
 }
-var MyObject_simpleFieldAssignment_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("simpleFieldAssignment").AssignTo(MyObjectClassDescription).WithHandler(MyObject_simpleFieldAssignment_Handler).WithArgumentsInfo(new ArgumentsInfo(["self", "arg1", ], 2, false, false, 0, 0)).BuildAndRegister();
+var MyObject_simpleFieldAssignment_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("simpleFieldAssignment").WithHandler(MyObject_simpleFieldAssignment_Handler).WithArgumentsInfo(new ArgumentsInfo(["self", "arg1", ], 2, false, false, 0, 0)).AssignTo(MyObjectClassDescription).BuildAndRegister();
 CallHandlerResult MyObject_innerFieldAssignment_Handler(Location location, FunctionCall functionCall)
 {
     var handledArguments = ProcessorApi.ProcessKeywordArguments(functionCall);
@@ -36,7 +36,7 @@ CallHandlerResult MyObject_innerFieldAssignment_Handler(Location location, Funct
     Interpreter.TryGetValue(tryGetValueResult2, "innerField", out var tryGetResult1);
     return CallHandlerResult.Processed(tryGetResult1);
 }
-var MyObject_innerFieldAssignment_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("innerFieldAssignment").AssignTo(MyObjectClassDescription).WithHandler(MyObject_innerFieldAssignment_Handler).WithArgumentsInfo(new ArgumentsInfo(["self", "arg1", ], 2, false, false, 0, 0)).BuildAndRegister();
+var MyObject_innerFieldAssignment_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("innerFieldAssignment").WithHandler(MyObject_innerFieldAssignment_Handler).WithArgumentsInfo(new ArgumentsInfo(["self", "arg1", ], 2, false, false, 0, 0)).AssignTo(MyObjectClassDescription).BuildAndRegister();
 CallHandlerResult MyObject_localObjectFieldAssignment_Handler(Location location, FunctionCall functionCall)
 {
     var handledArguments = ProcessorApi.ProcessKeywordArguments(functionCall);
@@ -46,6 +46,6 @@ CallHandlerResult MyObject_localObjectFieldAssignment_Handler(Location location,
     Interpreter.Assign(local, "innerField", arg1);
     return CallHandlerResult.Processed(SemanticsApi.None);
 }
-var MyObject_localObjectFieldAssignment_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("localObjectFieldAssignment").AssignTo(MyObjectClassDescription).WithHandler(MyObject_localObjectFieldAssignment_Handler).WithArgumentsInfo(new ArgumentsInfo(["self", "arg1", ], 2, false, false, 0, 0)).BuildAndRegister();
+var MyObject_localObjectFieldAssignment_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("localObjectFieldAssignment").WithHandler(MyObject_localObjectFieldAssignment_Handler).WithArgumentsInfo(new ArgumentsInfo(["self", "arg1", ], 2, false, false, 0, 0)).AssignTo(MyObjectClassDescription).BuildAndRegister();
 Interpreter.Assign(ModuleDescriptor, "MyObject", MyObjectClassDescription);
 PythonTypes.BuildClass(MyObjectClassDescription);

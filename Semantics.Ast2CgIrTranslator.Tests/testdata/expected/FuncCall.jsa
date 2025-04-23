@@ -9,7 +9,7 @@ CallHandlerResult HttpClient_foo_Handler(Location location, FunctionCall functio
     Detect(location, str, "Server-Side Request Forgery", "HTTP URI");
     return CallHandlerResult.Processed(SemanticsApi.None);
 }
-var HttpClient_foo_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("foo").AssignTo(HttpClientClassDescription).WithHandler(HttpClient_foo_Handler).WithArgumentsInfo(new ArgumentsInfo(["self", "str", ], 2, false, false, 0, 0)).BuildAndRegister();
+var HttpClient_foo_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("foo").WithHandler(HttpClient_foo_Handler).WithArgumentsInfo(new ArgumentsInfo(["self", "str", ], 2, false, false, 0, 0)).AssignTo(HttpClientClassDescription).BuildAndRegister();
 CallHandlerResult HttpClient_DoPost_Handler(Location location, FunctionCall functionCall)
 {
     var handledArguments = ProcessorApi.ProcessKeywordArguments(functionCall);
@@ -18,6 +18,6 @@ CallHandlerResult HttpClient_DoPost_Handler(Location location, FunctionCall func
     Interpreter.InvokeFunction(location, HttpClient_foo_MethodDescriptor, self, url);
     return CallHandlerResult.Processed(SemanticsApi.None);
 }
-var HttpClient_DoPost_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("DoPost").AssignTo(HttpClientClassDescription).WithHandler(HttpClient_DoPost_Handler).WithArgumentsInfo(new ArgumentsInfo(["self", "url", ], 2, false, false, 0, 0)).BuildAndRegister();
+var HttpClient_DoPost_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("DoPost").WithHandler(HttpClient_DoPost_Handler).WithArgumentsInfo(new ArgumentsInfo(["self", "url", ], 2, false, false, 0, 0)).AssignTo(HttpClientClassDescription).BuildAndRegister();
 Interpreter.Assign(ModuleDescriptor, "HttpClient", HttpClientClassDescription);
 PythonTypes.BuildClass(HttpClientClassDescription);

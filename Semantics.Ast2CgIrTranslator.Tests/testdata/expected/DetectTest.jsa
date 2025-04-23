@@ -8,6 +8,6 @@ CallHandlerResult HttpClient_DoPost_Handler(Location location, FunctionCall func
     Detect(location, url, "Server-Side Request Forgery", "HTTP URI");
     return CallHandlerResult.Processed(SemanticsApi.None);
 }
-var HttpClient_DoPost_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("DoPost").AssignTo(HttpClientClassDescription).WithHandler(HttpClient_DoPost_Handler).WithArgumentsInfo(new ArgumentsInfo(["self", "url", ], 2, false, false, 0, 0)).BuildAndRegister();
+var HttpClient_DoPost_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("DoPost").WithHandler(HttpClient_DoPost_Handler).WithArgumentsInfo(new ArgumentsInfo(["self", "url", ], 2, false, false, 0, 0)).AssignTo(HttpClientClassDescription).BuildAndRegister();
 Interpreter.Assign(ModuleDescriptor, "HttpClient", HttpClientClassDescription);
 PythonTypes.BuildClass(HttpClientClassDescription);

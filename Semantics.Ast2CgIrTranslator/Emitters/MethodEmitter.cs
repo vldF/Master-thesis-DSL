@@ -60,10 +60,20 @@ public class MethodEmitter(TranslatorContext ctx)
         var methodDescrName = func.GetMethodDescriptorName();
         var buildAndRegisterExpr = ctx.Semantics.ProcessorApi
             .CallMethod("CreateFunctionBuilder", [AsExpression(func.Name)])
-            .CallMethod("AssignTo", [ctx.CurrentClassDescriptor])
             .CallMethod("WithHandler", [new CgVarExpression(func.GetHandlerName())])
-            .CallMethod("WithArgumentsInfo", [argInfo])
-            .CallMethod("BuildAndRegister", []);
+            .CallMethod("WithArgumentsInfo", [argInfo]);
+
+        if (func.Parent != null)
+        {
+            buildAndRegisterExpr = buildAndRegisterExpr.CallMethod("AssignTo", [ctx.CurrentClassDescriptor]);
+        }
+        else
+        {
+            buildAndRegisterExpr = buildAndRegisterExpr.CallMethod("AssignTo", [new CgVarExpression("ModuleDescriptor")]);
+        }
+
+        buildAndRegisterExpr = buildAndRegisterExpr.CallMethod("BuildAndRegister", []);
+
 
         ctx.File.AddVarDecl(methodDescrName, type: null, init: buildAndRegisterExpr);
     }

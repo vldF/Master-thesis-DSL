@@ -37,6 +37,8 @@ public class IntrinsicFunctionsCallWithNoImplEmitter(TranslatorContext ctx)
             { "int", "LongType" },
             { "float", "FloatType" },
             { "bool", "BoolType" },
+            { "bytes", "BytesType" },
+            { "any", "ObjectType" },
         };
 
         public ICgExpression Emit(IntrinsicFunctionInvokationAstNode call)

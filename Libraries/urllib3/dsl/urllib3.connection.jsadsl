@@ -1,0 +1,18 @@
+package "urllib3.connection";
+
+import "Standard";
+import "urllib3.response";
+
+object HTTPConnection {
+    func getresponse(): HTTPResponse {
+        return new HTTPResponse();
+    }
+
+    func request(url: string) {
+        Detect(url, "Server-Side Request Forgery", "HTTP URI");
+    }
+
+    func request_chunked(url: string) {
+        Detect(url, "Server-Side Request Forgery", "HTTP URI");
+    }
+}

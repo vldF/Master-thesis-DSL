@@ -9,6 +9,6 @@ CallHandlerResult O_f_Handler(Location location, FunctionCall functionCall)
     s = callee2(location, 1, "test");
     return CallHandlerResult.Processed(SemanticsApi.None);
 }
-var O_f_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("f").AssignTo(OClassDescription).WithHandler(O_f_Handler).WithArgumentsInfo(new ArgumentsInfo(["self", ], 1, false, false, 0, 0)).BuildAndRegister();
+var O_f_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("f").WithHandler(O_f_Handler).WithArgumentsInfo(new ArgumentsInfo(["self", ], 1, false, false, 0, 0)).AssignTo(OClassDescription).BuildAndRegister();
 Interpreter.Assign(ModuleDescriptor, "O", OClassDescription);
 PythonTypes.BuildClass(OClassDescription);

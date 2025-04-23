@@ -81,38 +81,55 @@ public class IrContext
         }
     }
 
-    public VarDeclAstNode? ResolveVar(string id)
+    public VarDeclAstNode? ResolveVar(string id, IReadOnlyCollection<IrContext>? visited = null)
     {
-        return _vars.GetValueOrDefault(id)
-               ?? (_args.GetValueOrDefault(id) ?? _parent?.ResolveVar(id))
-               ?? ResolveOverImports(ctx => ctx.ResolveVar(id));
+        visited ??= [];
+        var newVisited = visited.Append(this).ToList();
+
+        return _vars.GetValueOrDefault(id) ?? _args.GetValueOrDefault(id)
+               ?? _parent?.ResolveVar(id, newVisited)
+               ?? ResolveOverImports(ctx => ctx.ResolveVar(id, newVisited), newVisited);
     }
 
-    public FunctionAstNodeBase? ResolveFunc(string id)
+    public FunctionAstNodeBase? ResolveFunc(string id, IReadOnlyCollection<IrContext>? visited = null)
     {
+        visited ??= [];
+        var newVisited = visited.Append(this).ToList();
+
         return _funcs.GetValueOrDefault(id)
-               ?? _parent?.ResolveFunc(id)
-               ?? ResolveOverImports(ctx => ctx.ResolveFunc(id));
+               ?? _parent?.ResolveFunc(id, newVisited)
+               ?? ResolveOverImports(ctx => ctx.ResolveFunc(id, newVisited), newVisited);
     }
 
-    public ObjectAstNode? ResolveObject(string id)
+    public ObjectAstNode? ResolveObject(string id, IReadOnlyCollection<IrContext>? visited = null)
     {
+        visited ??= [];
+        var newVisited = visited.Append(this).ToList();
+
         return _objects.GetValueOrDefault(id)
-               ?? _parent?.ResolveObject(id)
-               ?? ResolveOverImports(ctx => ctx.ResolveObject(id));
+               ?? _parent?.ResolveObject(id, newVisited)
+               ?? ResolveOverImports(ctx => ctx.ResolveObject(id, newVisited), newVisited);
     }
 
-    public AstType? ResolveType(string id)
+    public AstType? ResolveType(string id, IReadOnlyCollection<IrContext>? visited = null)
     {
+        visited ??= [];
+        var newVisited = visited.Append(this).ToList();
+
         return _types.GetValueOrDefault(id)
-               ?? _parent?.ResolveType(id)
-               ?? ResolveOverImports(ctx => ctx.ResolveType(id));
+               ?? _parent?.ResolveType(id, newVisited)
+               ?? ResolveOverImports(ctx => ctx.ResolveType(id, newVisited), newVisited);
     }
 
-    private T? ResolveOverImports<T>(Func<IrContext, T?> resolver)
+    private T? ResolveOverImports<T>(Func<IrContext, T?> resolver, IReadOnlyCollection<IrContext>? visited = null)
     {
         foreach (var irContext in _imports)
         {
+            if (visited?.Contains(irContext) == true)
+            {
+                continue;
+            }
+
             var resOrNull = resolver(irContext);
 
             if (resOrNull != null)

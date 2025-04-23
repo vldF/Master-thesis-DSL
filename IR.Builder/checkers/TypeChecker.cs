@@ -523,7 +523,7 @@ public class TypeChecker(ErrorManager errorManager) : AbstractChecker<AstType>
                 var var = varRef.Resolve();
                 if (var == null)
                 {
-                    errorManager.Report(Error.UnresolvedType(varRef.Name));
+                    errorManager.Report(Error.UnresolvedVar(varRef.Name));
                     return null;
                 }
 

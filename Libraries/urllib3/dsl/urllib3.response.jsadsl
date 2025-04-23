@@ -1,0 +1,43 @@
+package "urllib3.response";
+
+import "Standard";
+import "urllib3.connection";
+
+object HTTPResponse {
+    var status = CreateTaintedDataOfType<int>("Second order");
+    var data = CreateTaintedDataOfType<bytes>("Second order");
+    var body = CreateTaintedDataOfType<string>("Second order");
+    var url = CreateTaintedDataOfType<string>("Second order");
+    var request_url = CreateTaintedDataOfType<string>("Second order");
+
+    var connection = new HTTPConnection();
+
+    func json(): any {
+        return CreateTaintedDataOfType<string>("Second order");
+    }
+
+    func readline(): string {
+        return CreateTaintedDataOfType<string>("Second order");
+    }
+
+    func readlines(): any {
+        return CreateTaintedDataOfType<any>("Second order");
+    }
+
+    func get_redirect_location(): string {
+        return CreateTaintedDataOfType<string>("Second order");
+    }
+
+
+    func stream(): any {
+        return CreateTaintedDataOfType<any>("Second order");
+    }
+
+    func read(): any {
+        return CreateTaintedDataOfType<any>("Second order");
+    }
+
+    func fileno(): any {
+        return CreateTaintedDataOfType<any>("Second order");
+    }
+}

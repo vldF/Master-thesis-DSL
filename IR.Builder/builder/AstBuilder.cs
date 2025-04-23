@@ -16,6 +16,9 @@ public class AstBuilder
         rootContext.SaveNewType(SimpleAstType.Any);
         rootContext.SaveNewType(SimpleAstType.Int);
         rootContext.SaveNewType(SimpleAstType.StringT);
+        rootContext.SaveNewType(SimpleAstType.Bool);
+        rootContext.SaveNewType(SimpleAstType.Float);
+        rootContext.SaveNewType(SimpleAstType.Bytes);
 
         var parseResult = codes
             .Select(c => Parse(c, rootContext))

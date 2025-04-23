@@ -14,7 +14,7 @@ CallHandlerResult MyObject_withoutTypeInfer_Handler(Location location, FunctionC
     var complex = Interpreter.InvokeFunction(location, SemanticsApi.AddDescriptor, Interpreter.InvokeFunction(location, SemanticsApi.DivDescriptor, Interpreter.InvokeFunction(location, SemanticsApi.MultiplyDescriptor, Interpreter.InvokeFunction(location, SemanticsApi.AddDescriptor, sum, sub), mul), div), parens);
     return CallHandlerResult.Processed(complex);
 }
-var MyObject_withoutTypeInfer_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("withoutTypeInfer").AssignTo(MyObjectClassDescription).WithHandler(MyObject_withoutTypeInfer_Handler).WithArgumentsInfo(new ArgumentsInfo(["self", "arg1", "arg2", ], 3, false, false, 0, 0)).BuildAndRegister();
+var MyObject_withoutTypeInfer_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("withoutTypeInfer").WithHandler(MyObject_withoutTypeInfer_Handler).WithArgumentsInfo(new ArgumentsInfo(["self", "arg1", "arg2", ], 3, false, false, 0, 0)).AssignTo(MyObjectClassDescription).BuildAndRegister();
 CallHandlerResult MyObject_withTypeInfer_Handler(Location location, FunctionCall functionCall)
 {
     var handledArguments = ProcessorApi.ProcessKeywordArguments(functionCall);
@@ -30,6 +30,6 @@ CallHandlerResult MyObject_withTypeInfer_Handler(Location location, FunctionCall
     var complex = Interpreter.InvokeFunction(location, SemanticsApi.AddDescriptor, Interpreter.InvokeFunction(location, SemanticsApi.DivDescriptor, Interpreter.InvokeFunction(location, SemanticsApi.MultiplyDescriptor, Interpreter.InvokeFunction(location, SemanticsApi.AddDescriptor, sum, sub), mul), div), parens);
     return CallHandlerResult.Processed(complex);
 }
-var MyObject_withTypeInfer_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("withTypeInfer").AssignTo(MyObjectClassDescription).WithHandler(MyObject_withTypeInfer_Handler).WithArgumentsInfo(new ArgumentsInfo(["self", "arg1", "arg2", ], 3, false, false, 0, 0)).BuildAndRegister();
+var MyObject_withTypeInfer_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("withTypeInfer").WithHandler(MyObject_withTypeInfer_Handler).WithArgumentsInfo(new ArgumentsInfo(["self", "arg1", "arg2", ], 3, false, false, 0, 0)).AssignTo(MyObjectClassDescription).BuildAndRegister();
 Interpreter.Assign(ModuleDescriptor, "MyObject", MyObjectClassDescription);
 PythonTypes.BuildClass(MyObjectClassDescription);

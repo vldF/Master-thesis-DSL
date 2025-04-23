@@ -7,7 +7,7 @@ CallHandlerResult Obj_Primitive_Handler(Location location, FunctionCall function
     var teintData1 = SemanticsApi.CreateObjectDescriptor("<<dsl_teinted_data_0>>").WithType(SemanticsApi.LongType).With(new TaintOrigin("Header"));
     return CallHandlerResult.Processed(teintData1);
 }
-var Obj_Primitive_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("Primitive").AssignTo(ObjClassDescription).WithHandler(Obj_Primitive_Handler).WithArgumentsInfo(new ArgumentsInfo(["self", ], 1, false, false, 0, 0)).BuildAndRegister();
+var Obj_Primitive_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("Primitive").WithHandler(Obj_Primitive_Handler).WithArgumentsInfo(new ArgumentsInfo(["self", ], 1, false, false, 0, 0)).AssignTo(ObjClassDescription).BuildAndRegister();
 CallHandlerResult Obj_Object_Handler(Location location, FunctionCall functionCall)
 {
     var handledArguments = ProcessorApi.ProcessKeywordArguments(functionCall);
@@ -15,6 +15,6 @@ CallHandlerResult Obj_Object_Handler(Location location, FunctionCall functionCal
     var teintData2 = SemanticsApi.CreateObjectDescriptor("<<dsl_teinted_data_1>>").With(new TaintOrigin("Cookie"));
     return CallHandlerResult.Processed(teintData2);
 }
-var Obj_Object_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("Object").AssignTo(ObjClassDescription).WithHandler(Obj_Object_Handler).WithArgumentsInfo(new ArgumentsInfo(["self", ], 1, false, false, 0, 0)).BuildAndRegister();
+var Obj_Object_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("Object").WithHandler(Obj_Object_Handler).WithArgumentsInfo(new ArgumentsInfo(["self", ], 1, false, false, 0, 0)).AssignTo(ObjClassDescription).BuildAndRegister();
 Interpreter.Assign(ModuleDescriptor, "Obj", ObjClassDescription);
 PythonTypes.BuildClass(ObjClassDescription);

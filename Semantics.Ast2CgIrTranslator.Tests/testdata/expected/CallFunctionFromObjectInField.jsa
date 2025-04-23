@@ -8,7 +8,7 @@ CallHandlerResult HttpProcessor_process_Handler(Location location, FunctionCall 
     Detect(location, data, "Server-Side Request Forgery", "HTTP URI");
     return CallHandlerResult.Processed(SemanticsApi.None);
 }
-var HttpProcessor_process_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("process").AssignTo(HttpProcessorClassDescription).WithHandler(HttpProcessor_process_Handler).WithArgumentsInfo(new ArgumentsInfo(["self", "data", ], 2, false, false, 0, 0)).BuildAndRegister();
+var HttpProcessor_process_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("process").WithHandler(HttpProcessor_process_Handler).WithArgumentsInfo(new ArgumentsInfo(["self", "data", ], 2, false, false, 0, 0)).AssignTo(HttpProcessorClassDescription).BuildAndRegister();
 Interpreter.Assign(ModuleDescriptor, "HttpProcessor", HttpProcessorClassDescription);
 PythonTypes.BuildClass(HttpProcessorClassDescription);
 var HttpClientClassDescription = SemanticsApi.CreateClassObjectDescriptor("HttpClient");
@@ -19,7 +19,7 @@ CallHandlerResult HttpClient___init___Handler(Location location, FunctionCall fu
     Interpreter.Assign(self, "processor", SemanticsApi.CreateObjectDescriptor("<HttpProcessor>"));
     return CallHandlerResult.Processed(self);
 }
-var HttpClient___init___MethodDescriptor = ProcessorApi.CreateFunctionBuilder("__init__").AssignTo(HttpClientClassDescription).WithHandler(HttpClient___init___Handler).WithArgumentsInfo(new ArgumentsInfo(["self", ], 1, false, false, 0, 0)).BuildAndRegister();
+var HttpClient___init___MethodDescriptor = ProcessorApi.CreateFunctionBuilder("__init__").WithHandler(HttpClient___init___Handler).WithArgumentsInfo(new ArgumentsInfo(["self", ], 1, false, false, 0, 0)).AssignTo(HttpClientClassDescription).BuildAndRegister();
 CallHandlerResult HttpClient_GetData_Handler(Location location, FunctionCall functionCall)
 {
     var handledArguments = ProcessorApi.ProcessKeywordArguments(functionCall);
@@ -30,6 +30,6 @@ CallHandlerResult HttpClient_GetData_Handler(Location location, FunctionCall fun
     Interpreter.InvokeFunction(location, HttpProcessor_process_MethodDescriptor, out var tryGetValueResult1, data);
     return CallHandlerResult.Processed(SemanticsApi.None);
 }
-var HttpClient_GetData_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("GetData").AssignTo(HttpClientClassDescription).WithHandler(HttpClient_GetData_Handler).WithArgumentsInfo(new ArgumentsInfo(["self", ], 1, false, false, 0, 0)).BuildAndRegister();
+var HttpClient_GetData_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("GetData").WithHandler(HttpClient_GetData_Handler).WithArgumentsInfo(new ArgumentsInfo(["self", ], 1, false, false, 0, 0)).AssignTo(HttpClientClassDescription).BuildAndRegister();
 Interpreter.Assign(ModuleDescriptor, "HttpClient", HttpClientClassDescription);
 PythonTypes.BuildClass(HttpClientClassDescription);

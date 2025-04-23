@@ -3,5 +3,4 @@ CallHandlerResult global_Foo_Handler(Location location, FunctionCall functionCal
     var handledArguments = ProcessorApi.ProcessKeywordArguments(functionCall);
     return CallHandlerResult.Processed(SemanticsApi.None);
 }
-var global_Foo_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("Foo").AssignTo().WithHandler(global_Foo_Handler).WithArgumentsInfo(new ArgumentsInfo([], 0, false, false, 0, 0)).BuildAndRegister();
-CreateModuleFunction("Foo", global_Foo_MethodDescriptor);
+var global_Foo_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("Foo").WithHandler(global_Foo_Handler).WithArgumentsInfo(new ArgumentsInfo([], 0, false, false, 0, 0)).AssignTo(ModuleDescriptor).BuildAndRegister();

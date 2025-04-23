@@ -4,41 +4,72 @@ using Semantics.Ast2CgIrTranslator;
 
 namespace Launcher;
 
-class Program
+internal static class Program
 {
-    public static void Main()
+    public static void Main(string[] args)
     {
-        var code = """
-                   object Type1 {}
-                   object Type2 {}
-                   object ReturnType {}
-                   
-                   func TestFunc(arg1: Type1, arg2: Type2): ReturnType {
-                        arg1 = arg2;
-                        arg2 = arg2;
-                        
-                        return arg1;
-                   }
-                   
-                   object MyObject {
-                        func InnerFunc(arg1: Type1) {
-                        }
-                        
-                        func InnerFunc2() { }
-                   }
-                   """;
+        var inputDirPath = args[0];
+        var destinationDirPath = args[1];
+        var inputDir = new DirectoryInfo(inputDirPath);
+
+        if (!inputDir.Exists)
+        {
+            throw new InvalidOperationException("directory doesn't exist");
+        }
+
+        var searchOptions = new EnumerationOptions
+        {
+            IgnoreInaccessible = true,
+        };
+        searchOptions.IgnoreInaccessible = true;
+        var inputFiles = inputDir.EnumerateFiles("*.jsadsl", searchOptions);
+
+        var codes = inputFiles
+            .Select(inputFile => inputFile.FullName)
+            .Select(f => (Path.GetFileName(f), File.ReadAllText(f)))
+            .ToList();
+
+        var standardLibraryPath = "../../../.././StandardLibrary/Standard.jsadsl";
+        codes.Add((standardLibraryPath, File.ReadAllText(standardLibraryPath)));
 
         var astBuilder = new AstBuilder();
-        var file = astBuilder.FromString(code);
-        Console.WriteLine(file.String());
+        var result = astBuilder.FromStrings(codes);
 
-        var translator = new Ast2IrTranslator();
-        var cgFile = translator.Translate(file);
+        if (result.Errors != null && result.Errors.Count != 0)
+        {
+            foreach (var resultError in result.Errors)
+            {
+                Console.Error.WriteLine(resultError!.Format());
+            }
 
-        var synth = new CodegenSynthesizer();
-        var result = synth.Synthesize(cgFile);
+            Environment.Exit(1);
+        }
 
-        Console.WriteLine("=======");
-        Console.WriteLine(result);
+        var outDir = new DirectoryInfo(destinationDirPath);
+        if (outDir.Exists)
+        {
+            outDir.Delete(recursive: true);
+        }
+        outDir.Create();
+
+        foreach (var fileAstNode in result.Files!)
+        {
+            if (Path.GetFileNameWithoutExtension(fileAstNode.FileName) == "Standard")
+            {
+                continue;
+            }
+
+            var translator = new Ast2IrTranslator();
+            var cgFile = translator.Translate(fileAstNode);
+            var resFilePath = Path.Join(destinationDirPath, cgFile.Name);
+            var codegenSynthesizer = new CodegenSynthesizer();
+            var actualCode = codegenSynthesizer.Synthesize(cgFile);
+
+            File.WriteAllText(resFilePath, actualCode);
+        }
+
+        var standardLibraryPathJsa = "../../../.././StandardLibrary/Standard.jsa";
+        var standardLibraryPathJsaTarget = Path.Join(destinationDirPath, "Standard.jsa");
+        File.Copy(standardLibraryPathJsa, standardLibraryPathJsaTarget);
     }
 }

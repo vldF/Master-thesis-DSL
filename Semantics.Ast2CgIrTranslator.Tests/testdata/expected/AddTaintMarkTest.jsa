@@ -7,6 +7,6 @@ CallHandlerResult Object_foo_Handler(Location location, FunctionCall functionCal
     var newString = SemanticsApi.CreateLiteral("");
     return CallHandlerResult.Processed(WithTaintMark(location, newString, "Function argument"));
 }
-var Object_foo_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("foo").AssignTo(ObjectClassDescription).WithHandler(Object_foo_Handler).WithArgumentsInfo(new ArgumentsInfo(["self", ], 1, false, false, 0, 0)).BuildAndRegister();
+var Object_foo_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("foo").WithHandler(Object_foo_Handler).WithArgumentsInfo(new ArgumentsInfo(["self", ], 1, false, false, 0, 0)).AssignTo(ObjectClassDescription).BuildAndRegister();
 Interpreter.Assign(ModuleDescriptor, "Object", ObjectClassDescription);
 PythonTypes.BuildClass(ObjectClassDescription);
