@@ -66,7 +66,7 @@ public class AddInitMethod : AbstractAstSemanticTransformer
             var selfArg = new FunctionArgAstNode("self", selfType, 0);
             var initFuncBody = new StatementsBlockAstNode([]);
             initFuncContext = new IrContext(node.Context, node.Context.Package);
-            initFunc = new FunctionAstNode("__init__", [selfArg], selfType, initFuncBody, node, initFuncContext);
+            initFunc = new FunctionAstNode("__init__", [selfArg], selfType, initFuncBody, node, [], initFuncContext);
 
             node.Children = node.Children.Prepend(initFunc).ToList();
         }

@@ -10,8 +10,10 @@ public class FunctionAstNode(
     TypeReference returnTypeRef,
     StatementsBlockAstNode body,
     ObjectAstNode? parent,
+    ICollection<AnnotationAstNode> annotations,
     IrContext context) : FunctionAstNodeBase(name, args, returnTypeRef, parent), IContextOwner
 {
+    public ICollection<AnnotationAstNode> Annotations { get; } = annotations;
     public IrContext Context { get; set; } = context;
 
     public StatementsBlockAstNode Body { get; set; } = body;
@@ -20,7 +22,9 @@ public class FunctionAstNode(
     {
         var argsAsString = string.Join(", ", Args.Select(x => x.String()));
         var returnTypeAsStr = ReturnTypeRef != null ? ": " + ReturnTypeRef.AsString() : "";
+        var annos = string.Join(", ", Annotations.Select(a => a.String()));
         return $$"""
+                {{annos}}
                 func {{Name}} ({{argsAsString}}) {{returnTypeAsStr}} {
                 {{AddIndent(Body.String())}}
                 }

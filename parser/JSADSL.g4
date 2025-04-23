@@ -9,7 +9,7 @@ topLevelDecl
    |   importDecl
    ;
 
-funcDecl : FUNC_KW name=ID L_PAREN (functionArgs) R_PAREN (COLON resultType=ID)? L_BRACE statementsBlock R_BRACE;
+funcDecl : annotation* FUNC_KW name=ID L_PAREN (functionArgs) R_PAREN (COLON resultType=ID)? L_BRACE statementsBlock R_BRACE;
 
 intrinsicFuncDecl : INTRINSIC_KW FUNC_KW name=ID generic? L_PAREN (functionArgs) R_PAREN (COLON resultType=ID)?;
 
@@ -95,7 +95,7 @@ functionCall
 
 constructorDecl : CONSTRUCTOR_KW L_PAREN (functionArgs) R_PAREN L_BRACE statementsBlock R_BRACE ;
 
-objectDecl : OBJECT_KW name=ID L_BRACE objectBody R_BRACE;
+objectDecl : annotation* OBJECT_KW name=ID L_BRACE objectBody R_BRACE;
 
 objectBody : objectBodyStatement*;
 
@@ -109,6 +109,8 @@ importDecl : IMPORT_KW package=DoubleQuotedString SEMI_COLON;
 packageDecl : PACKAGE_KW package=DoubleQuotedString SEMI_COLON;
 
 generic : LESS ID (COMMA ID?)* GREAT;
+
+annotation : AT ID L_PAREN expressionList R_PAREN ;
 
 INTRINSIC_KW : 'intrinsic';
 FUNC_KW : 'func';
@@ -149,6 +151,8 @@ AND : '&&';
 OR : '||';
 XOR : '^';
 DOT : '.';
+
+AT : '@';
 
 
 ID : VALID_ID_START VALID_ID_CHAR*;

@@ -14,12 +14,24 @@ public static class Utils
 
     public static string GetMethodDescriptorName(this FunctionAstNodeBase node)
     {
+        var generatedNameAnno = (node as FunctionAstNode)?.Annotations.FirstOrDefault(a => a.Name == "GeneratedName");
+        if (generatedNameAnno != null)
+        {
+            return ((StringLiteralAstNode)generatedNameAnno.args.First()).Value;
+        }
+
         var objectNameOrNull = node.Parent as ObjectAstNode;
         return (objectNameOrNull?.Name ?? "global") + "_" + node.Name + "_" + "MethodDescriptor";
     }
 
     public static string GetDescriptionVarName(this ObjectAstNode node)
     {
+        var generatedNameAnno = node.Annotations.FirstOrDefault(a => a.Name == "GeneratedName");
+        if (generatedNameAnno != null)
+        {
+            return ((StringLiteralAstNode)generatedNameAnno.args.First()).Value;
+        }
+
         return node.Name + "ClassDescription";
     }
     public static CgBinExpression.BinOp ToCgBinOp(this BinaryOperation astBinOp)

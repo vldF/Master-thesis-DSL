@@ -1,0 +1,16 @@
+var GoodObjectName = SemanticsApi.CreateClassObjectDescriptor("BadObjectName");
+CallHandlerResult BadObjectName_BadFuncName1_Handler(Location location, FunctionCall functionCall)
+{
+    var handledArguments = ProcessorApi.ProcessKeywordArguments(functionCall);
+    handledArguments.TryGetValue("self", out var self);
+    return CallHandlerResult.Processed(SemanticsApi.None);
+}
+var GoodFuncName1 = ProcessorApi.CreateFunctionBuilder("BadFuncName1").WithHandler(BadObjectName_BadFuncName1_Handler).WithArgumentsInfo(new ArgumentsInfo(["self", ], 1, false, false, 0, 0)).AssignTo(GoodObjectName).BuildAndRegister();
+Interpreter.Assign(ModuleDescriptor, "BadObjectName", GoodObjectName);
+PythonTypes.BuildClass(GoodObjectName);
+CallHandlerResult global_BadFuncName2_Handler(Location location, FunctionCall functionCall)
+{
+    var handledArguments = ProcessorApi.ProcessKeywordArguments(functionCall);
+    return CallHandlerResult.Processed(SemanticsApi.None);
+}
+var GoodFuncName2 = ProcessorApi.CreateFunctionBuilder("BadFuncName2").WithHandler(global_BadFuncName2_Handler).WithArgumentsInfo(new ArgumentsInfo([], 0, false, false, 0, 0)).AssignTo(ModuleDescriptor).BuildAndRegister();

@@ -2,7 +2,9 @@ file (
 package: 
   import "Standard"
   
+  
   object ServerResult (
+    
     func __init__ (arg[self]: TypeRef[ServerResult]) : TypeRef[ServerResult] {
       {
         return var(@VariableRef[self])
@@ -12,12 +14,15 @@ package:
     @data: @TypeRef[string]
   )
   
+  
   object HttpClient (
+    
     func doPost (arg[self]: TypeRef[HttpClient]) : TypeRef[ServerResult] {
       {
         return intrinsic[.CreateTaintedDataOfType<TypeRef[ServerResult]>(var(@VariableRef[location]),"Body")]
       }
     }
+    
     
     func escapeData (arg[self]: TypeRef[HttpClient], arg[res]: TypeRef[ServerResult]) : TypeRef[ServerResult] {
       {
@@ -25,12 +30,14 @@ package:
       }
     }
     
+    
     func sink (arg[self]: TypeRef[HttpClient], arg[res]: TypeRef[ServerResult]) : TypeRef[any] {
       {
         ().FunctionRef[detectDelegate](me.vldf.jsa.dsl.ir.nodes.expressions.VarExpressionAstNode)
         return (var(@VariableRef[SemanticsApi])).None
       }
     }
+    
     
     func detectDelegate (arg[self]: TypeRef[HttpClient], arg[data]: TypeRef[ServerResult]) : TypeRef[any] {
       {

@@ -67,12 +67,14 @@ public class BaseBuilderVisitor(IrContext irContext) : JSADSLBaseVisitor<IAstNod
         }
 
         var statementsBlockAstNode = newVisitor.VisitStatementsBlock(context.statementsBlock());
+        var annotations = context.annotation().Select(VisitAnnotation).ToList();
         var functionAstNode = new FunctionAstNode(
             name,
             args,
             resultTypeRef,
             statementsBlockAstNode,
             (ObjectAstNode?)irContext.AstNode,
+            annotations,
             newContext);
         irContext.SaveNewFunc(functionAstNode);
         statementsBlockAstNode.Parent = functionAstNode;
@@ -137,7 +139,8 @@ public class BaseBuilderVisitor(IrContext irContext) : JSADSLBaseVisitor<IAstNod
         var newVisitor = new BaseBuilderVisitor(newContext);
 
         var children = new List<IAstNode>();
-        var result = new ObjectAstNode(name, children, newContext);
+        var annotations = context.annotation().Select(VisitAnnotation).ToList();
+        var result = new ObjectAstNode(name, children, annotations, newContext);
         newContext.AstNode = result;
 
         var newObjectType = new TypeReference(name, irContext);
@@ -266,6 +269,13 @@ public class BaseBuilderVisitor(IrContext irContext) : JSADSLBaseVisitor<IAstNod
         irContext.SaveImport(package);
 
         return new ImportAstNode(package);
+    }
+
+    public override AnnotationAstNode VisitAnnotation(JSADSLParser.AnnotationContext context)
+    {
+        return new AnnotationAstNode(
+            context.ID().GetText(),
+            context.expressionList().expression().Select(VisitExpression).ToList());
     }
 
     public override IStatementAstNode VisitStatement(JSADSLParser.StatementContext context)

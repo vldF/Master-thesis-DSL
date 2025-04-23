@@ -17,9 +17,10 @@ public static class CodegenIrBuilder
         this ICgStatementsContainer statementsContainer,
         string name,
         Dictionary<string, ICgType> args,
-        ICgType? returnType = null)
+        ICgType? returnType = null,
+        ICollection<CgAnnotation>? annotations = null)
     {
-        var method = new CgMethod(name, args, returnType ?? CgSimpleType.VoidType);
+        var method = new CgMethod(name, args, returnType ?? CgSimpleType.VoidType, annotations ?? []);
         statementsContainer.Statements.Add(method);
 
         return method;

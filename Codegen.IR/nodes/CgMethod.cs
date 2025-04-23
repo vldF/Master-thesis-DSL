@@ -10,12 +10,14 @@ public class CgMethod : ICgStatement, ICgStatementsContainer
 
     private readonly Dictionary<string, ICgExpression> _args = new();
     public Dictionary<string, ICgType> ArgTypes;
+    public ICollection<CgAnnotation> Annotations { get; }
 
-    public CgMethod(string name, Dictionary<string, ICgType> args, ICgType returnType)
+    public CgMethod(string name, Dictionary<string, ICgType> args, ICgType returnType, ICollection<CgAnnotation> annotations)
     {
         Name = name;
         ArgTypes = args;
         ReturnType = returnType;
+        Annotations = annotations;
 
         foreach (var (argName, _) in args)
         {

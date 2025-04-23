@@ -1,0 +1,8 @@
+@GeneratedName("GoodObjectName")
+object BadObjectName {
+    @GeneratedName("GoodFuncName1")
+    func BadFuncName1() {}
+}
+
+@GeneratedName("GoodFuncName2")
+func BadFuncName2() {}

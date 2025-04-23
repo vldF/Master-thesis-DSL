@@ -4,7 +4,9 @@ package:
   
   intrinsic func callee2<T1, T2>(arg[arg1]: TypeRef[T1], arg[arg2]: TypeRef[T2]) : TypeRef[T2]
   
+  
   object O (
+    
     func f (arg[self]: TypeRef[O]) : TypeRef[any] {
       {
         @t: @TypeRef[int] = intrinsic[.callee1<TypeRef[int]>(var(@VariableRef[location]),1)]
