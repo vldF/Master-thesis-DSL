@@ -1,0 +1,5 @@
+import "Standard";
+
+func foo(): string {
+    return CreateDataOfType<string>();
+}

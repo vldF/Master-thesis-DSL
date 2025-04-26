@@ -7,5 +7,7 @@ intrinsic func WithTaintMark<T>(expression: T, taintOrigin: string): T
 
 intrinsic func CreateTaintedDataOfType<T>(taintOrigin: string): T
 
+intrinsic func CreateDataOfType<T>(): T
+
 // todo: make a enumish something for vulnerabilityType
 intrinsic func WithoutVulnerability<T>(expression: T, vulnerabilityType: string): T

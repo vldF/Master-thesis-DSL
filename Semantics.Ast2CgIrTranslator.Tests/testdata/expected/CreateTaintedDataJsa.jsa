@@ -14,7 +14,7 @@ CallHandlerResult HttpClient_doPost_Handler(Location location, FunctionCall func
 {
     var handledArguments = ProcessorApi.ProcessKeywordArguments(functionCall);
     handledArguments.TryGetValue("self", out var self);
-    var teintData1 = SemanticsApi.CreateObjectDescriptor("<<dsl_teinted_data_0>>").With(new TaintOrigin("Body"));
+    var teintData1 = SemanticsApi.CreateObjectDescriptor("<<dsl_tainted_data_0>>").With(new TaintOrigin("Body"));
     return CallHandlerResult.Processed(teintData1);
 }
 var HttpClient_doPost_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("doPost").WithHandler(HttpClient_doPost_Handler).WithArgumentsInfo(new ArgumentsInfo(["self", ], 1, false, false, 0, 0)).AssignTo(HttpClientClassDescription).BuildAndRegister();

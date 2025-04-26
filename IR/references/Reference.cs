@@ -35,6 +35,11 @@ public class TypeReference(string id, IrContext context) : Reference<AstType>()
         return ctx?.ResolveType(id) ?? context.ResolveType(id);
     }
 
+    public ObjectAstNode? ResolveObject(IrContext? ctx = null)
+    {
+        return ctx?.ResolveObject(id) ?? context.ResolveObject(id);
+    }
+
     public override string AsString() => $"TypeRef[{id}]";
     public override string Name { get; set; } = id;
 }

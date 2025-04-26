@@ -5,20 +5,20 @@ CallHandlerResult global_Comp_Handler(Location location, FunctionCall functionCa
     handledArguments.TryGetValue("arg2", out var arg2);
     var returnValueBuilder0 = Interpreter.CreateReturnedValuesBuilder();
     var condition1 = SemanticsApi.CreateCastToBoolOperator(Interpreter.InvokeFunction(location, SemanticsApi.GreaterDescriptor, arg1, arg2));
-    Engine.TryEnterBranch(condition1, out var branchId1);
+    Interpreter.TryEnterBranch(condition1, out var branchId1);
     var currentCond0 = Interpreter.CurrentContext.CurrentCondition;
     returnValueBuilder0.AddOption(currentCond0, SemanticsApi.CreateLiteral(1));
-    Engine.LeaveBranch(out var branchId1);
+    Interpreter.LeaveBranch(branchId1);
     var notCondition0 = Interpreter.InvokeFunction(location, SemanticsApi.NotDescriptor, SemanticsApi.CreateCastToBoolOperator(Interpreter.InvokeFunction(location, SemanticsApi.GreaterDescriptor, arg1, arg2)));
-    Engine.TryEnterBranch(notCondition0, out var branchId2);
+    Interpreter.TryEnterBranch(notCondition0, out var branchId2);
     var condition0 = SemanticsApi.CreateCastToBoolOperator(Interpreter.InvokeFunction(location, SemanticsApi.EqDescriptor, arg1, arg2));
-    Engine.TryEnterBranch(condition0, out var branchId0);
+    Interpreter.TryEnterBranch(condition0, out var branchId0);
     var currentCond1 = Interpreter.CurrentContext.CurrentCondition;
     returnValueBuilder0.AddOption(currentCond1, SemanticsApi.CreateLiteral(0));
-    Engine.LeaveBranch(out var branchId0);
-    Engine.LeaveBranch(out var branchId2);
+    Interpreter.LeaveBranch(branchId0);
+    Interpreter.LeaveBranch(branchId2);
     var currentCond2 = Interpreter.CurrentContext.CurrentCondition;
     returnValueBuilder0.AddOption(currentCond2, SemanticsApi.CreateLiteral(1));
-    return CallHandlerResult.Processed(returnValueBuilder0);
+    return CallHandlerResult.Processed(returnValueBuilder0.ToConditional());
 }
 var global_Comp_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("Comp").WithHandler(global_Comp_Handler).WithArgumentsInfo(new ArgumentsInfo(["arg1", "arg2", ], 2, false, false, 0, 0)).AssignTo(ModuleDescriptor).BuildAndRegister();

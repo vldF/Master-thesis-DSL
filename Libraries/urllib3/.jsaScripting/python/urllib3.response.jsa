@@ -1,20 +1,19 @@
 #load "Standard.jsa"
 #load "urllib3.connection.jsa"
-
 var HTTPResponseClassDescription = SemanticsApi.CreateClassObjectDescriptor("HTTPResponse");
 CallHandlerResult HTTPResponse___init___Handler(Location location, FunctionCall functionCall)
 {
     var handledArguments = ProcessorApi.ProcessKeywordArguments(functionCall);
     handledArguments.TryGetValue("self", out var self);
-    var teintData1 = SemanticsApi.CreateObjectDescriptor("<<dsl_teinted_data_0>>").WithType(SemanticsApi.LongType).With(new TaintOrigin("Second order"));
+    var teintData1 = SemanticsApi.CreateObjectDescriptor("<<dsl_tainted_data_0>>").WithType(SemanticsApi.LongType).With(new TaintOrigin("Second order"));
     Interpreter.Assign(self, "status", teintData1);
-    var teintData2 = SemanticsApi.CreateObjectDescriptor("<<dsl_teinted_data_1>>").WithType(SemanticsApi.BytesType).With(new TaintOrigin("Second order"));
+    var teintData2 = SemanticsApi.CreateObjectDescriptor("<<dsl_tainted_data_1>>").WithType(SemanticsApi.BytesType).With(new TaintOrigin("Second order"));
     Interpreter.Assign(self, "data", teintData2);
-    var teintData3 = SemanticsApi.CreateObjectDescriptor("<<dsl_teinted_data_2>>").WithType(SemanticsApi.StringType).With(new TaintOrigin("Second order"));
+    var teintData3 = SemanticsApi.CreateObjectDescriptor("<<dsl_tainted_data_2>>").WithType(SemanticsApi.StringType).With(new TaintOrigin("Second order"));
     Interpreter.Assign(self, "body", teintData3);
-    var teintData4 = SemanticsApi.CreateObjectDescriptor("<<dsl_teinted_data_3>>").WithType(SemanticsApi.StringType).With(new TaintOrigin("Second order"));
+    var teintData4 = SemanticsApi.CreateObjectDescriptor("<<dsl_tainted_data_3>>").WithType(SemanticsApi.StringType).With(new TaintOrigin("Second order"));
     Interpreter.Assign(self, "url", teintData4);
-    var teintData5 = SemanticsApi.CreateObjectDescriptor("<<dsl_teinted_data_4>>").WithType(SemanticsApi.StringType).With(new TaintOrigin("Second order"));
+    var teintData5 = SemanticsApi.CreateObjectDescriptor("<<dsl_tainted_data_4>>").WithType(SemanticsApi.StringType).With(new TaintOrigin("Second order"));
     Interpreter.Assign(self, "request_url", teintData5);
     Interpreter.Assign(self, "connection", SemanticsApi.CreateObjectDescriptor("<HTTPConnection>"));
     return CallHandlerResult.Processed(self);
@@ -24,7 +23,7 @@ CallHandlerResult HTTPResponse_json_Handler(Location location, FunctionCall func
 {
     var handledArguments = ProcessorApi.ProcessKeywordArguments(functionCall);
     handledArguments.TryGetValue("self", out var self);
-    var teintData6 = SemanticsApi.CreateObjectDescriptor("<<dsl_teinted_data_5>>").WithType(SemanticsApi.StringType).With(new TaintOrigin("Second order"));
+    var teintData6 = SemanticsApi.CreateObjectDescriptor("<<dsl_tainted_data_5>>").WithType(SemanticsApi.StringType).With(new TaintOrigin("Second order"));
     return CallHandlerResult.Processed(teintData6);
 }
 var HTTPResponse_json_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("json").WithHandler(HTTPResponse_json_Handler).WithArgumentsInfo(new ArgumentsInfo(["self", ], 1, false, false, 0, 0)).AssignTo(HTTPResponseClassDescription).BuildAndRegister();
@@ -32,7 +31,7 @@ CallHandlerResult HTTPResponse_readline_Handler(Location location, FunctionCall 
 {
     var handledArguments = ProcessorApi.ProcessKeywordArguments(functionCall);
     handledArguments.TryGetValue("self", out var self);
-    var teintData7 = SemanticsApi.CreateObjectDescriptor("<<dsl_teinted_data_6>>").WithType(SemanticsApi.StringType).With(new TaintOrigin("Second order"));
+    var teintData7 = SemanticsApi.CreateObjectDescriptor("<<dsl_tainted_data_6>>").WithType(SemanticsApi.StringType).With(new TaintOrigin("Second order"));
     return CallHandlerResult.Processed(teintData7);
 }
 var HTTPResponse_readline_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("readline").WithHandler(HTTPResponse_readline_Handler).WithArgumentsInfo(new ArgumentsInfo(["self", ], 1, false, false, 0, 0)).AssignTo(HTTPResponseClassDescription).BuildAndRegister();
@@ -40,7 +39,7 @@ CallHandlerResult HTTPResponse_readlines_Handler(Location location, FunctionCall
 {
     var handledArguments = ProcessorApi.ProcessKeywordArguments(functionCall);
     handledArguments.TryGetValue("self", out var self);
-    var teintData8 = SemanticsApi.CreateObjectDescriptor("<<dsl_teinted_data_7>>").WithType(SemanticsApi.ObjectType).With(new TaintOrigin("Second order"));
+    var teintData8 = SemanticsApi.CreateObjectDescriptor("<<dsl_tainted_data_7>>").WithType(SemanticsApi.ObjectType).With(new TaintOrigin("Second order"));
     return CallHandlerResult.Processed(teintData8);
 }
 var HTTPResponse_readlines_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("readlines").WithHandler(HTTPResponse_readlines_Handler).WithArgumentsInfo(new ArgumentsInfo(["self", ], 1, false, false, 0, 0)).AssignTo(HTTPResponseClassDescription).BuildAndRegister();
@@ -48,7 +47,7 @@ CallHandlerResult HTTPResponse_get_redirect_location_Handler(Location location, 
 {
     var handledArguments = ProcessorApi.ProcessKeywordArguments(functionCall);
     handledArguments.TryGetValue("self", out var self);
-    var teintData9 = SemanticsApi.CreateObjectDescriptor("<<dsl_teinted_data_8>>").WithType(SemanticsApi.StringType).With(new TaintOrigin("Second order"));
+    var teintData9 = SemanticsApi.CreateObjectDescriptor("<<dsl_tainted_data_8>>").WithType(SemanticsApi.StringType).With(new TaintOrigin("Second order"));
     return CallHandlerResult.Processed(teintData9);
 }
 var HTTPResponse_get_redirect_location_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("get_redirect_location").WithHandler(HTTPResponse_get_redirect_location_Handler).WithArgumentsInfo(new ArgumentsInfo(["self", ], 1, false, false, 0, 0)).AssignTo(HTTPResponseClassDescription).BuildAndRegister();
@@ -56,7 +55,7 @@ CallHandlerResult HTTPResponse_stream_Handler(Location location, FunctionCall fu
 {
     var handledArguments = ProcessorApi.ProcessKeywordArguments(functionCall);
     handledArguments.TryGetValue("self", out var self);
-    var teintData10 = SemanticsApi.CreateObjectDescriptor("<<dsl_teinted_data_9>>").WithType(SemanticsApi.ObjectType).With(new TaintOrigin("Second order"));
+    var teintData10 = SemanticsApi.CreateObjectDescriptor("<<dsl_tainted_data_9>>").WithType(SemanticsApi.ObjectType).With(new TaintOrigin("Second order"));
     return CallHandlerResult.Processed(teintData10);
 }
 var HTTPResponse_stream_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("stream").WithHandler(HTTPResponse_stream_Handler).WithArgumentsInfo(new ArgumentsInfo(["self", ], 1, false, false, 0, 0)).AssignTo(HTTPResponseClassDescription).BuildAndRegister();
@@ -64,7 +63,7 @@ CallHandlerResult HTTPResponse_read_Handler(Location location, FunctionCall func
 {
     var handledArguments = ProcessorApi.ProcessKeywordArguments(functionCall);
     handledArguments.TryGetValue("self", out var self);
-    var teintData11 = SemanticsApi.CreateObjectDescriptor("<<dsl_teinted_data_10>>").WithType(SemanticsApi.ObjectType).With(new TaintOrigin("Second order"));
+    var teintData11 = SemanticsApi.CreateObjectDescriptor("<<dsl_tainted_data_10>>").WithType(SemanticsApi.ObjectType).With(new TaintOrigin("Second order"));
     return CallHandlerResult.Processed(teintData11);
 }
 var HTTPResponse_read_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("read").WithHandler(HTTPResponse_read_Handler).WithArgumentsInfo(new ArgumentsInfo(["self", ], 1, false, false, 0, 0)).AssignTo(HTTPResponseClassDescription).BuildAndRegister();
@@ -72,7 +71,7 @@ CallHandlerResult HTTPResponse_fileno_Handler(Location location, FunctionCall fu
 {
     var handledArguments = ProcessorApi.ProcessKeywordArguments(functionCall);
     handledArguments.TryGetValue("self", out var self);
-    var teintData12 = SemanticsApi.CreateObjectDescriptor("<<dsl_teinted_data_11>>").WithType(SemanticsApi.ObjectType).With(new TaintOrigin("Second order"));
+    var teintData12 = SemanticsApi.CreateObjectDescriptor("<<dsl_tainted_data_11>>").WithType(SemanticsApi.ObjectType).With(new TaintOrigin("Second order"));
     return CallHandlerResult.Processed(teintData12);
 }
 var HTTPResponse_fileno_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("fileno").WithHandler(HTTPResponse_fileno_Handler).WithArgumentsInfo(new ArgumentsInfo(["self", ], 1, false, false, 0, 0)).AssignTo(HTTPResponseClassDescription).BuildAndRegister();

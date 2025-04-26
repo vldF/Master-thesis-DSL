@@ -27,7 +27,7 @@ public class AbstractAstSemanticTransformer : AbstractAstTransformer
         Interpretor = rootContext.GetFakeVariable("Interpreter");
         LocationArg = rootContext.GetFakeVariable("location");
         SemanticsApi = rootContext.GetFakeVariable("SemanticsApi");
-        Engine = rootContext.GetFakeVariable("Engine");
+        Engine = rootContext.GetFakeVariable("Interpreter");
     }
 
     protected string GetFreshVar(string name)

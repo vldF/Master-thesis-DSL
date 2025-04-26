@@ -79,6 +79,8 @@ public class IfStatementsTransformer : AbstractAstSemanticTransformer
             conditionBool,
             fakeConditionVar);
 
+        fakeConditionVar = fakeConditionVar.Copy<VarExpressionAstNode>();
+        fakeConditionVar.IsOutVar = false;
         var leaveBranchCall = Engine.Function(
             "LeaveBranch",
             fakeConditionVar);

@@ -1,0 +1,135 @@
+using System.Collections.Immutable;
+using System.Collections.Generic;
+using JSA.Utils.Logging;
+using JSA.Utils;
+using System.Text.RegularExpressions;
+using JSA.Contracts.Engine;
+
+void InitRouteFunction()
+{
+    var flaskRouterDescr = ProcessorApi.CreateFunctionBuilder("route")
+        .AssignTo(FlaskClassDescriptor)
+        .WithHandler(RouteClassHandler)
+        .WithArgumentsInfo(new ArgumentsInfo(
+            argumentNames: new List<string>() { "self", "route", "options" },
+            argcount: 2,
+            hasVarArgs: false,
+            hasVarKeywords: true,
+            posonlyargcount: 0,
+            kwonlyargcount: 0))
+        .BuildAndRegister();
+}
+
+Dictionary<SymbolicExpression, string> urls = new();
+
+CallHandlerResult RouteClassHandler(Location location, FunctionCall call)
+{
+    if (call.Arguments.Length < 2)
+    {
+        return CallHandlerResult.Unprocessed;
+    }
+
+    var args = ProcessorApi.ProcessKeywordArguments(call);
+    if (!(args.TryGetValue("route", out var routeArg) && routeArg.TryGetLiteralValue(out string ruleValue)))
+    {
+        return CallHandlerResult.Unprocessed;
+    }
+
+    var resultExpression = SemanticsApi.CreateObjectDescriptor($"<app_route_decor_{ruleValue}");
+    urls[resultExpression] = ruleValue;
+
+    ProcessorApi.AddCallHandler(resultExpression, ProcessAppRouteDecorator);
+
+    return CallHandlerResult.Processed(resultExpression);
+}
+
+CallHandlerResult ProcessAppRouteDecorator(Location location, FunctionCall call)
+{
+    var url = urls[call.Receiver];
+
+    var handlerDescriptor = (EntityDescriptor)call.Arguments[0];
+    if (ProcessViewFunction(location, handlerDescriptor, url, ["GET"]))
+    {
+        return CallHandlerResult.Processed(handlerDescriptor);
+    }
+
+    return CallHandlerResult.Unprocessed;
+}
+
+bool ProcessViewFunction(
+    Location location,
+    EntityDescriptor handlerDescriptor,
+    string urlRule,
+    ImmutableArray<string> methods)
+{
+    var httpMethod = GetNormalizedHttpMethod(methods);
+    var args = GetTaintedParams(location, urlRule);
+
+    if (!ProcessorApi.TryOrderKeywordArguments(handlerDescriptor, args, out var orderedArgs))
+    {
+        Log.Verbose("Could not determine positions of keyword arguments");
+        return false;
+    }
+
+    ProcessFrameworkEntryPoint(location, urlRule, httpMethod, forkedThis =>
+    {
+        var handlerResult = forkedThis.Interpreter.InvokeFunction(location, handlerDescriptor, orderedArgs);
+        Detector.Detect(location, handlerResult, VulnerabilityType.CrossSiteScripting, PvoArgumentGrammar.HtmlText);
+    });
+
+    return true;
+}
+
+HttpMethodType GetNormalizedHttpMethod(ImmutableArray<string> methods)
+{
+    HttpMethodType httpMethod;
+    if (methods.Contains("GET") && methods.Contains("POST")) { httpMethod = HttpMethodType.All; }
+    else if (methods.Contains("GET")) { httpMethod = HttpMethodType.Get; }
+    else if (methods.Contains("POST")) { httpMethod = HttpMethodType.Post; }
+    else { httpMethod = HttpMethodType.Unknown; }
+
+    return httpMethod;
+}
+
+ImmutableDictionary<string, SymbolicExpression> GetTaintedParams(Location location, string urlRule)
+{
+    var builder = ImmutableDictionary.CreateBuilder<string, SymbolicExpression>();
+    var pattern = @"<((?<type>string|int|float|path|uuid):)?(?<name>[^>]+)>";
+
+    foreach (Match match in Regex.Matches(urlRule, pattern))
+    {
+        var type = match.Groups["type"].Value;
+        var name = match.Groups["name"].Value;
+        var taintedParameter = SemanticsApi.CreateEntityDescriptor(name, SymbolicProperties.Default)
+            .With(HttpRequestTaintOrigin.NamedQueryParameter(name)).AddDataTraceLocation(location);
+
+        if (type.IsEmpty() || type.Equals("string") || type.Equals("path") || type.Equals("uuid"))
+        {
+            taintedParameter = taintedParameter.WithType(SemanticsApi.StringType);
+        }
+        else if (type.Equals("int")) { taintedParameter = taintedParameter.WithType(SemanticsApi.LongType); }
+        else if (type.Equals("float")) { taintedParameter = taintedParameter.WithType(SemanticsApi.FloatType); }
+        else
+        {
+            //taintedParameter = taintedParameter.With(TypeDescriptor.NotResolved);
+        }
+
+        builder.Add(name, taintedParameter);
+    }
+
+    return builder.ToImmutable();
+}
+
+CallHandlerResult ProcessMakeResponse(Location location, FunctionCall functionCall)
+{
+    if (functionCall.Arguments.Length < 1) { return CallHandlerResult.Unprocessed; }
+
+    var responseReturnValue = functionCall.Arguments[0];
+    Detector.Detect(location, responseReturnValue, VulnerabilityType.CrossSiteScripting, PvoArgumentGrammar.HtmlText);
+    return default;
+}
+
+void InitflaskComplemention()
+{
+    InitRouteFunction();
+}

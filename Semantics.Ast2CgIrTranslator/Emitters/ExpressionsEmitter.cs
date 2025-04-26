@@ -161,9 +161,15 @@ public class ExpressionsEmitter(TranslatorContext ctx)
 
     private ICgExpression EmitNewNode(NewAstNode newAstNode)
     {
-        var obj = newAstNode.TypeReference.SealedValue!;
+        var obj = newAstNode.TypeReference.ResolveObject();
+        if (obj == null)
+        {
+            throw new Exception($"unresolved {newAstNode.TypeReference.AsString()}");
+        }
         var args = newAstNode.Args.Select(EmitExpression);
-        return ctx.Semantics.CreateInstance(obj.Name, args);
+        var objDescrVar = new CgVarExpression(obj!.GetDescriptionVarName());
+
+        return ctx.Semantics.CreateInstance(objDescrVar, args);
     }
 
     private ICgExpression EmitIntrinsicFunctionInvokationAstNode(IntrinsicFunctionInvokationAstNode intrinsicFunctionInvokationAstNode)

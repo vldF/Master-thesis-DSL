@@ -15,7 +15,7 @@ CallHandlerResult HttpClient___init___Handler(Location location, FunctionCall fu
 {
     var handledArguments = ProcessorApi.ProcessKeywordArguments(functionCall);
     handledArguments.TryGetValue("self", out var self);
-    Interpreter.Assign(self, "container", SemanticsApi.CreateObjectDescriptor("<Container>"));
+    Interpreter.Assign(self, "container", PythonTypes.CreateInstance(Location.Empty, ContainerClassDescription, new ImmutableArray<SymbolicExpression>()));
     return CallHandlerResult.Processed(self);
 }
 var HttpClient___init___MethodDescriptor = ProcessorApi.CreateFunctionBuilder("__init__").WithHandler(HttpClient___init___Handler).WithArgumentsInfo(new ArgumentsInfo(["self", ], 1, false, false, 0, 0)).AssignTo(HttpClientClassDescription).BuildAndRegister();

@@ -21,6 +21,20 @@ public class Semantics
     }
 
     public ICgExpression CreateInstance(
+        CgVarExpression classDescriptor,
+        IEnumerable<ICgExpression> args)
+    {
+        List<ICgExpression> callArgs =
+        [
+            _location.Property("Empty"),
+            classDescriptor,
+            new CgListLiteralExpression(args.ToList(), "ImmutableArray<SymbolicExpression>")
+        ];
+
+        return Types.CallMethod("CreateInstance", callArgs);
+    }
+
+    public ICgExpression CreateNonTypedInstance(
         string name,
         IEnumerable<ICgExpression> args)
     {

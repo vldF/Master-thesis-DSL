@@ -53,7 +53,7 @@ public class ReturnTransformer : AbstractAstSemanticTransformer
         children.Insert(0, returnValueBuilderDecl);
 
         _newReturn = new ReturnStatementAstNode(
-            _currentReturnConditionalBuilder.Resolve()!.GetVarExpr(node.Context));
+            _currentReturnConditionalBuilder.Resolve()!.GetVarExpr(node.Context).Function("ToConditional"));
         children.Insert(children.Count, _newReturn);
 
         node.Body.Children = children;

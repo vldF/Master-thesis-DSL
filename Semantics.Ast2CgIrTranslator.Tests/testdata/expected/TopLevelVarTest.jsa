@@ -1,0 +1,9 @@
+var variable1 = SemanticsApi.CreateLiteral(1);
+Interpreter.Assign(ModuleDescriptor, "variable1", variable1);
+var variable2 = SemanticsApi.CreateLiteral(2);
+Interpreter.Assign(ModuleDescriptor, "variable2", variable2);
+var variable3 = PythonTypes.CreateInstance(Location.Empty, ObjClassDescription, new ImmutableArray<SymbolicExpression>());
+Interpreter.Assign(ModuleDescriptor, "variable3", variable3);
+var ObjClassDescription = SemanticsApi.CreateClassObjectDescriptor("Obj");
+Interpreter.Assign(ModuleDescriptor, "Obj", ObjClassDescription);
+PythonTypes.BuildClass(ObjClassDescription);

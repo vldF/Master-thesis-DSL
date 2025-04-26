@@ -1,0 +1,151 @@
+#load "flaskComplemention.jsa"
+#load "Standard.jsa"
+var FlaskClassDescriptor = SemanticsApi.CreateClassObjectDescriptor("Flask");
+Interpreter.Assign(ModuleDescriptor, "Flask", FlaskClassDescriptor);
+PythonTypes.BuildClass(FlaskClassDescriptor);
+CallHandlerResult global_url_for_Handler(Location location, FunctionCall functionCall)
+{
+    var handledArguments = ProcessorApi.ProcessKeywordArguments(functionCall);
+    handledArguments.TryGetValue("endpoint", out var endpoint);
+    var teintData1 = SemanticsApi.CreateObjectDescriptor("<<dsl__data_0>>").WithType(SemanticsApi.StringType);
+    return CallHandlerResult.Processed(teintData1);
+}
+var global_url_for_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("url_for").WithHandler(global_url_for_Handler).WithArgumentsInfo(new ArgumentsInfo(["endpoint", ], 1, false, false, 0, 0)).AssignTo(ModuleDescriptor).BuildAndRegister();
+var RequestClassDescription = SemanticsApi.CreateClassObjectDescriptor("Request");
+CallHandlerResult Request___init___Handler(Location location, FunctionCall functionCall)
+{
+    var handledArguments = ProcessorApi.ProcessKeywordArguments(functionCall);
+    handledArguments.TryGetValue("self", out var self);
+    var teintData2 = SemanticsApi.CreateObjectDescriptor("<<dsl_tainted_data_0>>").WithType(SemanticsApi.DictType).With(new TaintOrigin("Query"));
+    Interpreter.Assign(self, "args", teintData2);
+    var teintData3 = SemanticsApi.CreateObjectDescriptor("<<dsl_tainted_data_1>>").WithType(SemanticsApi.DictType).With(new TaintOrigin("Body"));
+    Interpreter.Assign(self, "data", teintData3);
+    var teintData4 = SemanticsApi.CreateObjectDescriptor("<<dsl_tainted_data_2>>").WithType(SemanticsApi.DictType).With(new TaintOrigin("Body"));
+    Interpreter.Assign(self, "files", teintData4);
+    var teintData5 = SemanticsApi.CreateObjectDescriptor("<<dsl_tainted_data_3>>").WithType(SemanticsApi.DictType).With(new TaintOrigin("Body"));
+    Interpreter.Assign(self, "json", teintData5);
+    var teintData6 = SemanticsApi.CreateObjectDescriptor("<<dsl_tainted_data_4>>").WithType(SemanticsApi.DictType).With(new TaintOrigin("Form"));
+    Interpreter.Assign(self, "form", teintData6);
+    var teintData7 = SemanticsApi.CreateObjectDescriptor("<<dsl_tainted_data_5>>").WithType(SemanticsApi.StringType).With(new TaintOrigin("Query"));
+    Interpreter.Assign(self, "full_path", teintData7);
+    var teintData8 = SemanticsApi.CreateObjectDescriptor("<<dsl_tainted_data_6>>").WithType(SemanticsApi.DictType).With(new TaintOrigin("Headers"));
+    Interpreter.Assign(self, "headers", teintData8);
+    var teintData9 = SemanticsApi.CreateObjectDescriptor("<<dsl_tainted_data_7>>").WithType(SemanticsApi.StringType).With(new TaintOrigin("HTTP URI"));
+    Interpreter.Assign(self, "host", teintData9);
+    var teintData10 = SemanticsApi.CreateObjectDescriptor("<<dsl_tainted_data_8>>").WithType(SemanticsApi.StringType).With(new TaintOrigin("HTTP URI"));
+    Interpreter.Assign(self, "host_url", teintData10);
+    var teintData11 = SemanticsApi.CreateObjectDescriptor("<<dsl_tainted_data_9>>").WithType(SemanticsApi.StringType).With(new TaintOrigin("HTTP URI"));
+    Interpreter.Assign(self, "host_url", teintData11);
+    var teintData12 = SemanticsApi.CreateObjectDescriptor("<<dsl_tainted_data_10>>").WithType(SemanticsApi.BoolType).With(new TaintOrigin("Body"));
+    Interpreter.Assign(self, "is_json", teintData12);
+    var teintData13 = SemanticsApi.CreateObjectDescriptor("<<dsl_tainted_data_11>>").WithType(SemanticsApi.BoolType).With(new TaintOrigin("Body"));
+    Interpreter.Assign(self, "is_xhr", teintData13);
+    var teintData14 = SemanticsApi.CreateObjectDescriptor("<<dsl_tainted_data_12>>").WithType(SemanticsApi.LongType).With(new TaintOrigin("Body"));
+    Interpreter.Assign(self, "max_content_length", teintData14);
+    var teintData15 = SemanticsApi.CreateObjectDescriptor("<<dsl_tainted_data_13>>").WithType(SemanticsApi.LongType).With(new TaintOrigin("Header"));
+    Interpreter.Assign(self, "max_forwards", teintData15);
+    var teintData16 = SemanticsApi.CreateObjectDescriptor("<<dsl_tainted_data_14>>").WithType(SemanticsApi.StringType).With(new TaintOrigin("Body"));
+    Interpreter.Assign(self, "method", teintData16);
+    var teintData17 = SemanticsApi.CreateObjectDescriptor("<<dsl_tainted_data_15>>").WithType(SemanticsApi.StringType).With(new TaintOrigin("Body"));
+    Interpreter.Assign(self, "mimetype", teintData17);
+    var teintData18 = SemanticsApi.CreateObjectDescriptor("<<dsl_tainted_data_16>>").WithType(SemanticsApi.DictType).With(new TaintOrigin("Body"));
+    Interpreter.Assign(self, "mimetype_params", teintData18);
+    var teintData19 = SemanticsApi.CreateObjectDescriptor("<<dsl_tainted_data_17>>").WithType(SemanticsApi.DictType).With(new TaintOrigin("Query"));
+    Interpreter.Assign(self, "path", teintData19);
+    var teintData20 = SemanticsApi.CreateObjectDescriptor("<<dsl_tainted_data_18>>").WithType(SemanticsApi.BytesType).With(new TaintOrigin("Query"));
+    Interpreter.Assign(self, "query_string", teintData20);
+    var teintData21 = SemanticsApi.CreateObjectDescriptor("<<dsl_tainted_data_19>>").WithType(SemanticsApi.ObjectType).With(new TaintOrigin("Header"));
+    Interpreter.Assign(self, "range", teintData21);
+    var teintData22 = SemanticsApi.CreateObjectDescriptor("<<dsl_tainted_data_20>>").WithType(SemanticsApi.ObjectType).With(new TaintOrigin("Header"));
+    Interpreter.Assign(self, "referrer", teintData22);
+    var teintData23 = SemanticsApi.CreateObjectDescriptor("<<dsl_tainted_data_21>>").WithType(SemanticsApi.ObjectType).With(new TaintOrigin("IP address"));
+    Interpreter.Assign(self, "remote_addr", teintData23);
+    var teintData24 = SemanticsApi.CreateObjectDescriptor("<<dsl_tainted_data_22>>").WithType(SemanticsApi.ObjectType).With(new TaintOrigin("Connection string item"));
+    Interpreter.Assign(self, "remote_user", teintData24);
+    var teintData25 = SemanticsApi.CreateObjectDescriptor("<<dsl_tainted_data_23>>").WithType(SemanticsApi.ObjectType).With(new TaintOrigin("HTTP URI"));
+    Interpreter.Assign(self, "scheme", teintData25);
+    var teintData26 = SemanticsApi.CreateObjectDescriptor("<<dsl_tainted_data_24>>").WithType(SemanticsApi.BytesType).With(new TaintOrigin("Body"));
+    Interpreter.Assign(self, "stream", teintData26);
+    var teintData27 = SemanticsApi.CreateObjectDescriptor("<<dsl_tainted_data_25>>").WithType(SemanticsApi.StringType).With(new TaintOrigin("HTTP URI"));
+    Interpreter.Assign(self, "url", teintData27);
+    var teintData28 = SemanticsApi.CreateObjectDescriptor("<<dsl_tainted_data_26>>").WithType(SemanticsApi.StringType).With(new TaintOrigin("HTTP URI"));
+    Interpreter.Assign(self, "url_root", teintData28);
+    var teintData29 = SemanticsApi.CreateObjectDescriptor("<<dsl_tainted_data_27>>").WithType(SemanticsApi.StringType).With(new TaintOrigin("Header"));
+    Interpreter.Assign(self, "user_agent", teintData29);
+    var teintData30 = SemanticsApi.CreateObjectDescriptor("<<dsl_tainted_data_28>>").WithType(SemanticsApi.DictType).With(new TaintOrigin("Header"));
+    Interpreter.Assign(self, "values", teintData30);
+    var teintData31 = SemanticsApi.CreateObjectDescriptor("<<dsl_tainted_data_29>>").WithType(SemanticsApi.DictType).With(new TaintOrigin("Header"));
+    Interpreter.Assign(self, "view_args", teintData31);
+    var teintData32 = SemanticsApi.CreateObjectDescriptor("<<dsl_tainted_data_30>>").WithType(SemanticsApi.BoolType).With(new TaintOrigin("Body"));
+    Interpreter.Assign(self, "want_form_data_parsed", teintData32);
+    var teintData33 = SemanticsApi.CreateObjectDescriptor("<<dsl_tainted_data_31>>").WithType(SemanticsApi.DictType).With(new TaintOrigin("HTTP URI"));
+    Interpreter.Assign(self, "base_url", teintData33);
+    var teintData34 = SemanticsApi.CreateObjectDescriptor("<<dsl_tainted_data_32>>").WithType(SemanticsApi.ObjectType).With(new TaintOrigin("Connection string item"));
+    Interpreter.Assign(self, "authorization", teintData34);
+    var teintData35 = SemanticsApi.CreateObjectDescriptor("<<dsl_tainted_data_33>>").WithType(SemanticsApi.ObjectType).With(new TaintOrigin("Date"));
+    Interpreter.Assign(self, "date", teintData35);
+    var teintData36 = SemanticsApi.CreateObjectDescriptor("<<dsl__data_1>>").WithType(SemanticsApi.StringType);
+    Interpreter.Assign(self, "blueprint", teintData36);
+    var teintData37 = SemanticsApi.CreateObjectDescriptor("<<dsl__data_2>>").WithType(SemanticsApi.ObjectType);
+    Interpreter.Assign(self, "endpoint", teintData37);
+    return CallHandlerResult.Processed(self);
+}
+var Request___init___MethodDescriptor = ProcessorApi.CreateFunctionBuilder("__init__").WithHandler(Request___init___Handler).WithArgumentsInfo(new ArgumentsInfo(["self", ], 1, false, false, 0, 0)).AssignTo(RequestClassDescription).BuildAndRegister();
+CallHandlerResult Request_application_Handler(Location location, FunctionCall functionCall)
+{
+    var handledArguments = ProcessorApi.ProcessKeywordArguments(functionCall);
+    handledArguments.TryGetValue("self", out var self);
+    var teintData38 = SemanticsApi.CreateObjectDescriptor("<<dsl__data_3>>").WithType(SemanticsApi.ObjectType);
+    return CallHandlerResult.Processed(teintData38);
+}
+var Request_application_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("application").WithHandler(Request_application_Handler).WithArgumentsInfo(new ArgumentsInfo(["self", ], 1, false, false, 0, 0)).AssignTo(RequestClassDescription).BuildAndRegister();
+CallHandlerResult Request_close_Handler(Location location, FunctionCall functionCall)
+{
+    var handledArguments = ProcessorApi.ProcessKeywordArguments(functionCall);
+    handledArguments.TryGetValue("self", out var self);
+    return CallHandlerResult.Processed(SemanticsApi.None);
+}
+var Request_close_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("close").WithHandler(Request_close_Handler).WithArgumentsInfo(new ArgumentsInfo(["self", ], 1, false, false, 0, 0)).AssignTo(RequestClassDescription).BuildAndRegister();
+CallHandlerResult Request_flom_values_Handler(Location location, FunctionCall functionCall)
+{
+    var handledArguments = ProcessorApi.ProcessKeywordArguments(functionCall);
+    handledArguments.TryGetValue("self", out var self);
+    return CallHandlerResult.Processed(PythonTypes.CreateInstance(Location.Empty, RequestClassDescription, new ImmutableArray<SymbolicExpression>()));
+}
+var Request_flom_values_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("flom_values").WithHandler(Request_flom_values_Handler).WithArgumentsInfo(new ArgumentsInfo(["self", ], 1, false, false, 0, 0)).AssignTo(RequestClassDescription).BuildAndRegister();
+CallHandlerResult Request_get_data_Handler(Location location, FunctionCall functionCall)
+{
+    var handledArguments = ProcessorApi.ProcessKeywordArguments(functionCall);
+    handledArguments.TryGetValue("self", out var self);
+    handledArguments.TryGetValue("as_text", out var as_text);
+    var returnValueBuilder0 = Interpreter.CreateReturnedValuesBuilder();
+    var condition0 = SemanticsApi.CreateCastToBoolOperator(as_text);
+    Interpreter.TryEnterBranch(condition0, out var branchId0);
+    var currentCond0 = Interpreter.CurrentContext.CurrentCondition;
+    var teintData39 = SemanticsApi.CreateObjectDescriptor("<<dsl_tainted_data_34>>").WithType(SemanticsApi.StringType).With(new TaintOrigin("Body"));
+    returnValueBuilder0.AddOption(currentCond0, teintData39);
+    Interpreter.LeaveBranch(branchId0);
+    var notCondition0 = Interpreter.InvokeFunction(location, SemanticsApi.NotDescriptor, SemanticsApi.CreateCastToBoolOperator(as_text));
+    Interpreter.TryEnterBranch(notCondition0, out var branchId1);
+    var currentCond1 = Interpreter.CurrentContext.CurrentCondition;
+    var teintData40 = SemanticsApi.CreateObjectDescriptor("<<dsl_tainted_data_35>>").WithType(SemanticsApi.BytesType).With(new TaintOrigin("Body"));
+    returnValueBuilder0.AddOption(currentCond1, teintData40);
+    Interpreter.LeaveBranch(branchId1);
+    return CallHandlerResult.Processed(returnValueBuilder0.ToConditional());
+}
+var Request_get_data_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("get_data").WithHandler(Request_get_data_Handler).WithArgumentsInfo(new ArgumentsInfo(["self", "as_text", ], 2, false, false, 0, 0)).AssignTo(RequestClassDescription).BuildAndRegister();
+CallHandlerResult Request_get_json_Handler(Location location, FunctionCall functionCall)
+{
+    var handledArguments = ProcessorApi.ProcessKeywordArguments(functionCall);
+    handledArguments.TryGetValue("self", out var self);
+    var teintData41 = SemanticsApi.CreateObjectDescriptor("<<dsl_tainted_data_36>>").WithType(SemanticsApi.ObjectType).With(new TaintOrigin("Body"));
+    return CallHandlerResult.Processed(teintData41);
+}
+var Request_get_json_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("get_json").WithHandler(Request_get_json_Handler).WithArgumentsInfo(new ArgumentsInfo(["self", ], 1, false, false, 0, 0)).AssignTo(RequestClassDescription).BuildAndRegister();
+Interpreter.Assign(ModuleDescriptor, "Request", RequestClassDescription);
+PythonTypes.BuildClass(RequestClassDescription);
+var request = PythonTypes.CreateInstance(Location.Empty, RequestClassDescription, new ImmutableArray<SymbolicExpression>());
+Interpreter.Assign(ModuleDescriptor, "request", request);
+
+// complementing content from flaskComplemention.jsa
+InitflaskComplemention();

@@ -26,10 +26,20 @@ public class BaseBuilderVisitor(IrContext irContext) : JSADSLBaseVisitor<IAstNod
             .Cast<IStatementAstNode>()
             .ToList();
 
-        return new FileAstNode(
+        var fileAstNode = new FileAstNode(
             package,
             result,
             irContext);
+
+        foreach (var statementAstNode in result)
+        {
+            if (statementAstNode is VarDeclAstNode varNode)
+            {
+                varNode.Parent = fileAstNode;
+            }
+        }
+
+        return fileAstNode;
     }
 
     public override FunctionAstNode VisitFuncDecl(JSADSLParser.FuncDeclContext context)
@@ -305,11 +315,6 @@ public class BaseBuilderVisitor(IrContext irContext) : JSADSLBaseVisitor<IAstNod
             return VisitFunctionCall(context.functionCall());
         }
 
-        if (context.varDeclarationStatement() != null)
-        {
-            return VisitVarDeclarationStatement(context.varDeclarationStatement());
-        }
-
         throw new ArgumentOutOfRangeException(nameof(context));
     }
 
@@ -326,5 +331,35 @@ public class BaseBuilderVisitor(IrContext irContext) : JSADSLBaseVisitor<IAstNod
         }
 
         throw new ArgumentOutOfRangeException(nameof(context));
+    }
+
+    public override IAstNode VisitTopLevelDecl(JSADSLParser.TopLevelDeclContext context)
+    {
+        if (context.varDeclarationStatement() != null)
+        {
+            return VisitVarDeclarationStatement(context.varDeclarationStatement());
+        }
+
+        if (context.objectDecl() != null)
+        {
+            return VisitObjectDecl(context.objectDecl());
+        }
+
+        if (context.funcDecl() != null)
+        {
+            return VisitFuncDecl(context.funcDecl());
+        }
+
+        if (context.intrinsicFuncDecl() != null)
+        {
+            return VisitIntrinsicFuncDecl(context.intrinsicFuncDecl());
+        }
+
+        if (context.importDecl() != null)
+        {
+            return VisitImportDecl(context.importDecl());
+        }
+
+        throw new Exception("unknown");
     }
 }

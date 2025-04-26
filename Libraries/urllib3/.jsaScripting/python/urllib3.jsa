@@ -11,10 +11,7 @@ CallHandlerResult global_request_Handler(Location location, FunctionCall functio
     handledArguments.TryGetValue("json", out var json);
     Detect(location, url, "Server-Side Request Forgery", "HTTP URI");
     Detect(location, headers, "Server-Side Request Forgery", "HTTP URI");
-    Detect(location, headers, "Information Exposure", "Serialized JSON data");
-    Detect(location, fields, "Information Exposure", "Field");
-    Detect(location, json, "Information Exposure", "HTTP header value");
-
+    Detect(location, headers, "Information Exposure", "HTTP URI");
     return CallHandlerResult.Processed(SemanticsApi.CreateObjectDescriptor("<HTTPResponse>"));
 }
 var global_request_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("request").WithHandler(global_request_Handler).WithArgumentsInfo(new ArgumentsInfo(["method", "url", "body", "fields", "headers", "json", ], 6, false, false, 0, 0)).AssignTo(ModuleDescriptor).BuildAndRegister();

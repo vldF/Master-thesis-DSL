@@ -9,7 +9,8 @@ public class IntrinsicFunctionsCallWithNoImplEmitter(TranslatorContext ctx)
 {
     private readonly Dictionary<string, IFunctionEmitter> _supportedIntrinsicFunctions = new()
     {
-        { "CreateTaintedDataOfType", new CreateTaintedDataOfTypeEmitter(ctx) }
+        { "CreateTaintedDataOfType", new CreateDataOfTypeEmitter(isTainted: true, ctx) },
+        { "CreateDataOfType", new CreateDataOfTypeEmitter(isTainted: false, ctx) },
     };
 
     public bool IsApplicable(IntrinsicFunctionInvokationAstNode call)
@@ -27,7 +28,7 @@ public class IntrinsicFunctionsCallWithNoImplEmitter(TranslatorContext ctx)
         public ICgExpression Emit(IntrinsicFunctionInvokationAstNode call);
     }
 
-    class CreateTaintedDataOfTypeEmitter(TranslatorContext ctx) : IFunctionEmitter
+    class CreateDataOfTypeEmitter(bool isTainted, TranslatorContext ctx) : IFunctionEmitter
     {
         private int _idCounter = 0;
 
@@ -39,12 +40,16 @@ public class IntrinsicFunctionsCallWithNoImplEmitter(TranslatorContext ctx)
             { "bool", "BoolType" },
             { "bytes", "BytesType" },
             { "any", "ObjectType" },
+            { "dict", "DictType" },
+            { "list", "ListType" },
         };
 
         public ICgExpression Emit(IntrinsicFunctionInvokationAstNode call)
         {
             var type = call.Generics.First().Resolve()!;
-            var result = ctx.Semantics.CreateInstance($"<dsl_teinted_data_{_idCounter++}>", []);
+            var result = ctx.Semantics.CreateNonTypedInstance(
+                $"<dsl_{(isTainted ? "tainted" : "" )}_data_{_idCounter++}>",
+                []);
             if (type is SimpleAstType)
             {
                 var typePropName = _buildInTypesMappint[type.Name];
@@ -57,15 +62,18 @@ public class IntrinsicFunctionsCallWithNoImplEmitter(TranslatorContext ctx)
                 result = result.CallMethod("WithType", [typeProviderCgExpr]);
             }
 
-            var taintOrigin = call.Args.ToList()[1];
-            if (taintOrigin is not StringLiteralAstNode stringTaintOrigin)
+            if (isTainted)
             {
-                throw new InvalidOperationException("taint origin must be constant string");
-            }
+                var taintOrigin = call.Args.ToList()[1];
+                if (taintOrigin is not StringLiteralAstNode stringTaintOrigin)
+                {
+                    throw new InvalidOperationException("taint origin must be constant string");
+                }
 
-            var taintOriginCgExpr = AsExpression(stringTaintOrigin.Value);
-            taintOriginCgExpr = new CgNewExpression("TaintOrigin", [taintOriginCgExpr]);
-            result = result.CallMethod("With", [taintOriginCgExpr]);
+                var taintOriginCgExpr = AsExpression(stringTaintOrigin.Value);
+                taintOriginCgExpr = new CgNewExpression("TaintOrigin", [taintOriginCgExpr]);
+                result = result.CallMethod("With", [taintOriginCgExpr]);
+            }
 
             var resultVarName = ctx.GetFreshVarName("teintData");
             var resultTempVarDecl = new CgVarDeclStatement(resultVarName, null, result);

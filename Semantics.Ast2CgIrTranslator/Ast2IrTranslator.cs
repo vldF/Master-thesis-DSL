@@ -30,6 +30,7 @@ public class Ast2IrTranslator : IAstVisitor
     {
         var fileName = Path.GetFileNameWithoutExtension(node.FileName!) + ".jsa";
         _ctx.File = CreateFile(fileName);
+        _ctx.PushContainer(_ctx.File);
 
         var objectDeclarations = node.TopLevelDeclarations
             .Where(decl => decl is ObjectAstNode)
@@ -45,6 +46,7 @@ public class Ast2IrTranslator : IAstVisitor
         {
             ((IAstVisitor)this).VisitStatementAstNode(nodeTopLevelDeclaration);
         }
+        _ctx.PopContainer();
     }
 
     public void VisitFunctionArgAstNode(FunctionArgAstNode node) {}
@@ -91,6 +93,33 @@ public class Ast2IrTranslator : IAstVisitor
 
     public void VisitVarDeclAstNode(VarDeclAstNode node)
     {
+        if (node.Parent is not FileAstNode)
+        {
+            return;
+        }
+
+        if (node.Init != null)
+        {
+            var expressionsEmitter = new ExpressionsEmitter(_ctx);
+            var initValue = expressionsEmitter.EmitExpression(node.Init);
+
+            var var = VarDeclaration(
+                _ctx.File,
+                node.Name,
+                type: null,
+                init: initValue);
+
+            var assignStatement = _ctx.Semantics.InterpreterApi.CallMethod("Assign", [
+                _ctx.Semantics.ModuleDescriptorVar,
+                AsExpression(node.Name),
+                var]);
+
+            _ctx.File.Statements.Add(assignStatement);
+        }
+        else
+        {
+            throw new Exception("top level variable must have initialization expression");
+        }
     }
 
     public void VisitExpressionAstNode(IExpressionAstNode node)

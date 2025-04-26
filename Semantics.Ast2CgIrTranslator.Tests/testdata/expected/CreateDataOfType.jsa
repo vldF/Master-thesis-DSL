@@ -1,0 +1,8 @@
+#load "Standard.jsa"
+CallHandlerResult global_foo_Handler(Location location, FunctionCall functionCall)
+{
+    var handledArguments = ProcessorApi.ProcessKeywordArguments(functionCall);
+    var teintData1 = SemanticsApi.CreateObjectDescriptor("<<dsl__data_0>>").WithType(SemanticsApi.StringType);
+    return CallHandlerResult.Processed(teintData1);
+}
+var global_foo_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("foo").WithHandler(global_foo_Handler).WithArgumentsInfo(new ArgumentsInfo([], 0, false, false, 0, 0)).AssignTo(ModuleDescriptor).BuildAndRegister();

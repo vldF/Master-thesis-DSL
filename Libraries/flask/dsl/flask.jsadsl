@@ -1,0 +1,73 @@
+import "Standard";
+
+@GeneratedName("FlaskClassDescriptor")
+object Flask { }
+
+func url_for(endpoint: any): string {
+    return CreateDataOfType<string>();
+}
+
+object Request {
+    var args = CreateTaintedDataOfType<dict>("Query");
+    var data = CreateTaintedDataOfType<dict>("Body");
+    var files = CreateTaintedDataOfType<dict>("Body");
+    var json = CreateTaintedDataOfType<dict>("Body");
+    var form = CreateTaintedDataOfType<dict>("Form");
+    var full_path = CreateTaintedDataOfType<string>("Query");
+    var headers = CreateTaintedDataOfType<dict>("Headers");
+    var host = CreateTaintedDataOfType<string>("HTTP URI");
+    var host_url = CreateTaintedDataOfType<string>("HTTP URI");
+    var host_url = CreateTaintedDataOfType<string>("HTTP URI");
+    var is_json = CreateTaintedDataOfType<bool>("Body");
+    var is_xhr = CreateTaintedDataOfType<bool>("Body");
+    var max_content_length = CreateTaintedDataOfType<int>("Body");
+    var max_forwards = CreateTaintedDataOfType<int>("Header");
+    var method = CreateTaintedDataOfType<string>("Body");
+    var mimetype = CreateTaintedDataOfType<string>("Body");
+    var mimetype_params = CreateTaintedDataOfType<dict>("Body");
+    var path = CreateTaintedDataOfType<dict>("Query");
+    var query_string = CreateTaintedDataOfType<bytes>("Query");
+    var range = CreateTaintedDataOfType<any>("Header");
+    var referrer = CreateTaintedDataOfType<any>("Header");
+    var remote_addr = CreateTaintedDataOfType<any>("IP address");
+    var remote_user = CreateTaintedDataOfType<any>("Connection string item");
+    var scheme = CreateTaintedDataOfType<any>("HTTP URI");
+    var stream = CreateTaintedDataOfType<bytes>("Body");
+    var url = CreateTaintedDataOfType<string>("HTTP URI");
+    var url_root = CreateTaintedDataOfType<string>("HTTP URI");
+    var user_agent = CreateTaintedDataOfType<string>("Header");
+    var values = CreateTaintedDataOfType<dict>("Header");
+    var view_args = CreateTaintedDataOfType<dict>("Header");
+    var want_form_data_parsed = CreateTaintedDataOfType<bool>("Body");
+    var base_url = CreateTaintedDataOfType<dict>("HTTP URI");
+    var authorization = CreateTaintedDataOfType<any>("Connection string item");
+    var date = CreateTaintedDataOfType<any>("Date");
+
+    var blueprint = CreateDataOfType<string>();
+    var endpoint = CreateDataOfType<any>();
+
+    func application(): any {
+        return CreateDataOfType<any>();
+    }
+
+    func close() { }
+
+    func flom_values() {
+        return new Request();
+    }
+
+    // todo: as_text = false by default
+    func get_data(as_text: bool): any {
+        if (as_text) {
+            return CreateTaintedDataOfType<string>("Body");
+        } else {
+            return CreateTaintedDataOfType<bytes>("Body");
+        }
+    }
+
+    func get_json(): any {
+        return CreateTaintedDataOfType<any>("Body");
+    }
+}
+
+var request = new Request();

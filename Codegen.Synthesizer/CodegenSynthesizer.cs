@@ -257,13 +257,32 @@ public class CodegenSynthesizer : AbstractTextSynthesizer
 
     private void SynthListLiteralExpression(CgListLiteralExpression cgListLiteralExpression)
     {
-        Append("[");
+        if (cgListLiteralExpression.typeAsString != null)
+        {
+            Append("new");
+            AppendSpace();
+            Append(cgListLiteralExpression.typeAsString);
+            Append("(");
+        }
+        else
+        {
+            Append("[");
+        }
+
         foreach (var cgExpression in cgListLiteralExpression.elements)
         {
             SynthExpression(cgExpression);
             Append(", ");
         }
-        Append("]");
+
+        if (cgListLiteralExpression.typeAsString != null)
+        {
+            Append(")");
+        }
+        else
+        {
+            Append("]");
+        }
     }
 
     private void SynthNewExpression(CgNewExpression cgNewExpression)

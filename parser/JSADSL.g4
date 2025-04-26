@@ -7,6 +7,7 @@ topLevelDecl
    |   intrinsicFuncDecl
    |   objectDecl
    |   importDecl
+   |   varDeclarationStatement SEMI_COLON
    ;
 
 funcDecl : annotation* FUNC_KW name=ID L_PAREN (functionArgs) R_PAREN (COLON resultType=ID)? L_BRACE statementsBlock R_BRACE;

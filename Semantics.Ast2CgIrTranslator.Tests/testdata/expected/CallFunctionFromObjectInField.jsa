@@ -16,7 +16,7 @@ CallHandlerResult HttpClient___init___Handler(Location location, FunctionCall fu
 {
     var handledArguments = ProcessorApi.ProcessKeywordArguments(functionCall);
     handledArguments.TryGetValue("self", out var self);
-    Interpreter.Assign(self, "processor", SemanticsApi.CreateObjectDescriptor("<HttpProcessor>"));
+    Interpreter.Assign(self, "processor", PythonTypes.CreateInstance(Location.Empty, HttpProcessorClassDescription, new ImmutableArray<SymbolicExpression>()));
     return CallHandlerResult.Processed(self);
 }
 var HttpClient___init___MethodDescriptor = ProcessorApi.CreateFunctionBuilder("__init__").WithHandler(HttpClient___init___Handler).WithArgumentsInfo(new ArgumentsInfo(["self", ], 1, false, false, 0, 0)).AssignTo(HttpClientClassDescription).BuildAndRegister();
@@ -24,7 +24,7 @@ CallHandlerResult HttpClient_GetData_Handler(Location location, FunctionCall fun
 {
     var handledArguments = ProcessorApi.ProcessKeywordArguments(functionCall);
     handledArguments.TryGetValue("self", out var self);
-    var teintData1 = SemanticsApi.CreateObjectDescriptor("<<dsl_teinted_data_0>>").WithType(SemanticsApi.StringType).With(new TaintOrigin("Body"));
+    var teintData1 = SemanticsApi.CreateObjectDescriptor("<<dsl_tainted_data_0>>").WithType(SemanticsApi.StringType).With(new TaintOrigin("Body"));
     var data = teintData1;
     Interpreter.TryGetValue(self, "processor", out var tryGetValueResult1);
     Interpreter.InvokeFunction(location, HttpProcessor_process_MethodDescriptor, out var tryGetValueResult1, data);

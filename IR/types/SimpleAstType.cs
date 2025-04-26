@@ -11,6 +11,8 @@ public class SimpleAstType(string name) : AstType
     public static SimpleAstType Bool = new("bool");
     public static SimpleAstType Float = new("float");
     public static SimpleAstType Bytes = new("bytes");
+    public static SimpleAstType Dict = new("dict");
+    public static SimpleAstType List = new("list");
 
     public override string Name { get; } = name;
 

@@ -7,7 +7,7 @@ public class VarExpressionAstNode(
     bool isOutVar = false) : IExpressionAstNode
 {
     public VariableReference VariableReference { get; } = variableReference;
-    public bool IsOutVar { get; } = isOutVar;
+    public bool IsOutVar { get; set; } = isOutVar;
 
     public string String()
     {
