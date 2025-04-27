@@ -89,9 +89,7 @@ public class CodegenSynthesizer : AbstractTextSynthesizer
         {
             AppendLine(" else ");
             SynthIfElseStatement(cgIfElseStatement.Elseif);
-        }
-
-        if (cgIfElseStatement.ElseBody != null)
+        } else if (cgIfElseStatement.ElseBody != null)
         {
             AppendLine(" else {");
             IncreaserIndent();
@@ -103,6 +101,10 @@ public class CodegenSynthesizer : AbstractTextSynthesizer
 
             DecreaseIndent();
             AppendLine("}");
+        }
+        else
+        {
+            AppendLine();
         }
     }
 
@@ -364,6 +366,13 @@ public class CodegenSynthesizer : AbstractTextSynthesizer
             Append(".");
         }
         Append(methodCall.Name);
+        if (methodCall.Generics != null)
+        {
+            Append("<");
+            var genericsList = string.Join(",", methodCall.Generics.Select(t => t.Name));
+            Append(genericsList);
+            Append(">");
+        }
         Append("(");
 
         var lastArg = methodCall.Args.LastOrDefault();

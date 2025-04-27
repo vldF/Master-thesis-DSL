@@ -60,7 +60,14 @@ public class BaseBuilderVisitor(IrContext irContext) : JSADSLBaseVisitor<IAstNod
             {
                 throw new UnresolvedTypeException(argTypeName!);
             }
-            var arg = new FunctionArgAstNode(argName, argType, argIndex++);
+
+            IExpressionAstNode? defaultVal = null;
+            if (argContext.default_val != null)
+            {
+                defaultVal = VisitExpression(argContext.default_val);
+            }
+
+            var arg = new FunctionArgAstNode(argName, argType, argIndex++, defaultVal);
 
             args.Add(arg);
             newContext.SaveNewArg(arg);

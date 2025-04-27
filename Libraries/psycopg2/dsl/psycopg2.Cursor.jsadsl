@@ -3,13 +3,11 @@ package "psycopg2.Cursor";
 import "Standard";
 
 object Cursor {
-    // todo: vars is a collection and it is optional
-    func execute(query: string, vars: any) {
+    func execute(query: string, vars: list = CreateDataOfType<list>()) {
         Detect(query, "SQL Injection", "SQL common");
     }
 
-    // todo: vars is a collection
-    func executemany(query: string, vars: any) {
+    func executemany(query: string, vars: list = CreateDataOfType<list>()) {
         Detect(query, "SQL Injection", "SQL common");
     }
 

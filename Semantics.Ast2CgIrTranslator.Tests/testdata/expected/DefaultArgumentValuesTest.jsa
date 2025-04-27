@@ -1,0 +1,9 @@
+CallHandlerResult global_foo_Handler(Location location, FunctionCall functionCall)
+{
+    var handledArguments = ProcessorApi.ProcessKeywordArguments(functionCall);
+    handledArguments.TryGetValue("a", out var a);
+    handledArguments.TryGetValue("b", out var b);
+    handledArguments.TryGetValue("c", out var c);
+    return CallHandlerResult.Processed(a);
+}
+var global_foo_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("foo").WithHandler(global_foo_Handler).WithArgumentsInfo(new ArgumentsInfo(["a", "b", "c", ], 3, false, false, 0, 0, ImmutableSegment.Create<SymbolicExpression>(SemanticsApi.CreateLiteral(1), SemanticsApi.None))).AssignTo(ModuleDescriptor).BuildAndRegister();

@@ -16,7 +16,7 @@ intrinsicFuncDecl : INTRINSIC_KW FUNC_KW name=ID generic? L_PAREN (functionArgs)
 
 functionArgs : functionArg? (COMMA functionArg)* COMMA?;
 
-functionArg : name=ID (COLON type=ID)?;
+functionArg : name=ID (COLON type=ID)? (EQ default_val=expression)?;
 
 statementsBlock : (statement)*;
 

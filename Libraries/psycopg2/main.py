@@ -18,7 +18,7 @@ def vulner():
     user_id = request.args.get('user_id')
     conn = connect("dbname=test user=postgres")
     cur = conn.cursor()
-    cur.execute("SELECT * FROM table WHERE ID = " + user_id, ())
+    cur.execute("SELECT * FROM table WHERE ID = " + user_id)
     return ""
 
 # vulnerability
@@ -27,5 +27,5 @@ def vulner():
     user_id = request.args.get('user_id')
     conn = connect("dbname=test user=postgres")
     cur = conn.cursor()
-    cur.execute("SELECT * FROM table WHERE ID = " + user_id, ())
+    cur.execute("SELECT * FROM table WHERE ID = " + user_id)
     return cur.fetchone()

@@ -30,6 +30,11 @@ public abstract class AbstractAstTransformer
 
     protected virtual IStatementAstNode TransformFunctionArgAstNode(FunctionArgAstNode node)
     {
+        if (node.DefaultValue != null)
+        {
+            node.DefaultValue = TransformExpressionAstNode(node.DefaultValue);
+        }
+
         return TransformVarDeclAstNode(node);
     }
 

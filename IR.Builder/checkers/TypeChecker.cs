@@ -414,6 +414,20 @@ public class TypeChecker(ErrorManager errorManager) : AbstractChecker<AstType>
             return null;
         }
 
+        if (functionArgAstNode.DefaultValue != null)
+        {
+            var actualType = CheckExpression(functionArgAstNode.DefaultValue);
+            if (actualType == null)
+            {
+                return null;
+            }
+
+            if (!CheckTypes(type, actualType))
+            {
+                return null;
+            }
+        }
+
         return type;
     }
 

@@ -58,9 +58,10 @@ public static class CodegenIrBuilder
 
     public static CgMethodCall CallMethod(this ICgExpression reciever,
         string methodName,
-        IReadOnlyCollection<ICgExpression>? args = null)
+        IReadOnlyCollection<ICgExpression>? args = null,
+        IReadOnlyCollection<ICgType>? generics = null)
     {
-        return new CgMethodCall(reciever, methodName, args ?? []);
+        return new CgMethodCall(reciever, methodName, args ?? [], generics);
     }
 
     public static CgValueWithReciever Property(this ICgExpression reciever,

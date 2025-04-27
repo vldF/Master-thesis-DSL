@@ -37,11 +37,12 @@ public class MethodEmitter(TranslatorContext ctx)
             init: ctx.Semantics.ProcessorApi.CallMethod("ProcessKeywordArguments", [new CgVarExpression(functionCallName)]));
         foreach (var arg in func.Args)
         {
-            var initExpression = handledArgs.CallMethod(
+            var argVar = new CgVarExpression(arg.Name, isOutVar: true);
+            var tryGetValueStatement = handledArgs.CallMethod(
                 "TryGetValue",
-                [AsExpression(arg.Name), new CgVarExpression(arg.Name, isOutVar: true)]);
+                [AsExpression(arg.Name), argVar]);
 
-            ctx.CurrentContainer!.Add(initExpression);
+            ctx.CurrentContainer!.Add(tryGetValueStatement);
         }
 
         EmitStatementBlockAstNode(func.Body);
@@ -49,14 +50,32 @@ public class MethodEmitter(TranslatorContext ctx)
         ctx.PopContainer();
 
         var argsAsList = func.Args.Select(a => AsExpression(a.Name)).ToList();
-        var argInfo = new CgNewExpression("ArgumentsInfo", [
+        var defaultArgs = func.Args
+            .SkipWhile(a => a.DefaultValue == null)
+            .Select(a =>
+                a.DefaultValue != null
+                    ? _expressionsEmitter.EmitExpression(a.DefaultValue)
+                    : ctx.Semantics.SemanticsApi.Property("None"))
+            .ToList();
+
+        List<ICgExpression> argInfoArgs =
+        [
             new CgListLiteralExpression(argsAsList),
             AsExpression(argsAsList.Count),
             AsExpression(false),
             AsExpression(false),
             AsExpression(0),
             AsExpression(0),
-        ]);
+        ];
+
+        if (defaultArgs.Count != 0)
+        {
+            var defaultsParam = new CgVarExpression("ImmutableSegment")
+                .CallMethod("Create", defaultArgs, [new CgSimpleType("SymbolicExpression")]);
+            argInfoArgs.Add(defaultsParam);
+        }
+
+        var argInfo = new CgNewExpression("ArgumentsInfo", argInfoArgs);
         var methodDescrName = func.GetMethodDescriptorName();
         var buildAndRegisterExpr = ctx.Semantics.ProcessorApi
             .CallMethod("CreateFunctionBuilder", [AsExpression(func.Name)])

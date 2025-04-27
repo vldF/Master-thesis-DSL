@@ -11,6 +11,7 @@ public class Semantics
     public CgVarExpression ProcessorApi = new("ProcessorApi");
     public CgVarExpression TaintOrigin = new("TaintOrigin");
     public CgVarExpression ModuleDescriptorVar = new("ModuleDescriptor");
+    public CgVarExpression Log = new("Log");
 
     private CgVarExpression _location = new("Location");
     private CgVarExpression _functionCall = new("functionCall");
