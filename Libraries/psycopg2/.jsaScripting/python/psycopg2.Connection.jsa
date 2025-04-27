@@ -1,0 +1,12 @@
+#load "Standard.jsa"
+#load "psycopg2.Cursor.jsa"
+var ConnectionClassDescription = SemanticsApi.CreateClassObjectDescriptor("Connection");
+CallHandlerResult Connection_cursor_Handler(Location location, FunctionCall functionCall)
+{
+    var handledArguments = ProcessorApi.ProcessKeywordArguments(functionCall);
+    handledArguments.TryGetValue("self", out var self);
+    return CallHandlerResult.Processed(PythonTypes.CreateInstance(Location.Empty, CursorClassDescription, new ImmutableArray<SymbolicExpression>()));
+}
+var Connection_cursor_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("cursor").WithHandler(Connection_cursor_Handler).WithArgumentsInfo(new ArgumentsInfo(["self", ], 1, false, false, 0, 0)).AssignTo(ConnectionClassDescription).BuildAndRegister();
+Interpreter.Assign(ModuleDescriptor, "Connection", ConnectionClassDescription);
+PythonTypes.BuildClass(ConnectionClassDescription);

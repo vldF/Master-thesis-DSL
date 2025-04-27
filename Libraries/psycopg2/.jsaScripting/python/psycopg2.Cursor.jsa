@@ -1,0 +1,48 @@
+#load "Standard.jsa"
+var CursorClassDescription = SemanticsApi.CreateClassObjectDescriptor("Cursor");
+CallHandlerResult Cursor_execute_Handler(Location location, FunctionCall functionCall)
+{
+    var handledArguments = ProcessorApi.ProcessKeywordArguments(functionCall);
+    handledArguments.TryGetValue("self", out var self);
+    handledArguments.TryGetValue("query", out var query);
+    handledArguments.TryGetValue("vars", out var vars);
+    Detect(location, query, "SQL Injection", "SQL common");
+    return CallHandlerResult.Processed(SemanticsApi.None);
+}
+var Cursor_execute_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("execute").WithHandler(Cursor_execute_Handler).WithArgumentsInfo(new ArgumentsInfo(["self", "query", "vars", ], 3, false, false, 0, 0)).AssignTo(CursorClassDescription).BuildAndRegister();
+CallHandlerResult Cursor_executemany_Handler(Location location, FunctionCall functionCall)
+{
+    var handledArguments = ProcessorApi.ProcessKeywordArguments(functionCall);
+    handledArguments.TryGetValue("self", out var self);
+    handledArguments.TryGetValue("query", out var query);
+    handledArguments.TryGetValue("vars", out var vars);
+    Detect(location, query, "SQL Injection", "SQL common");
+    return CallHandlerResult.Processed(SemanticsApi.None);
+}
+var Cursor_executemany_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("executemany").WithHandler(Cursor_executemany_Handler).WithArgumentsInfo(new ArgumentsInfo(["self", "query", "vars", ], 3, false, false, 0, 0)).AssignTo(CursorClassDescription).BuildAndRegister();
+CallHandlerResult Cursor_fetchone_Handler(Location location, FunctionCall functionCall)
+{
+    var handledArguments = ProcessorApi.ProcessKeywordArguments(functionCall);
+    handledArguments.TryGetValue("self", out var self);
+    var teintData1 = SemanticsApi.CreateObjectDescriptor("<<dsl_tainted_data_0>>").WithType(SemanticsApi.ListType).With(new TaintOrigin("Second Order"));
+    return CallHandlerResult.Processed(teintData1);
+}
+var Cursor_fetchone_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("fetchone").WithHandler(Cursor_fetchone_Handler).WithArgumentsInfo(new ArgumentsInfo(["self", ], 1, false, false, 0, 0)).AssignTo(CursorClassDescription).BuildAndRegister();
+CallHandlerResult Cursor_fetchmany_Handler(Location location, FunctionCall functionCall)
+{
+    var handledArguments = ProcessorApi.ProcessKeywordArguments(functionCall);
+    handledArguments.TryGetValue("self", out var self);
+    var teintData2 = SemanticsApi.CreateObjectDescriptor("<<dsl_tainted_data_1>>").WithType(SemanticsApi.ListType).With(new TaintOrigin("Second Order"));
+    return CallHandlerResult.Processed(teintData2);
+}
+var Cursor_fetchmany_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("fetchmany").WithHandler(Cursor_fetchmany_Handler).WithArgumentsInfo(new ArgumentsInfo(["self", ], 1, false, false, 0, 0)).AssignTo(CursorClassDescription).BuildAndRegister();
+CallHandlerResult Cursor_fetchall_Handler(Location location, FunctionCall functionCall)
+{
+    var handledArguments = ProcessorApi.ProcessKeywordArguments(functionCall);
+    handledArguments.TryGetValue("self", out var self);
+    var teintData3 = SemanticsApi.CreateObjectDescriptor("<<dsl_tainted_data_2>>").WithType(SemanticsApi.ListType).With(new TaintOrigin("Second Order"));
+    return CallHandlerResult.Processed(teintData3);
+}
+var Cursor_fetchall_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("fetchall").WithHandler(Cursor_fetchall_Handler).WithArgumentsInfo(new ArgumentsInfo(["self", ], 1, false, false, 0, 0)).AssignTo(CursorClassDescription).BuildAndRegister();
+Interpreter.Assign(ModuleDescriptor, "Cursor", CursorClassDescription);
+PythonTypes.BuildClass(CursorClassDescription);

@@ -1,0 +1,8 @@
+package "psycopg2";
+
+import "psycopg2.Cursor";
+import "psycopg2.Connection";
+
+func connect(connection_string: any): Connection {
+    return new Connection();
+}

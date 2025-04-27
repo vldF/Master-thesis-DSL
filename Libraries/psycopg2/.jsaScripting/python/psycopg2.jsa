@@ -1,0 +1,9 @@
+#load "psycopg2.Cursor.jsa"
+#load "psycopg2.Connection.jsa"
+CallHandlerResult global_connect_Handler(Location location, FunctionCall functionCall)
+{
+    var handledArguments = ProcessorApi.ProcessKeywordArguments(functionCall);
+    handledArguments.TryGetValue("connection_string", out var connection_string);
+    return CallHandlerResult.Processed(PythonTypes.CreateInstance(Location.Empty, ConnectionClassDescription, new ImmutableArray<SymbolicExpression>()));
+}
+var global_connect_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("connect").WithHandler(global_connect_Handler).WithArgumentsInfo(new ArgumentsInfo(["connection_string", ], 1, false, false, 0, 0)).AssignTo(ModuleDescriptor).BuildAndRegister();

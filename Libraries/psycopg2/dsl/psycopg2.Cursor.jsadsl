@@ -1,0 +1,27 @@
+package "psycopg2.Cursor";
+
+import "Standard";
+
+object Cursor {
+    // todo: vars is a collection and it is optional
+    func execute(query: string, vars: any) {
+        Detect(query, "SQL Injection", "SQL common");
+    }
+
+    // todo: vars is a collection
+    func executemany(query: string, vars: any) {
+        Detect(query, "SQL Injection", "SQL common");
+    }
+
+    func fetchone(): any {
+        return CreateTaintedDataOfType<list>("Second Order");
+    }
+
+    func fetchmany(): any {
+        return CreateTaintedDataOfType<list>("Second Order");
+    }
+
+    func fetchall(): any {
+        return CreateTaintedDataOfType<list>("Second Order");
+    }
+}

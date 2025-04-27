@@ -1,0 +1,10 @@
+package "psycopg2.Connection";
+
+import "Standard";
+import "psycopg2.Cursor";
+
+object Connection {
+    func cursor(): Cursor {
+        return new Cursor();
+    }
+}
