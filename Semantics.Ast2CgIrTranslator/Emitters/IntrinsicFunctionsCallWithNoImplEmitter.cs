@@ -5,12 +5,12 @@ using me.vldf.jsa.dsl.ir.nodes.expressions;
 
 namespace Semantics.Ast2CgIrTranslator.Emitters;
 
-public class IntrinsicFunctionsCallWithNoImplEmitter(TranslatorContext ctx)
+public class IntrinsicFunctionsCallWithNoImplEmitter(TranslatorContext ctx, ExpressionsEmitter expressionsEmitter)
 {
     private readonly Dictionary<string, IFunctionEmitter> _supportedIntrinsicFunctions = new()
     {
-        { "CreateTaintedDataOfType", new CreateDataOfTypeEmitter(isTainted: true, ctx) },
-        { "CreateDataOfType", new CreateDataOfTypeEmitter(isTainted: false, ctx) },
+        { "CreateTaintedDataOfType", new CreateDataOfTypeEmitter(isTainted: true, ctx, expressionsEmitter) },
+        { "CreateDataOfType", new CreateDataOfTypeEmitter(isTainted: false, ctx, expressionsEmitter) },
     };
 
     public bool IsApplicable(IntrinsicFunctionInvokationAstNode call)
@@ -28,7 +28,7 @@ public class IntrinsicFunctionsCallWithNoImplEmitter(TranslatorContext ctx)
         public ICgExpression Emit(IntrinsicFunctionInvokationAstNode call);
     }
 
-    class CreateDataOfTypeEmitter(bool isTainted, TranslatorContext ctx) : IFunctionEmitter
+    class CreateDataOfTypeEmitter(bool isTainted, TranslatorContext ctx, ExpressionsEmitter expressionsEmitter) : IFunctionEmitter
     {
         private int _idCounter = 0;
 
@@ -65,12 +65,27 @@ public class IntrinsicFunctionsCallWithNoImplEmitter(TranslatorContext ctx)
             if (isTainted)
             {
                 var taintOrigin = call.Args.ToList()[1];
-                if (taintOrigin is not StringLiteralAstNode stringTaintOrigin)
+                if (taintOrigin is not StringLiteralAstNode && taintOrigin is not IntrinsicFunctionInvokationAstNode)
                 {
-                    throw new InvalidOperationException("taint origin must be constant string");
+                    throw new InvalidOperationException("taint origin must be a constant string or the GetTaintOrigin function call");
                 }
 
-                var taintOriginCgExpr = AsExpression(stringTaintOrigin.Value);
+                ICgExpression taintOriginCgExpr;
+                if (taintOrigin is IntrinsicFunctionInvokationAstNode getTaintOriginCall)
+                {
+                    if (getTaintOriginCall.Name != "GetTaintOrigin")
+                    {
+                        throw new InvalidOperationException("only GetTaintOrigin call allowed");
+                    }
+
+                    taintOriginCgExpr = expressionsEmitter.EmitExpression(getTaintOriginCall);
+                }
+                else
+                {
+                    var taintOriginConstStr = (StringLiteralAstNode)taintOrigin;
+                    taintOriginCgExpr = AsExpression(taintOriginConstStr.Value);
+                }
+
                 taintOriginCgExpr = new CgNewExpression("TaintOrigin", [taintOriginCgExpr]);
                 result = result.CallMethod("With", [taintOriginCgExpr]);
             }

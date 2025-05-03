@@ -4,9 +4,16 @@ using me.vldf.jsa.dsl.ir.nodes.expressions;
 
 namespace Semantics.Ast2CgIrTranslator.Emitters;
 
-public class ExpressionsEmitter(TranslatorContext ctx)
+public class ExpressionsEmitter
 {
-    private IntrinsicFunctionsCallWithNoImplEmitter _entrinsicFunctionsCallWithNoImplEmitter = new(ctx);
+    private readonly TranslatorContext ctx;
+    private IntrinsicFunctionsCallWithNoImplEmitter _entrinsicFunctionsCallWithNoImplEmitter;
+
+    public ExpressionsEmitter(TranslatorContext ctx)
+    {
+        this.ctx = ctx;
+        _entrinsicFunctionsCallWithNoImplEmitter = new IntrinsicFunctionsCallWithNoImplEmitter(ctx, this);
+    }
 
     public ICgExpression EmitExpression(IExpressionAstNode expression)
     {

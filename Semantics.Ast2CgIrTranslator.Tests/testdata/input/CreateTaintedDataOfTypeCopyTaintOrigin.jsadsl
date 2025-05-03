@@ -1,0 +1,5 @@
+import "Standard";
+
+func foo(arg: int): string {
+    return CreateTaintedDataOfType<string>(GetTaintOrigin(arg));
+}

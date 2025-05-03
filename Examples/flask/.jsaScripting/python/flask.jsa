@@ -146,6 +146,23 @@ Interpreter.Assign(ModuleDescriptor, "Request", RequestClassDescription);
 PythonTypes.BuildClass(RequestClassDescription);
 var request = PythonTypes.CreateInstance(Location.Empty, RequestClassDescription, new ImmutableArray<SymbolicExpression>());
 Interpreter.Assign(ModuleDescriptor, "request", request);
+CallHandlerResult global_escape_Handler(Location location, FunctionCall functionCall)
+{
+    var handledArguments = ProcessorApi.ProcessKeywordArguments(functionCall);
+    handledArguments.TryGetValue("data", out var data);
+    var escaped = WithoutVulnerability(location, data, "Cross-site Scripting");
+    escaped = WithoutVulnerability(location, data, "Server-Side Template Injection");
+    return CallHandlerResult.Processed(SemanticsApi.None);
+}
+var global_escape_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("escape").WithHandler(global_escape_Handler).WithArgumentsInfo(new ArgumentsInfo(["data", ], 1, false, false, 0, 0)).AssignTo(ModuleDescriptor).BuildAndRegister();
+CallHandlerResult global_jsonify_Handler(Location location, FunctionCall functionCall)
+{
+    var handledArguments = ProcessorApi.ProcessKeywordArguments(functionCall);
+    handledArguments.TryGetValue("data", out var data);
+    var teintData42 = SemanticsApi.CreateObjectDescriptor("<<dsl_tainted_data_37>>").WithType(SemanticsApi.ObjectType).With(new TaintOrigin(GetTaintOrigin(location, data)));
+    return CallHandlerResult.Processed(teintData42);
+}
+var global_jsonify_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("jsonify").WithHandler(global_jsonify_Handler).WithArgumentsInfo(new ArgumentsInfo(["data", ], 1, false, false, 0, 0)).AssignTo(ModuleDescriptor).BuildAndRegister();
 
 // complementing content from flaskComplemention.jsa
 InitflaskComplemention();

@@ -79,3 +79,13 @@ SymbolicExpression WithoutVulnerability(
 
     return expression.AddFilteredVulnerability((VulnerabilityType)vulnerabilityType);
 }
+
+string GetTaintOrigin(Location location, SymbolicExpression? expression) {
+    var taintExtractor = new TaintExtractor(); // todo: use it from JSA context
+    if (!taintExtractor.TryGetTaintSourceInfo(expression, out var taintOrigin)) {
+        Log.Info("can't extract taint origin for expression" + expression?.ToString());
+        return "no taint origin";
+    }
+
+    return taintOrigin.Id;
+}

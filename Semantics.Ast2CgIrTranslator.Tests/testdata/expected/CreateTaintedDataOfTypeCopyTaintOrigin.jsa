@@ -1,0 +1,9 @@
+#load "Standard.jsa"
+CallHandlerResult global_foo_Handler(Location location, FunctionCall functionCall)
+{
+    var handledArguments = ProcessorApi.ProcessKeywordArguments(functionCall);
+    handledArguments.TryGetValue("arg", out var arg);
+    var teintData1 = SemanticsApi.CreateObjectDescriptor("<<dsl_tainted_data_0>>").WithType(SemanticsApi.StringType).With(new TaintOrigin(GetTaintOrigin(location, arg)));
+    return CallHandlerResult.Processed(teintData1);
+}
+var global_foo_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("foo").WithHandler(global_foo_Handler).WithArgumentsInfo(new ArgumentsInfo(["arg", ], 1, false, false, 0, 0)).AssignTo(ModuleDescriptor).BuildAndRegister();

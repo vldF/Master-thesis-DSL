@@ -76,3 +76,7 @@ func escape(data: string): string {
     var escaped = WithoutVulnerability(data, "Cross-site Scripting");
     escaped = WithoutVulnerability(data, "Server-Side Template Injection");
 }
+
+func jsonify(data: any): any {
+    return CreateTaintedDataOfType<any>(GetTaintOrigin(data));
+}

@@ -11,3 +11,5 @@ intrinsic func CreateDataOfType<T>(): T
 
 // todo: make a enumish something for vulnerabilityType
 intrinsic func WithoutVulnerability<T>(expression: T, vulnerabilityType: string): T
+
+intrinsic func GetTaintOrigin(expression: any): string
