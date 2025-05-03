@@ -1,0 +1,13 @@
+package "userstorage.services_pb2";
+
+object UserRequest {
+    var id: string;
+    func __init__(id: string) {
+        self.id = id;
+    }
+}
+
+object User {
+    var id: int;
+    var username: string;
+}

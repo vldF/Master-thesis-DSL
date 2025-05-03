@@ -1,0 +1,22 @@
+var UserRequestClassDescription = SemanticsApi.CreateClassObjectDescriptor("UserRequest");
+CallHandlerResult UserRequest___init___Handler(Location location, FunctionCall functionCall)
+{
+    var handledArguments = ProcessorApi.ProcessKeywordArguments(functionCall);
+    handledArguments.TryGetValue("self", out var self);
+    handledArguments.TryGetValue("id", out var id);
+    Interpreter.Assign(self, "id", id);
+    return CallHandlerResult.Processed(self);
+}
+var UserRequest___init___MethodDescriptor = ProcessorApi.CreateFunctionBuilder("__init__").WithHandler(UserRequest___init___Handler).WithArgumentsInfo(new ArgumentsInfo(["self", "id", ], 2, false, false, 0, 0)).AssignTo(UserRequestClassDescription).BuildAndRegister();
+Interpreter.Assign(ModuleDescriptor, "UserRequest", UserRequestClassDescription);
+PythonTypes.BuildClass(UserRequestClassDescription);
+var UserClassDescription = SemanticsApi.CreateClassObjectDescriptor("User");
+CallHandlerResult User___init___Handler(Location location, FunctionCall functionCall)
+{
+    var handledArguments = ProcessorApi.ProcessKeywordArguments(functionCall);
+    handledArguments.TryGetValue("self", out var self);
+    return CallHandlerResult.Processed(self);
+}
+var User___init___MethodDescriptor = ProcessorApi.CreateFunctionBuilder("__init__").WithHandler(User___init___Handler).WithArgumentsInfo(new ArgumentsInfo(["self", ], 1, false, false, 0, 0)).AssignTo(UserClassDescription).BuildAndRegister();
+Interpreter.Assign(ModuleDescriptor, "User", UserClassDescription);
+PythonTypes.BuildClass(UserClassDescription);

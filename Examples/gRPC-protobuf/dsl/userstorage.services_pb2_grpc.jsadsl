@@ -1,0 +1,12 @@
+import "Standard";
+import "userstorage.services_pb2";
+
+object UserStoreStub {
+    func __init__(channel: any) { }
+
+    func GetUser(request: UserRequest): User {
+        Detect(request.id, "Insecure Direct Object References", "Arbitrary string data");
+
+        return CreateDataOfType<User>();
+    }
+}

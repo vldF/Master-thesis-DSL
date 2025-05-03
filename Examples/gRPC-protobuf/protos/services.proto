@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package userstorage;
+
+message User {
+  string id = 1;
+  string username = 2;
+}
+
+message UserRequest {
+  string id = 1;
+}
+
+service UserStore {
+  rpc GetUser(UserRequest) returns (User);
+}
