@@ -1,0 +1,81 @@
+global using JSA.PythonProvider.Utils;
+global using JSA.PythonProvider.Semantics;
+global using System.Collections.Immutable;
+using JSA.Contracts.Engine;
+using JSA.Utils.Logging;
+
+void Detect(Location location, SymbolicExpression? expression, string vulnerabilityType, string grammar)
+{
+    if (expression == null) {
+        return;
+    }
+
+    Log.Info("Detect for " + expression?.ToString());
+
+    var exprType = SemanticsApi.GetBuiltinType(expression);
+	if (exprType == SemanticsApi.DictType) {
+		// this is a dictionary
+		var keyValuePairs = PythonTypes.DictionaryProcessor.GetItems(expression);
+		foreach (var kv in keyValuePairs) {
+			var key = kv.Key;
+			var val = kv.Value;
+			Detect(location, key, vulnerabilityType, grammar);
+			Detect(location, val, vulnerabilityType, grammar);
+		}
+	}
+
+	if (exprType == SemanticsApi.ListType) {
+		var items = PythonTypes.ListProcessor.GetItems(expression);
+		foreach (var item in items) {
+			Detect(location, item, vulnerabilityType, grammar);
+		}
+	}
+
+	if (exprType == SemanticsApi.TupleType) {
+		var items = PythonTypes.TupleProcessor.GetItems(expression);
+		foreach (var item in items) {
+			Detect(location, item, vulnerabilityType, grammar);
+		}
+	}
+
+    var grmr = new PvoArgumentGrammar(grammar);
+    Detector.Detect(location, expression, (VulnerabilityType)vulnerabilityType, grmr);
+}
+
+TExpr WithTaintMark<TExpr>(Location location, TExpr? expression, string origin) where TExpr : SymbolicExpression
+{
+    if (expression == null) {
+		return null;
+    }
+
+    var taintOrigin = origin switch {
+        "Seal origin" => TaintOrigin.SealOrigin,
+        "Second order" => TaintOrigin.SecondOrder,
+        "Function argument" => TaintOrigin.FunctionArgument,
+        "Express request JSON body" => TaintOrigin.ExpressRequestJsonBody,
+        "Express request URL encoded body" => TaintOrigin.ExpressRequestUrlEncodedBody,
+        "navigator.UserAgent" => TaintOrigin.BrowserUserAgent,
+        "Document URL" => TaintOrigin.DocumentUrl,
+        "Document URI" => TaintOrigin.DocumentUri,
+        "Browser Cookie" => TaintOrigin.BrowserCookie,
+        "document.referrer" => TaintOrigin.DocumentReferrer,
+        "User Input" => TaintOrigin.WebFormUserInput,
+        "Clipboard Data" => TaintOrigin.BrowserClipboardData,
+        "Environment Variable" => TaintOrigin.EnvironmentVariable,
+        _ => new TaintOrigin(origin),
+    };
+
+    return expression.With(taintOrigin);
+}
+
+SymbolicExpression WithoutVulnerability(
+      Location location,
+      SymbolicExpression? expression,
+      string vulnerabilityType)
+{
+    if (expression == null) {
+		return null;
+    }
+
+    return expression.AddFilteredVulnerability((VulnerabilityType)vulnerabilityType);
+}

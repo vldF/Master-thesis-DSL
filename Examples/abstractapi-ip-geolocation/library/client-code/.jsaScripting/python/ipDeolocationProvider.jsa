@@ -1,0 +1,22 @@
+#load "Standard.jsa"
+var IpGeolocationClientClassDescription = SemanticsApi.CreateClassObjectDescriptor("IpGeolocationClient");
+CallHandlerResult IpGeolocationClient___init___Handler(Location location, FunctionCall functionCall)
+{
+    var handledArguments = ProcessorApi.ProcessKeywordArguments(functionCall);
+    handledArguments.TryGetValue("self", out var self);
+    handledArguments.TryGetValue("base_url", out var base_url);
+    handledArguments.TryGetValue("token", out var token);
+    return CallHandlerResult.Processed(SemanticsApi.None);
+}
+var IpGeolocationClient___init___MethodDescriptor = ProcessorApi.CreateFunctionBuilder("__init__").WithHandler(IpGeolocationClient___init___Handler).WithArgumentsInfo(new ArgumentsInfo(["self", "base_url", "token", ], 3, false, false, 0, 0)).AssignTo(IpGeolocationClientClassDescription).BuildAndRegister();
+CallHandlerResult IpGeolocationClient_get_ip_info_Handler(Location location, FunctionCall functionCall)
+{
+    var handledArguments = ProcessorApi.ProcessKeywordArguments(functionCall);
+    handledArguments.TryGetValue("self", out var self);
+    handledArguments.TryGetValue("ip", out var ip);
+    var teintData1 = SemanticsApi.CreateObjectDescriptor("<<dsl_tainted_data_0>>").WithType(SemanticsApi.StringType).With(new TaintOrigin("Body"));
+    return CallHandlerResult.Processed(teintData1);
+}
+var IpGeolocationClient_get_ip_info_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("get_ip_info").WithHandler(IpGeolocationClient_get_ip_info_Handler).WithArgumentsInfo(new ArgumentsInfo(["self", "ip", ], 2, false, false, 0, 0)).AssignTo(IpGeolocationClientClassDescription).BuildAndRegister();
+Interpreter.Assign(ModuleDescriptor, "IpGeolocationClient", IpGeolocationClientClassDescription);
+PythonTypes.BuildClass(IpGeolocationClientClassDescription);

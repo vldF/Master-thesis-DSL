@@ -1,0 +1,9 @@
+import "Standard";
+
+object IpGeolocationClient {
+    func __init__(base_url: string, token: string) {}
+
+    func get_ip_info(ip: string): string {
+        return CreateTaintedDataOfType<string>("Body");
+    }
+}
