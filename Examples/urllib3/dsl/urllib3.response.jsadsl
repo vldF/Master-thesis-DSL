@@ -13,7 +13,7 @@ object HTTPResponse {
     var connection = new HTTPConnection();
 
     func json(): any {
-        return CreateTaintedDataOfType<string>("Second order");
+        return CreateTaintedDataOfType<any>("Second order");
     }
 
     func readline(): string {
@@ -21,7 +21,7 @@ object HTTPResponse {
     }
 
     func readlines(): any {
-        return CreateTaintedDataOfType<any>("Second order");
+        return CreateTaintedDataOfType<list>("Second order");
     }
 
     func get_redirect_location(): string {

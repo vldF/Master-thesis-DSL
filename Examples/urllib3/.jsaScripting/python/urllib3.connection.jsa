@@ -5,18 +5,25 @@ CallHandlerResult HTTPConnection_getresponse_Handler(Location location, Function
 {
     var handledArguments = ProcessorApi.ProcessKeywordArguments(functionCall);
     handledArguments.TryGetValue("self", out var self);
-    return CallHandlerResult.Processed(SemanticsApi.CreateObjectDescriptor("<HTTPResponse>"));
+    return CallHandlerResult.Processed(PythonTypes.CreateInstance(Location.Empty, HTTPResponseClassDescription, new ImmutableArray<SymbolicExpression>()));
 }
 var HTTPConnection_getresponse_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("getresponse").WithHandler(HTTPConnection_getresponse_Handler).WithArgumentsInfo(new ArgumentsInfo(["self", ], 1, false, false, 0, 0)).AssignTo(HTTPConnectionClassDescription).BuildAndRegister();
 CallHandlerResult HTTPConnection_request_Handler(Location location, FunctionCall functionCall)
 {
     var handledArguments = ProcessorApi.ProcessKeywordArguments(functionCall);
     handledArguments.TryGetValue("self", out var self);
+    handledArguments.TryGetValue("method", out var method);
     handledArguments.TryGetValue("url", out var url);
+    handledArguments.TryGetValue("body", out var body);
+    handledArguments.TryGetValue("fields", out var fields);
+    handledArguments.TryGetValue("headers", out var headers);
+    handledArguments.TryGetValue("json", out var json);
     Detect(location, url, "Server-Side Request Forgery", "HTTP URI");
-    return CallHandlerResult.Processed(SemanticsApi.None);
+    Detect(location, headers, "Server-Side Request Forgery", "HTTP URI");
+    Detect(location, headers, "Information Exposure", "HTTP URI");
+    return CallHandlerResult.Processed(PythonTypes.CreateInstance(Location.Empty, HTTPResponseClassDescription, new ImmutableArray<SymbolicExpression>()));
 }
-var HTTPConnection_request_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("request").WithHandler(HTTPConnection_request_Handler).WithArgumentsInfo(new ArgumentsInfo(["self", "url", ], 2, false, false, 0, 0)).AssignTo(HTTPConnectionClassDescription).BuildAndRegister();
+var HTTPConnection_request_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("request").WithHandler(HTTPConnection_request_Handler).WithArgumentsInfo(new ArgumentsInfo(["self", "method", "url", "body", "fields", "headers", "json", ], 7, false, false, 0, 0, ImmutableSegment.Create<SymbolicExpression>(SemanticsApi.CreateLiteral("GET"), SemanticsApi.None, SemanticsApi.None, SemanticsApi.None, SemanticsApi.None, SemanticsApi.None))).AssignTo(HTTPConnectionClassDescription).BuildAndRegister();
 CallHandlerResult HTTPConnection_request_chunked_Handler(Location location, FunctionCall functionCall)
 {
     var handledArguments = ProcessorApi.ProcessKeywordArguments(functionCall);

@@ -48,22 +48,7 @@ TExpr WithTaintMark<TExpr>(Location location, TExpr? expression, string origin) 
 		return null;
     }
 
-    var taintOrigin = origin switch {
-        "Seal origin" => TaintOrigin.SealOrigin,
-        "Second order" => TaintOrigin.SecondOrder,
-        "Function argument" => TaintOrigin.FunctionArgument,
-        "Express request JSON body" => TaintOrigin.ExpressRequestJsonBody,
-        "Express request URL encoded body" => TaintOrigin.ExpressRequestUrlEncodedBody,
-        "navigator.UserAgent" => TaintOrigin.BrowserUserAgent,
-        "Document URL" => TaintOrigin.DocumentUrl,
-        "Document URI" => TaintOrigin.DocumentUri,
-        "Browser Cookie" => TaintOrigin.BrowserCookie,
-        "document.referrer" => TaintOrigin.DocumentReferrer,
-        "User Input" => TaintOrigin.WebFormUserInput,
-        "Clipboard Data" => TaintOrigin.BrowserClipboardData,
-        "Environment Variable" => TaintOrigin.EnvironmentVariable,
-        _ => new TaintOrigin(origin),
-    };
+    var taintOrigin = new TaintOrigin(origin);
 
     return expression.With(taintOrigin);
 }
@@ -88,4 +73,8 @@ string GetTaintOrigin(Location location, SymbolicExpression? expression) {
     }
 
     return taintOrigin.Id;
+}
+
+SymbolicExpression As(Location location, SymbolicExpression expression) {
+    return expression;
 }

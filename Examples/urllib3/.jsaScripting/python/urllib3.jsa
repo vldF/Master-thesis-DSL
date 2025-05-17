@@ -12,6 +12,6 @@ CallHandlerResult global_request_Handler(Location location, FunctionCall functio
     Detect(location, url, "Server-Side Request Forgery", "HTTP URI");
     Detect(location, headers, "Server-Side Request Forgery", "HTTP URI");
     Detect(location, headers, "Information Exposure", "HTTP URI");
-    return CallHandlerResult.Processed(SemanticsApi.CreateObjectDescriptor("<HTTPResponse>"));
+    return CallHandlerResult.Processed(PythonTypes.CreateInstance(Location.Empty, HTTPResponseClassDescription, new ImmutableArray<SymbolicExpression>()));
 }
-var global_request_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("request").WithHandler(global_request_Handler).WithArgumentsInfo(new ArgumentsInfo(["method", "url", "body", "fields", "headers", "json", ], 6, false, false, 0, 0)).AssignTo(ModuleDescriptor).BuildAndRegister();
+var global_request_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("request").WithHandler(global_request_Handler).WithArgumentsInfo(new ArgumentsInfo(["method", "url", "body", "fields", "headers", "json", ], 6, false, false, 0, 0, ImmutableSegment.Create<SymbolicExpression>(SemanticsApi.CreateLiteral("GET"), SemanticsApi.None, SemanticsApi.None, SemanticsApi.None, SemanticsApi.None, SemanticsApi.None))).AssignTo(ModuleDescriptor).BuildAndRegister();

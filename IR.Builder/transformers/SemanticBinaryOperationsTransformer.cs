@@ -30,7 +30,7 @@ public class SemanticBinaryOperationsTransformer : AbstractAstSemanticTransforme
 
         var semanticEntityAccess = SemanticsApi.Property(semanticEntityName);
 
-        return new IntrinsicFunctionInvokationAstNode(
+        return new IntrinsicFunctionInvocationAstNode(
             Interpretor,
             "InvokeFunction",
             [LocationArg, semanticEntityAccess, node.Left, node.Right],

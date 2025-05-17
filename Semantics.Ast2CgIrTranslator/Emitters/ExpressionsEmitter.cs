@@ -23,7 +23,7 @@ public class ExpressionsEmitter
             VarExpressionAstNode varExpressionAstNode => EmitVarExpressionNode(varExpressionAstNode),
             BinaryExpressionAstNode binaryExpressionAstNode => EmitBinaryExpressionNode(binaryExpressionAstNode),
             UnaryExpressionAstNode unaryExpressionAstNode => EmitUnaryExpressionNode(unaryExpressionAstNode),
-            IntrinsicFunctionInvokationAstNode intrinsicFunctionInvokationAstNode =>
+            IntrinsicFunctionInvocationAstNode intrinsicFunctionInvokationAstNode =>
                 EmitIntrinsicFunctionInvokationAstNode(intrinsicFunctionInvokationAstNode),
             QualifiedAccessAstNodeBase qualifiedAccessAstNode => EmitQualifiedAccessAstNodeBase(qualifiedAccessAstNode),
             IntLiteralAstNode intLiteralAstNode => EmitIntLiteralAstNode(intLiteralAstNode),
@@ -147,6 +147,12 @@ public class ExpressionsEmitter
     private ICgExpression EmitVarExpressionNode(VarExpressionAstNode varExpressionAstNode)
     {
         var varDeclAstNode = varExpressionAstNode.VariableReference.Resolve()!;
+
+        if (varDeclAstNode.IsNone)
+        {
+            return ctx.Semantics.SemanticsApi.Property("None");
+        }
+
         if (varDeclAstNode.IsLocalVarDecl)
         {
             return new CgVarExpression(
@@ -179,21 +185,21 @@ public class ExpressionsEmitter
         return ctx.Semantics.CreateInstance(objDescrVar, args);
     }
 
-    private ICgExpression EmitIntrinsicFunctionInvokationAstNode(IntrinsicFunctionInvokationAstNode intrinsicFunctionInvokationAstNode)
+    private ICgExpression EmitIntrinsicFunctionInvokationAstNode(IntrinsicFunctionInvocationAstNode intrinsicFunctionInvocationAstNode)
     {
-        if (_entrinsicFunctionsCallWithNoImplEmitter.IsApplicable(intrinsicFunctionInvokationAstNode))
+        if (_entrinsicFunctionsCallWithNoImplEmitter.IsApplicable(intrinsicFunctionInvocationAstNode))
         {
-            return _entrinsicFunctionsCallWithNoImplEmitter.Emit(intrinsicFunctionInvokationAstNode);
+            return _entrinsicFunctionsCallWithNoImplEmitter.Emit(intrinsicFunctionInvocationAstNode);
         }
 
-        var qualifiedExpr = intrinsicFunctionInvokationAstNode.Reciever != null
-            ? EmitExpression(intrinsicFunctionInvokationAstNode.Reciever)
+        var qualifiedExpr = intrinsicFunctionInvocationAstNode.Reciever != null
+            ? EmitExpression(intrinsicFunctionInvocationAstNode.Reciever)
             : null;
 
         var call = new CgMethodCall(
             qualifiedExpr,
-            intrinsicFunctionInvokationAstNode.Name,
-            intrinsicFunctionInvokationAstNode.Args.Select(EmitExpression).ToArray());
+            intrinsicFunctionInvocationAstNode.Name,
+            intrinsicFunctionInvocationAstNode.Args.Select(EmitExpression).ToArray());
 
         return call;
     }

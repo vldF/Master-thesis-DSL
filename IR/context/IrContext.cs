@@ -27,6 +27,12 @@ public class IrContext
         _parent = parent;
         Package = package;
         AnyTypeRef = new TypeReference("any", this);
+
+        var noneVar = new VarDeclAstNode("none", AnyTypeRef, null)
+        {
+            IsNone = true
+        };
+        SaveNewVar(noneVar);
     }
 
     public void SaveNewVar(VarDeclAstNode node)

@@ -139,7 +139,7 @@ public abstract class AbstractChecker<TR> : AbstractCheckerBase
                 return CheckExpression(unaryExpressionAstNode.Value);
             case QualifiedAccessAstNodeBase qualifiedAccessAstNodeBase:
                 return CheckQualifiedAccessBase(qualifiedAccessAstNodeBase);
-            case IntrinsicFunctionInvokationAstNode intrinsicFunctionInvokationAstNode:
+            case IntrinsicFunctionInvocationAstNode intrinsicFunctionInvokationAstNode:
                 return CheckIntrinsicFunctionInvocation(intrinsicFunctionInvokationAstNode);
             case NewAstNode newAstNode:
                 return CheckNew(newAstNode);
@@ -170,9 +170,9 @@ public abstract class AbstractChecker<TR> : AbstractCheckerBase
         return default;
     }
 
-    protected virtual TR? CheckIntrinsicFunctionInvocation(IntrinsicFunctionInvokationAstNode intrinsicFunctionInvokationAstNode)
+    protected virtual TR? CheckIntrinsicFunctionInvocation(IntrinsicFunctionInvocationAstNode intrinsicFunctionInvocationAstNode)
     {
-        foreach (var arg in intrinsicFunctionInvokationAstNode.Args)
+        foreach (var arg in intrinsicFunctionInvocationAstNode.Args)
         {
             CheckExpression(arg);
         }
@@ -200,7 +200,7 @@ public abstract class AbstractChecker<TR> : AbstractCheckerBase
                 return CheckVarDecl(varDeclAstNode);
             case FunctionCallAstNode functionCallAstNode:
                 return CheckFunctionCall(functionCallAstNode);
-            case IntrinsicFunctionInvokationAstNode intrinsicFunctionInvokationAstNode:
+            case IntrinsicFunctionInvocationAstNode intrinsicFunctionInvokationAstNode:
                 return CheckIntrinsicFunctionInvokation(intrinsicFunctionInvokationAstNode);
             case QualifiedAccessAstNodeBase qualifiedAccessAstNodeBase:
                 return CheckQualifiedAccessBase(qualifiedAccessAstNodeBase);
@@ -219,9 +219,9 @@ public abstract class AbstractChecker<TR> : AbstractCheckerBase
         }
     }
 
-    protected virtual TR? CheckIntrinsicFunctionInvokation(IntrinsicFunctionInvokationAstNode intrinsicFunctionInvokationAstNode)
+    protected virtual TR? CheckIntrinsicFunctionInvokation(IntrinsicFunctionInvocationAstNode intrinsicFunctionInvocationAstNode)
     {
-        foreach (var arg in intrinsicFunctionInvokationAstNode.Args)
+        foreach (var arg in intrinsicFunctionInvocationAstNode.Args)
         {
             CheckExpression(arg);
         }

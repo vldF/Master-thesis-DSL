@@ -56,10 +56,6 @@ public class BaseBuilderVisitor(IrContext irContext) : JSADSLBaseVisitor<IAstNod
             var argName = argContext.name.Text;
             var argTypeName = argContext.type?.Text;
             var argType = argTypeName == null ? irContext.AnyTypeRef : new TypeReference(argTypeName, newContext);
-            if (argType == null)
-            {
-                throw new UnresolvedTypeException(argTypeName!);
-            }
 
             IExpressionAstNode? defaultVal = null;
             if (argContext.default_val != null)
@@ -242,7 +238,7 @@ public class BaseBuilderVisitor(IrContext irContext) : JSADSLBaseVisitor<IAstNod
         return new AssignmentAstNode(assignee, value);
     }
 
-    public override IStatementAstNode VisitVarDeclarationStatement(JSADSLParser.VarDeclarationStatementContext context)
+    public override IStatementAstNode VisitVarDecl(JSADSLParser.VarDeclContext context)
     {
         var varName = context.varName.Text;
         var initValue = context.initValue;
@@ -307,9 +303,9 @@ public class BaseBuilderVisitor(IrContext irContext) : JSADSLBaseVisitor<IAstNod
             return VisitAssignmentStatement(context.assignmentStatement());
         }
 
-        if (context.varDeclarationStatement() != null)
+        if (context.varDecl() != null)
         {
-            return VisitVarDeclarationStatement(context.varDeclarationStatement());
+            return VisitVarDecl(context.varDecl());
         }
 
         if (context.returnStatement() != null)
@@ -327,9 +323,9 @@ public class BaseBuilderVisitor(IrContext irContext) : JSADSLBaseVisitor<IAstNod
 
     public override IAstNode VisitObjectBodyStatement(JSADSLParser.ObjectBodyStatementContext context)
     {
-        if (context.varDeclarationStatement() != null)
+        if (context.varDecl() != null)
         {
-            return VisitVarDeclarationStatement(context.varDeclarationStatement());
+            return VisitVarDecl(context.varDecl());
         }
 
         if (context.funcDecl() != null)
@@ -342,9 +338,9 @@ public class BaseBuilderVisitor(IrContext irContext) : JSADSLBaseVisitor<IAstNod
 
     public override IAstNode VisitTopLevelDecl(JSADSLParser.TopLevelDeclContext context)
     {
-        if (context.varDeclarationStatement() != null)
+        if (context.varDecl() != null)
         {
-            return VisitVarDeclarationStatement(context.varDeclarationStatement());
+            return VisitVarDecl(context.varDecl());
         }
 
         if (context.objectDecl() != null)

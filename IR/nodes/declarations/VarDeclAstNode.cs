@@ -34,4 +34,6 @@ public class VarDeclAstNode(
     public bool IsSelf { get; init; } = false;
 
     public bool IsLocalVarDecl => !IsObjectField();
+
+    public bool IsNone { get; init; } = false;
 }

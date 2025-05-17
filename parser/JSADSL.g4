@@ -7,7 +7,7 @@ topLevelDecl
    |   intrinsicFuncDecl
    |   objectDecl
    |   importDecl
-   |   varDeclarationStatement SEMI_COLON
+   |   varDecl SEMI_COLON
    ;
 
 funcDecl : annotation* FUNC_KW name=ID L_PAREN (functionArgs) R_PAREN (COLON resultType=ID)? L_BRACE statementsBlock R_BRACE;
@@ -23,14 +23,14 @@ statementsBlock : (statement)*;
 statement
    :   ifStatement
    |   assignmentStatement SEMI_COLON
-   |   varDeclarationStatement SEMI_COLON
+   |   varDecl SEMI_COLON
    |   returnStatement SEMI_COLON
    |   functionCall SEMI_COLON
    ;
 
 assignmentStatement : assignee=expression EQ value=expression;
 
-varDeclarationStatement : VAR_KW varName=ID (COLON type=ID)? (EQ initValue=expression)?;
+varDecl : VAR_KW varName=ID (COLON type=ID)? (EQ initValue=expression)?;
 
 ifStatement : IF_KW L_PAREN cond=expression R_PAREN L_BRACE mainBlock=statementsBlock R_BRACE ((ELSE_KW elseIfStatement=ifStatement)|(ELSE_KW L_BRACE elseBlock=statementsBlock R_BRACE))?;
 
@@ -94,16 +94,13 @@ functionCall
    :   qualifiedAccess generic? L_PAREN args=expressionList R_PAREN
    ;
 
-constructorDecl : CONSTRUCTOR_KW L_PAREN (functionArgs) R_PAREN L_BRACE statementsBlock R_BRACE ;
-
 objectDecl : annotation* OBJECT_KW name=ID L_BRACE objectBody R_BRACE;
 
 objectBody : objectBodyStatement*;
 
 objectBodyStatement
    :   funcDecl
-   |   constructorDecl
-   |   varDeclarationStatement SEMI_COLON
+   |   varDecl SEMI_COLON
    ;
 
 importDecl : IMPORT_KW package=DoubleQuotedString SEMI_COLON;
@@ -125,7 +122,6 @@ TRUE_KW : 'true';
 FALSE_KW : 'false';
 PACKAGE_KW : 'package';
 IMPORT_KW : 'import';
-CONSTRUCTOR_KW : 'constructor';
 
 L_PAREN : '(';
 R_PAREN : ')';

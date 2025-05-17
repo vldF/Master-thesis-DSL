@@ -13,3 +13,5 @@ intrinsic func CreateDataOfType<T>(): T
 intrinsic func WithoutVulnerability<T>(expression: T, vulnerabilityType: string): T
 
 intrinsic func GetTaintOrigin(expression: any): string
+
+intrinsic func As<TResult>(expression: any): TResult

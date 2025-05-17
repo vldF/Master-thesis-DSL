@@ -13,6 +13,7 @@ public class AstBuilder
     public AstBuildingResult FromStrings(IReadOnlyCollection<(string name, string code)> codes)
     {
         var rootContext = new IrContext(null);
+
         rootContext.SaveNewType(SimpleAstType.Any);
         rootContext.SaveNewType(SimpleAstType.Int);
         rootContext.SaveNewType(SimpleAstType.StringT);

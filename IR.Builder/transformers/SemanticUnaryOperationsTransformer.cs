@@ -18,7 +18,7 @@ public class SemanticUnaryOperationsTransformer : AbstractAstSemanticTransformer
 
         var semanticEntityAccess = SemanticsApi.Property(semanticEntityName);
 
-        return new IntrinsicFunctionInvokationAstNode(
+        return new IntrinsicFunctionInvocationAstNode(
             Interpretor,
             "InvokeFunction",
             [LocationArg, semanticEntityAccess, node.Value],

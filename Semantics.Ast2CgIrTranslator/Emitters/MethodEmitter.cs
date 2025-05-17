@@ -119,7 +119,7 @@ public class MethodEmitter(TranslatorContext ctx)
             case FunctionCallAstNode qualifiedFunctionCallAstNode:
                 EmitQualifiedFunctionCallAstNode(qualifiedFunctionCallAstNode);
                 break;
-            case IntrinsicFunctionInvokationAstNode intrinsicFunctionInvokationAstNode:
+            case IntrinsicFunctionInvocationAstNode intrinsicFunctionInvokationAstNode:
                 EmitIntrinsicFunctionInvokationAstNode(intrinsicFunctionInvokationAstNode);
                 break;
             default:
@@ -127,9 +127,9 @@ public class MethodEmitter(TranslatorContext ctx)
         }
     }
 
-    private void EmitIntrinsicFunctionInvokationAstNode(IntrinsicFunctionInvokationAstNode intrinsicFunctionInvokationAstNode)
+    private void EmitIntrinsicFunctionInvokationAstNode(IntrinsicFunctionInvocationAstNode intrinsicFunctionInvocationAstNode)
     {
-        ctx.CurrentContainer!.Add((CgMethodCall)_expressionsEmitter.EmitExpression(intrinsicFunctionInvokationAstNode));
+        ctx.CurrentContainer!.Add((CgMethodCall)_expressionsEmitter.EmitExpression(intrinsicFunctionInvocationAstNode));
     }
 
     private void EmitQualifiedFunctionCallAstNode(FunctionCallAstNode astCall)

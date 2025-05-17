@@ -4,7 +4,7 @@ using me.vldf.jsa.dsl.ir.references;
 namespace me.vldf.jsa.dsl.ir.nodes.expressions;
 
 // just a function call, not a semantic one
-public record IntrinsicFunctionInvokationAstNode(
+public record IntrinsicFunctionInvocationAstNode(
     IExpressionAstNode? Reciever,
     string Name,
     List<IExpressionAstNode> Args,

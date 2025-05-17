@@ -1,0 +1,15 @@
+CallHandlerResult global_foo_Handler(Location location, FunctionCall functionCall)
+{
+    var handledArguments = ProcessorApi.ProcessKeywordArguments(functionCall);
+    handledArguments.TryGetValue("arg", out var arg);
+    var returnValueBuilder2 = Interpreter.CreateReturnedValuesBuilder();
+    var condition8 = SemanticsApi.CreateCastToBoolOperator(Interpreter.InvokeFunction(location, SemanticsApi.EqDescriptor, arg, SemanticsApi.None));
+    Interpreter.TryEnterBranch(condition8, out var branchId13);
+    var currentCond5 = Interpreter.CurrentContext.CurrentCondition;
+    returnValueBuilder2.AddOption(currentCond5, arg);
+    Interpreter.LeaveBranch(branchId13);
+    var currentCond6 = Interpreter.CurrentContext.CurrentCondition;
+    returnValueBuilder2.AddOption(currentCond6, SemanticsApi.None);
+    return CallHandlerResult.Processed(returnValueBuilder2.ToConditional());
+}
+var global_foo_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("foo").WithHandler(global_foo_Handler).WithArgumentsInfo(new ArgumentsInfo(["arg", ], 1, false, false, 0, 0, ImmutableSegment.Create<SymbolicExpression>(SemanticsApi.None))).AssignTo(ModuleDescriptor).BuildAndRegister();

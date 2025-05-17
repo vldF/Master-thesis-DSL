@@ -8,9 +8,14 @@ object HTTPConnection {
         return new HTTPResponse();
     }
 
-    func request(url: string) {
+    func request(method: string = "GET", url: string, body: any = none, fields: any = none, headers: any = none, json: any = none): any {
         Detect(url, "Server-Side Request Forgery", "HTTP URI");
+        Detect(headers, "Server-Side Request Forgery", "HTTP URI");
+        Detect(headers, "Information Exposure", "HTTP URI");
+
+        return new HTTPResponse();
     }
+
 
     func request_chunked(url: string) {
         Detect(url, "Server-Side Request Forgery", "HTTP URI");

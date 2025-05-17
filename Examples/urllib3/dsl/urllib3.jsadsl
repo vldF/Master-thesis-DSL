@@ -3,7 +3,7 @@ package "urllib3";
 import "Standard";
 import "urllib3.response";
 
-func request(method: string, url: string, body: any, fields: any, headers: any, json: any): any {
+func request(method: string = "GET", url: string, body: any = none, fields: any = none, headers: any = none, json: any = none): any {
     Detect(url, "Server-Side Request Forgery", "HTTP URI");
     Detect(headers, "Server-Side Request Forgery", "HTTP URI");
     Detect(headers, "Information Exposure", "HTTP URI");

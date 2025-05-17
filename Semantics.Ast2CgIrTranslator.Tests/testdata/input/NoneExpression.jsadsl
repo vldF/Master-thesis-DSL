@@ -1,0 +1,7 @@
+func foo(arg: any = none): any {
+    if (arg == none) {
+        return arg;
+    }
+
+    return none;
+}

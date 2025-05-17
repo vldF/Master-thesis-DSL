@@ -13,19 +13,19 @@ public class IntrinsicFunctionsCallWithNoImplEmitter(TranslatorContext ctx, Expr
         { "CreateDataOfType", new CreateDataOfTypeEmitter(isTainted: false, ctx, expressionsEmitter) },
     };
 
-    public bool IsApplicable(IntrinsicFunctionInvokationAstNode call)
+    public bool IsApplicable(IntrinsicFunctionInvocationAstNode call)
     {
         return call.Reciever == null && _supportedIntrinsicFunctions.ContainsKey(call.Name);
     }
 
-    public ICgExpression Emit(IntrinsicFunctionInvokationAstNode call)
+    public ICgExpression Emit(IntrinsicFunctionInvocationAstNode call)
     {
         return _supportedIntrinsicFunctions[call.Name].Emit(call);
     }
 
     interface IFunctionEmitter
     {
-        public ICgExpression Emit(IntrinsicFunctionInvokationAstNode call);
+        public ICgExpression Emit(IntrinsicFunctionInvocationAstNode call);
     }
 
     class CreateDataOfTypeEmitter(bool isTainted, TranslatorContext ctx, ExpressionsEmitter expressionsEmitter) : IFunctionEmitter
@@ -44,7 +44,7 @@ public class IntrinsicFunctionsCallWithNoImplEmitter(TranslatorContext ctx, Expr
             { "list", "ListType" },
         };
 
-        public ICgExpression Emit(IntrinsicFunctionInvokationAstNode call)
+        public ICgExpression Emit(IntrinsicFunctionInvocationAstNode call)
         {
             var type = call.Generics.First().Resolve()!;
             var result = ctx.Semantics.CreateNonTypedInstance(
@@ -65,13 +65,13 @@ public class IntrinsicFunctionsCallWithNoImplEmitter(TranslatorContext ctx, Expr
             if (isTainted)
             {
                 var taintOrigin = call.Args.ToList()[1];
-                if (taintOrigin is not StringLiteralAstNode && taintOrigin is not IntrinsicFunctionInvokationAstNode)
+                if (taintOrigin is not StringLiteralAstNode && taintOrigin is not IntrinsicFunctionInvocationAstNode)
                 {
                     throw new InvalidOperationException("taint origin must be a constant string or the GetTaintOrigin function call");
                 }
 
                 ICgExpression taintOriginCgExpr;
-                if (taintOrigin is IntrinsicFunctionInvokationAstNode getTaintOriginCall)
+                if (taintOrigin is IntrinsicFunctionInvocationAstNode getTaintOriginCall)
                 {
                     if (getTaintOriginCall.Name != "GetTaintOrigin")
                     {

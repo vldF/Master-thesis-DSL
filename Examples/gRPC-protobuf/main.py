@@ -1,6 +1,7 @@
 import grpc
 import userstorage.services_pb2 as user_storage_dto
 import userstorage.services_pb2_grpc as user_storage_service
+
 from flask import Flask, jsonify
 
 SERVER_URL = 'http://server'
@@ -11,7 +12,9 @@ app = Flask(__name__)
 def vulnerable_get_user_info(user_id: str):
     with grpc.insecure_channel(SERVER_URL) as channel:
         user_storage_stub = user_storage_service.UserStoreStub(channel)
-        user = user_storage_stub.GetUser(user_storage_dto.UserRequest(user_id))  # vulnerability: insecure direct object reference
+        getUserRequest = user_storage_dto.UserRequest(user_id)
+
+        user = user_storage_stub.GetUser(getUserRequest)  # vulnerability: insecure direct object reference
 
         return jsonify(user)
 
