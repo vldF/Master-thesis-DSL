@@ -26,7 +26,7 @@ CallHandlerResult Cursor_fetchone_Handler(Location location, FunctionCall functi
 {
     var handledArguments = ProcessorApi.ProcessKeywordArguments(functionCall);
     handledArguments.TryGetValue("self", out var self);
-    var teintData3 = SemanticsApi.CreateObjectDescriptor("<<dsl_tainted_data_0>>").WithType(SemanticsApi.ListType).With(new TaintOrigin("Second Order"));
+    var teintData3 = SemanticsApi.CreateObjectDescriptor("<<dsl_tainted_data_0>>").WithType(SemanticsApi.ObjectType).With(new TaintOrigin("Second Order"));
     return CallHandlerResult.Processed(teintData3);
 }
 var Cursor_fetchone_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("fetchone").WithHandler(Cursor_fetchone_Handler).WithArgumentsInfo(new ArgumentsInfo(["self", ], 1, false, false, 0, 0)).AssignTo(CursorClassDescription).BuildAndRegister();

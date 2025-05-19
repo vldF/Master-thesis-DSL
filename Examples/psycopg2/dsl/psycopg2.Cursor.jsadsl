@@ -12,14 +12,14 @@ object Cursor {
     }
 
     func fetchone(): any {
+        return CreateTaintedDataOfType<any>("Second Order");
+    }
+
+    func fetchmany(): list {
         return CreateTaintedDataOfType<list>("Second Order");
     }
 
-    func fetchmany(): any {
-        return CreateTaintedDataOfType<list>("Second Order");
-    }
-
-    func fetchall(): any {
+    func fetchall(): list {
         return CreateTaintedDataOfType<list>("Second Order");
     }
 }

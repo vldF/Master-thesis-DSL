@@ -106,13 +106,6 @@ CallHandlerResult Request_close_Handler(Location location, FunctionCall function
     return CallHandlerResult.Processed(SemanticsApi.None);
 }
 var Request_close_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("close").WithHandler(Request_close_Handler).WithArgumentsInfo(new ArgumentsInfo(["self", ], 1, false, false, 0, 0)).AssignTo(RequestClassDescription).BuildAndRegister();
-CallHandlerResult Request_flom_values_Handler(Location location, FunctionCall functionCall)
-{
-    var handledArguments = ProcessorApi.ProcessKeywordArguments(functionCall);
-    handledArguments.TryGetValue("self", out var self);
-    return CallHandlerResult.Processed(PythonTypes.CreateInstance(Location.Empty, RequestClassDescription, new ImmutableArray<SymbolicExpression>()));
-}
-var Request_flom_values_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("flom_values").WithHandler(Request_flom_values_Handler).WithArgumentsInfo(new ArgumentsInfo(["self", ], 1, false, false, 0, 0)).AssignTo(RequestClassDescription).BuildAndRegister();
 CallHandlerResult Request_get_data_Handler(Location location, FunctionCall functionCall)
 {
     var handledArguments = ProcessorApi.ProcessKeywordArguments(functionCall);
@@ -133,7 +126,7 @@ CallHandlerResult Request_get_data_Handler(Location location, FunctionCall funct
     Interpreter.LeaveBranch(branchId1);
     return CallHandlerResult.Processed(returnValueBuilder0.ToConditional());
 }
-var Request_get_data_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("get_data").WithHandler(Request_get_data_Handler).WithArgumentsInfo(new ArgumentsInfo(["self", "as_text", ], 2, false, false, 0, 0)).AssignTo(RequestClassDescription).BuildAndRegister();
+var Request_get_data_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("get_data").WithHandler(Request_get_data_Handler).WithArgumentsInfo(new ArgumentsInfo(["self", "as_text", ], 2, false, false, 0, 0, ImmutableSegment.Create<SymbolicExpression>(SemanticsApi.CreateLiteral(false)))).AssignTo(RequestClassDescription).BuildAndRegister();
 CallHandlerResult Request_get_json_Handler(Location location, FunctionCall functionCall)
 {
     var handledArguments = ProcessorApi.ProcessKeywordArguments(functionCall);
@@ -159,10 +152,22 @@ CallHandlerResult global_jsonify_Handler(Location location, FunctionCall functio
 {
     var handledArguments = ProcessorApi.ProcessKeywordArguments(functionCall);
     handledArguments.TryGetValue("data", out var data);
-    var teintData42 = SemanticsApi.CreateObjectDescriptor("<<dsl_tainted_data_37>>").WithType(SemanticsApi.ObjectType).With(new TaintOrigin(GetTaintOrigin(location, data)));
+    var teintData42 = SemanticsApi.CreateObjectDescriptor("<<dsl__data_4>>").WithType(SemanticsApi.ObjectType);
     return CallHandlerResult.Processed(teintData42);
 }
 var global_jsonify_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("jsonify").WithHandler(global_jsonify_Handler).WithArgumentsInfo(new ArgumentsInfo(["data", ], 1, false, false, 0, 0)).AssignTo(ModuleDescriptor).BuildAndRegister();
+CallHandlerResult global_redirect_Handler(Location location, FunctionCall functionCall)
+{
+    var handledArguments = ProcessorApi.ProcessKeywordArguments(functionCall);
+    handledArguments.TryGetValue("url", out var url);
+    handledArguments.TryGetValue("code", out var code);
+    handledArguments.TryGetValue("response", out var response);
+    Detect(location, url, "Open redirect", "HTTP URI");
+    Detect(location, response, "Cross-site Scripting", "HTTP URI");
+    var teintData43 = SemanticsApi.CreateObjectDescriptor("<<dsl__data_5>>").WithType(SemanticsApi.ObjectType);
+    return CallHandlerResult.Processed(teintData43);
+}
+var global_redirect_MethodDescriptor = ProcessorApi.CreateFunctionBuilder("redirect").WithHandler(global_redirect_Handler).WithArgumentsInfo(new ArgumentsInfo(["url", "code", "response", ], 3, false, false, 0, 0, ImmutableSegment.Create<SymbolicExpression>(SemanticsApi.CreateLiteral(302), SemanticsApi.None))).AssignTo(ModuleDescriptor).BuildAndRegister();
 
 // complementing content from flaskComplemention.jsa
 InitflaskComplemention();

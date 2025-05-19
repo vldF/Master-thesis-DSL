@@ -52,12 +52,7 @@ object Request {
 
     func close() { }
 
-    func flom_values() {
-        return new Request();
-    }
-
-    // todo: as_text = false by default
-    func get_data(as_text: bool): any {
+    func get_data(as_text: bool = false): any {
         if (as_text) {
             return CreateTaintedDataOfType<string>("Body");
         } else {
@@ -78,5 +73,12 @@ func escape(data: string): string {
 }
 
 func jsonify(data: any): any {
-    return CreateTaintedDataOfType<any>(GetTaintOrigin(data));
+    return CreateDataOfType<any>();
+}
+
+func redirect(url: string, code: int = 302, response: any = none): any {
+    Detect(url, "Open redirect", "HTTP URI");
+    Detect(response, "Cross-site Scripting", "HTTP URI");
+
+    return CreateDataOfType<any>();
 }
