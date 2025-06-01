@@ -1,0 +1,225 @@
+#load "urllib3.connection.jsa"
+
+var HTTPResponseClassDescription = SemanticsApi.CreateClassObjectDescriptor("HTTPResponse");
+CallHandlerResult JsonHandler(Location location, FunctionCall functionCall)
+{
+    var handledArguments = ProcessorApi.ProcessKeywordArguments(functionCall);
+    handledArguments.TryGetValue("self", out var self);
+
+    var statusValue = SemanticsApi
+        .CreateObjectDescriptor("<<status-value>>")
+        .WithType(SemanticsApi.LongType)
+        .With(new TaintOrigin("Second order"));
+    Interpreter.Assign(self, "status", statusValue);
+
+    var dataValue = SemanticsApi
+        .CreateObjectDescriptor("<<data-value>>")
+        .WithType(SemanticsApi.BytesType)
+        .With(new TaintOrigin("Second order"));
+    Interpreter.Assign(self, "data", dataValue);
+
+    var bodyValue = SemanticsApi
+        .CreateObjectDescriptor("<<body-value>>")
+        .WithType(SemanticsApi.StringType)
+        .With(new TaintOrigin("Second order"));
+    Interpreter.Assign(self, "body", bodyValue);
+
+    var urlValue = SemanticsApi
+        .CreateObjectDescriptor("<<url-value>>")
+        .WithType(SemanticsApi.StringType)
+        .With(new TaintOrigin("Second order"));
+    Interpreter.Assign(self, "url", urlValue);
+
+    var requestUrlValue = SemanticsApi
+        .CreateObjectDescriptor("<<request-url-value>>")
+        .WithType(SemanticsApi.StringType)
+        .With(new TaintOrigin("Second order"));
+    Interpreter.Assign(self, "request_url", requestUrlValue);
+
+    Interpreter.Assign(
+        self,
+        "connection",
+        PythonTypes.CreateInstance(
+            Location.Empty,
+            HTTPConnectionClassDescription,
+            new ImmutableArray<SymbolicExpression>()));
+
+    return CallHandlerResult.Processed(self);
+}
+ProcessorApi
+    .CreateFunctionBuilder("__init__")
+    .WithHandler(JsonHandler)
+    .WithArgumentsInfo(
+        new ArgumentsInfo(
+            argumentNames: ["self"],
+            argcount: 1,
+            hasVarArgs: false,
+            hasVarKeywords: false,
+            posonlyargcount: 0,
+            kwonlyargcount: 0))
+    .AssignTo(HTTPResponseClassDescription)
+    .BuildAndRegister();
+
+CallHandlerResult JsonHandler(Location location, FunctionCall functionCall)
+{
+    var result = SemanticsApi
+        .CreateObjectDescriptor("<<result>>")
+        .WithType(SemanticsApi.ObjectType)
+        .With(new TaintOrigin("Second order"));
+
+    return CallHandlerResult.Processed(result);
+}
+ProcessorApi
+    .CreateFunctionBuilder("json")
+    .WithHandler(JsonHandler)
+    .WithArgumentsInfo(
+        new ArgumentsInfo(
+            argumentNames: ["self", ],
+            argcount: 1,
+            hasVarArgs: false,
+            hasVarKeywords: false,
+            posonlyargcount: 0,
+            kwonlyargcount: 0))
+    .AssignTo(HTTPResponseClassDescription)
+    .BuildAndRegister();
+
+CallHandlerResult ReadlineHandler(Location location, FunctionCall functionCall)
+{
+    var result = SemanticsApi
+        .CreateObjectDescriptor("<<result>>")
+        .WithType(SemanticsApi.StringType)
+        .With(new TaintOrigin("Second order"));
+
+    return CallHandlerResult.Processed(result);
+}
+ProcessorApi
+    .CreateFunctionBuilder("readline")
+    .WithHandler(ReadlineHandler)
+    .WithArgumentsInfo(
+        new ArgumentsInfo(
+            argumentNames: ["self"],
+            argcount: 1,
+            hasVarArgs: false,
+            hasVarKeywords: false,
+            posonlyargcount: 0,
+            kwonlyargcount: 0))
+    .AssignTo(HTTPResponseClassDescription)
+    .BuildAndRegister();
+
+CallHandlerResult ReadlinesHandler(Location location, FunctionCall functionCall)
+{
+    var result = SemanticsApi
+        .CreateObjectDescriptor("<<result>>")
+        .WithType(SemanticsApi.ListType)
+        .With(new TaintOrigin("Second order"));
+
+    return CallHandlerResult.Processed(result);
+}
+ProcessorApi
+    .CreateFunctionBuilder("readlines")
+    .WithHandler(ReadlinesHandler)
+    .WithArgumentsInfo(
+        new ArgumentsInfo(
+            argumentNames: ["self"],
+            argcount: 1,
+            hasVarArgs: false,
+            hasVarKeywords: false,
+            posonlyargcount: 0,
+            kwonlyargcount: 0))
+    .AssignTo(HTTPResponseClassDescription)
+    .BuildAndRegister();
+
+CallHandlerResult GetRedirectLocationHandler(Location location, FunctionCall functionCall)
+{
+    var result = SemanticsApi
+        .CreateObjectDescriptor("<<result>>")
+        .WithType(SemanticsApi.StringType)
+        .With(new TaintOrigin("Second order"));
+
+    return CallHandlerResult.Processed(result);
+}
+ProcessorApi
+    .CreateFunctionBuilder("get_redirect_location")
+    .WithHandler(GetRedirectLocationHandler)
+    .WithArgumentsInfo(
+        new ArgumentsInfo(
+            ["self"],
+            1,
+            false,
+            false,
+            0,
+            0))
+    .AssignTo(HTTPResponseClassDescription)
+    .BuildAndRegister();
+
+CallHandlerResult StreamHandler(Location location, FunctionCall functionCall)
+{
+    var result = SemanticsApi
+        .CreateObjectDescriptor("<<result>>")
+        .WithType(SemanticsApi.ObjectType)
+        .With(new TaintOrigin("Second order"));
+
+    return CallHandlerResult.Processed(result);
+}
+ProcessorApi
+    .CreateFunctionBuilder("stream")
+    .WithHandler(StreamHandler)
+    .WithArgumentsInfo(
+        new ArgumentsInfo(
+            argumentNames: ["self", ],
+            argcount: 1,
+            hasVarArgs: false,
+            hasVarKeywords: false,
+            posonlyargcount: 0,
+            kwonlyargcount: 0))
+    .AssignTo(HTTPResponseClassDescription)
+    .BuildAndRegister();
+
+CallHandlerResult ReadHandler(Location location, FunctionCall functionCall)
+{
+    var result = SemanticsApi
+        .CreateObjectDescriptor("<<result>>")
+        .WithType(SemanticsApi.ObjectType)
+        .With(new TaintOrigin("Second order"));
+
+    return CallHandlerResult.Processed(result);
+}
+ProcessorApi
+    .CreateFunctionBuilder("read")
+    .WithHandler(ReadHandler)
+    .WithArgumentsInfo(
+        new ArgumentsInfo(
+            ["self"],
+            1,
+            false,
+            false,
+            0,
+            0))
+    .AssignTo(HTTPResponseClassDescription)
+    .BuildAndRegister();
+
+CallHandlerResult FilenoHandler(Location location, FunctionCall functionCall)
+{
+    var result = SemanticsApi
+        .CreateObjectDescriptor("<<result>>")
+        .WithType(SemanticsApi.ObjectType)
+        .With(new TaintOrigin("Second order"));
+
+    return CallHandlerResult.Processed(result);
+}
+ProcessorApi
+    .CreateFunctionBuilder("fileno")
+    .WithHandler(FilenoHandler)
+    .WithArgumentsInfo(
+        new ArgumentsInfo(
+            ["self"],
+            1,
+            false,
+            false,
+            0,
+            0))
+    .AssignTo(HTTPResponseClassDescription)
+    .BuildAndRegister();
+
+Interpreter.Assign(ModuleDescriptor, "HTTPResponse", HTTPResponseClassDescription);
+PythonTypes.BuildClass(HTTPResponseClassDescription);

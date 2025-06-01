@@ -1,0 +1,38 @@
+#load "urllib3.response.jsa"
+
+CallHandlerResult RequestHandler(Location location, FunctionCall functionCall)
+{
+    var handledArguments = ProcessorApi.ProcessKeywordArguments(functionCall);
+    handledArguments.TryGetValue("url", out var url);
+    handledArguments.TryGetValue("headers", out var headers);
+    Detect(location, url, "Server-Side Request Forgery", "HTTP URI");
+    Detect(location, headers, "Server-Side Request Forgery", "HTTP URI");
+    Detect(location, headers, "Information Exposure", "HTTP URI");
+
+    return CallHandlerResult.Processed(
+        PythonTypes.CreateInstance(
+            Location.Empty,
+            HTTPResponseClassDescription,
+            new ImmutableArray<SymbolicExpression>()));
+}
+
+ProcessorApi
+    .CreateFunctionBuilder("request")
+    .WithHandler(RequestHandler)
+    .WithArgumentsInfo(
+        new ArgumentsInfo(
+            argumentNames: ["method", "url", "body", "fields", "headers", "json"],
+            argcount: 6,
+            hasVarArgs: false,
+            hasVarKeywords: false,
+            posonlyargcount: 0,
+            kwonlyargcount: 0,
+            defaults: ImmutableSegment.Create<SymbolicExpression>(
+                SemanticsApi.CreateLiteral("GET"),
+                SemanticsApi.None,
+                SemanticsApi.None,
+                SemanticsApi.None,
+                SemanticsApi.None,
+                SemanticsApi.None)))
+    .AssignTo(ModuleDescriptor)
+    .BuildAndRegister();

@@ -1,0 +1,136 @@
+using JSA.PythonProvider.Utils;
+using JSA.PythonProvider.Semantics;
+using System.Collections.Immutable;
+using JSA.Contracts.Engine;
+
+var CursorClassDescription = SemanticsApi.CreateClassObjectDescriptor("Cursor");
+
+CallHandlerResult executeHandler(Location location, FunctionCall functionCall)
+{
+    var args = ProcessorApi.ProcessKeywordArguments(functionCall);
+    args.TryGetValue("query", out var query);
+    Detector.Detect(location, query, (VulnerabilityType)"SQL Injection", new PvoArgumentGrammar("SQL common"));
+
+    return CallHandlerResult.Processed(SemanticsApi.None);
+}
+
+var emptyList = SemanticsApi
+    .CreateObjectDescriptor("<<vars_default>>")
+    .WithType(SemanticsApi.ListType);
+
+ProcessorApi
+    .CreateFunctionBuilder("execute")
+    .WithHandler(executeHandler)
+    .WithArgumentsInfo(
+        new ArgumentsInfo(
+            argumentNames: ["self", "query", "vars"],
+            argcount: 3,
+            hasVarArgs: false,
+            hasVarKeywords: false,
+            posonlyargcount: 0,
+            kwonlyargcount: 0,
+            defaults: ImmutableSegment.Create<SymbolicExpression>(emptyList)))
+    .AssignTo(CursorClassDescription)
+    .BuildAndRegister();
+
+CallHandlerResult ExecutemanyHandler(Location location, FunctionCall functionCall)
+{
+    var args = ProcessorApi.ProcessKeywordArguments(functionCall);
+    args.TryGetValue("query", out var query);
+    Detector.Detect(location, query, (VulnerabilityType)"SQL Injection", new PvoArgumentGrammar("SQL common"));
+
+    return CallHandlerResult.Processed(SemanticsApi.None);
+}
+
+ProcessorApi
+    .CreateFunctionBuilder("executemany")
+    .WithHandler(ExecutemanyHandler)
+    .WithArgumentsInfo(
+        new ArgumentsInfo(
+            argumentNames: ["self", "query", "vars"],
+            argcount: 3,
+            hasVarArgs: false,
+            hasVarKeywords: false,
+            posonlyargcount: 0,
+            kwonlyargcount: 0,
+            defaults: ImmutableSegment.Create<SymbolicExpression>(emptyList)))
+    .AssignTo(CursorClassDescription)
+    .BuildAndRegister();
+
+CallHandlerResult FetchoneHandler(Location location, FunctionCall functionCall)
+{
+    var args = ProcessorApi.ProcessKeywordArguments(functionCall);
+    var result = SemanticsApi
+        .CreateObjectDescriptor("<<data>>")
+        .WithType(SemanticsApi.ObjectType)
+        .With(new TaintOrigin("Second Order"));
+
+    return CallHandlerResult.Processed(result);
+}
+
+ProcessorApi
+    .CreateFunctionBuilder("fetchone")
+    .WithHandler(FetchoneHandler)
+    .WithArgumentsInfo(
+        new ArgumentsInfo(
+            argumentNames: ["self"],
+            argcount: 1,
+            hasVarArgs: false,
+            hasVarKeywords: false,
+            posonlyargcount: 0,
+            kwonlyargcount: 0))
+    .AssignTo(CursorClassDescription)
+    .BuildAndRegister();
+
+CallHandlerResult FetchmanyHandler(Location location, FunctionCall functionCall)
+{
+    var args = ProcessorApi.ProcessKeywordArguments(functionCall);
+    var result = SemanticsApi
+        .CreateObjectDescriptor("<<data>>")
+        .WithType(SemanticsApi.ListType)
+        .With(new TaintOrigin("Second Order"));
+
+    return CallHandlerResult.Processed(result);
+}
+
+ProcessorApi
+    .CreateFunctionBuilder("fetchmany")
+    .WithHandler(FetchmanyHandler)
+    .WithArgumentsInfo(
+        new ArgumentsInfo(
+            argumentNames: ["self"],
+            argcount: 1,
+            hasVarArgs: false,
+            hasVarKeywords: false,
+            posonlyargcount: 0,
+            kwonlyargcount: 0))
+    .AssignTo(CursorClassDescription)
+    .BuildAndRegister();
+
+CallHandlerResult FetchallHandler(Location location, FunctionCall functionCall)
+{
+    var args = ProcessorApi.ProcessKeywordArguments(functionCall);
+    var result = SemanticsApi
+        .CreateObjectDescriptor("<<data>>")
+        .WithType(SemanticsApi.ListType)
+        .With(new TaintOrigin("Second Order"));
+
+    return CallHandlerResult.Processed(result);
+}
+
+ProcessorApi
+    .CreateFunctionBuilder("fetchall")
+    .WithHandler(FetchallHandler)
+    .WithArgumentsInfo(
+        new ArgumentsInfo(
+            ["self"],
+            1,
+            false,
+            false,
+            0,
+            0))
+    .AssignTo(CursorClassDescription)
+    .BuildAndRegister();
+
+Interpreter.Assign(ModuleDescriptor, "Cursor", CursorClassDescription);
+PythonTypes.BuildClass(CursorClassDescription);

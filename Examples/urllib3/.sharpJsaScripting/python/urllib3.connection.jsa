@@ -1,0 +1,90 @@
+#load "urllib3.response.jsa"
+
+var HTTPConnectionClassDescription = SemanticsApi.CreateClassObjectDescriptor("HTTPConnection");
+
+CallHandlerResult GetresponseHandler(Location location, FunctionCall functionCall)
+{
+    return CallHandlerResult.Processed(
+        PythonTypes.CreateInstance(
+            Location.Empty,
+            HTTPResponseClassDescription,
+            new ImmutableArray<SymbolicExpression>()));
+}
+
+ProcessorApi
+    .CreateFunctionBuilder("getresponse")
+    .WithHandler(GetresponseHandler)
+    .WithArgumentsInfo(
+        new ArgumentsInfo(
+            argumentNames: ["self"],
+            argcount: 1,
+            hasVarArgs: false,
+            hasVarKeywords: false,
+            posonlyargcount: 0,
+            kwonlyargcount: 0))
+    .AssignTo(HTTPConnectionClassDescription)
+    .BuildAndRegister();
+
+CallHandlerResult RequestHandler(Location location, FunctionCall functionCall)
+{
+    var handledArguments = ProcessorApi.ProcessKeywordArguments(functionCall);
+    handledArguments.TryGetValue("url", out var url);
+    handledArguments.TryGetValue("headers", out var headers);
+
+    Detect(location, url, "Server-Side Request Forgery", "HTTP URI");
+    Detect(location, headers, "Server-Side Request Forgery", "HTTP URI");
+    Detect(location, headers, "Information Exposure", "HTTP URI");
+
+    return CallHandlerResult.Processed(
+        PythonTypes.CreateInstance(
+            Location.Empty,
+            HTTPResponseClassDescription,
+            new ImmutableArray<SymbolicExpression>()));
+}
+// ProcessorApi
+//     .CreateFunctionBuilder("request")
+//     .WithHandler(RequestHandler)
+//     .WithArgumentsInfo(
+//         new ArgumentsInfo(
+//             argumentNames: ["self", "method", "url", "body", "fields", "headers", "json"],
+//             argcount: 7,
+//             hasVarArgs: false,
+//             hasVarKeywords: false,
+//             posonlyargcount: 0,
+//             kwonlyargcount: 0,
+//             defaults: ImmutableSegment.Create<SymbolicExpression>(
+//                 SemanticsApi.CreateLiteral("GET"),
+//                 SemanticsApi.None,
+//                 SemanticsApi.None,
+//                 SemanticsApi.None,
+//                 SemanticsApi.None,
+//                 SemanticsApi.None)))
+//     .AssignTo(HTTPConnectionClassDescription)
+//     .BuildAndRegister();
+//
+CallHandlerResult requestchunkedHandler(Location location, FunctionCall functionCall)
+{
+    var handledArguments = ProcessorApi.ProcessKeywordArguments(functionCall);
+    handledArguments.TryGetValue("url", out var url);
+
+    Detect(location, url, "Server-Side Request Forgery", "HTTP URI");
+
+    return CallHandlerResult.Processed(SemanticsApi.None);
+}
+
+ProcessorApi
+    .CreateFunctionBuilder("request_chunked")
+    .WithHandler(requestchunkedHandler)
+    .WithArgumentsInfo(
+        new ArgumentsInfo(
+            argumentNames: ["self", "url"],
+            argcount: 2,
+            hasVarArgs: false,
+            hasVarKeywords: false,
+            posonlyargcount: 0,
+            kwonlyargcount: 0))
+    .AssignTo(HTTPConnectionClassDescription)
+    .BuildAndRegister();
+
+Interpreter.Assign(ModuleDescriptor, "HTTPConnection", HTTPConnectionClassDescription);
+PythonTypes.BuildClass(HTTPConnectionClassDescription);

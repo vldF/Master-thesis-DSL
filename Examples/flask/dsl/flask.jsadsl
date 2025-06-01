@@ -69,7 +69,9 @@ var request = new Request();
 
 func escape(data: string): string {
     var escaped = WithoutVulnerability(data, "Cross-site Scripting");
-    escaped = WithoutVulnerability(data, "Server-Side Template Injection");
+    escaped = WithoutVulnerability(escaped, "Server-Side Template Injection");
+
+    return escaped
 }
 
 func jsonify(data: any): any {

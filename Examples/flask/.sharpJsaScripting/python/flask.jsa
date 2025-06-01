@@ -1,0 +1,572 @@
+using JSA.PythonProvider.Utils;
+using JSA.PythonProvider.Semantics;
+using System.Collections.Immutable;
+using JSA.Contracts.Engine;
+using System.Collections.Generic;
+using JSA.Utils;
+using System.Text.RegularExpressions;
+
+var FlaskClassDescriptor = SemanticsApi.CreateClassObjectDescriptor("Flask");
+Interpreter.Assign(ModuleDescriptor, "Flask", FlaskClassDescriptor);
+PythonTypes.BuildClass(FlaskClassDescriptor);
+
+CallHandlerResult UrlForHandler(Location location, FunctionCall functionCall)
+{
+    var result = SemanticsApi
+        .CreateObjectDescriptor("<<result>>")
+        .WithType(SemanticsApi.StringType);
+
+    return CallHandlerResult.Processed(result);
+}
+ProcessorApi
+    .CreateFunctionBuilder("url_for")
+    .WithHandler(UrlForHandler)
+    .WithArgumentsInfo(
+        new ArgumentsInfo(
+            argumentNames: ["endpoint"],
+            argcount: 1,
+            hasVarArgs: false,
+            hasVarKeywords: false,
+            posonlyargcount: 0,
+            kwonlyargcount: 0))
+    .AssignTo(ModuleDescriptor)
+    .BuildAndRegister();
+
+var RequestClassDescription = SemanticsApi.CreateClassObjectDescriptor("Request");
+CallHandlerResult RequestInitHandler(Location location, FunctionCall functionCall)
+{
+    var args = ProcessorApi.ProcessKeywordArguments(functionCall);
+    args.TryGetValue("self", out var self);
+
+    var argsValue = SemanticsApi
+        .CreateObjectDescriptor("<<args-value>>")
+        .WithType(SemanticsApi.DictType)
+        .With(new TaintOrigin("Query"));
+    Interpreter.Assign(self, "args", argsValue);
+
+    var dataValue = SemanticsApi
+        .CreateObjectDescriptor("<<data-value>>")
+        .WithType(SemanticsApi.DictType)
+        .With(new TaintOrigin("Body"));
+    Interpreter.Assign(self, "data", dataValue);
+
+    var filesValue = SemanticsApi
+        .CreateObjectDescriptor("<<files-data>>")
+        .WithType(SemanticsApi.DictType)
+        .With(new TaintOrigin("Body"));
+    Interpreter.Assign(self, "files", filesValue);
+
+    var jsonValue = SemanticsApi
+        .CreateObjectDescriptor("<<json-value>>")
+        .WithType(SemanticsApi.DictType)
+        .With(new TaintOrigin("Body"));
+    Interpreter.Assign(self, "json", jsonValue);
+
+    var formValue = SemanticsApi
+        .CreateObjectDescriptor("<<form-value>>")
+        .WithType(SemanticsApi.DictType)
+        .With(new TaintOrigin("Form"));
+    Interpreter.Assign(self, "form", formValue);
+
+    var fullPathValue = SemanticsApi
+        .CreateObjectDescriptor("<<full-path>>")
+        .WithType(SemanticsApi.StringType)
+        .With(new TaintOrigin("Query"));
+    Interpreter.Assign(self, "full_path", fullPathValue);
+
+    var headersValue = SemanticsApi
+        .CreateObjectDescriptor("<<headersValue>>")
+        .WithType(SemanticsApi.DictType)
+        .With(new TaintOrigin("Headers"));
+    Interpreter.Assign(self, "headers", headersValue);
+
+    var host = SemanticsApi
+        .CreateObjectDescriptor("<<host>>")
+        .WithType(SemanticsApi.StringType)
+        .With(new TaintOrigin("HTTP URI"));
+    Interpreter.Assign(self, "host", host);
+
+    var host_url = SemanticsApi
+        .CreateObjectDescriptor("<<host_url>>")
+        .WithType(SemanticsApi.StringType)
+        .With(new TaintOrigin("HTTP URI"));
+    Interpreter.Assign(self, "host_url", host_url);
+
+    var is_json = SemanticsApi
+        .CreateObjectDescriptor("<<is_json>>")
+        .WithType(SemanticsApi.BoolType)
+        .With(new TaintOrigin("Body"));
+    Interpreter.Assign(self, "is_json", is_json);
+
+    var is_xhr = SemanticsApi
+        .CreateObjectDescriptor("<<is_xhr>>")
+        .WithType(SemanticsApi.BoolType)
+        .With(new TaintOrigin("Body"));
+    Interpreter.Assign(self, "is_xhr", is_xhr);
+
+    var max_content_length = SemanticsApi
+        .CreateObjectDescriptor("<<max_content_length>>")
+        .WithType(SemanticsApi.LongType)
+        .With(new TaintOrigin("Body"));
+    Interpreter.Assign(self, "max_content_length", max_content_length);
+
+    var max_forwards = SemanticsApi
+        .CreateObjectDescriptor("<<max_forwards>>")
+        .WithType(SemanticsApi.LongType)
+        .With(new TaintOrigin("Header"));
+    Interpreter.Assign(self, "max_forwards", max_forwards);
+
+    var method = SemanticsApi
+        .CreateObjectDescriptor("<<method>>")
+        .WithType(SemanticsApi.StringType)
+        .With(new TaintOrigin("Body"));
+    Interpreter.Assign(self, "method", method);
+
+    var mimetype = SemanticsApi
+        .CreateObjectDescriptor("<<mimetype>>")
+        .WithType(SemanticsApi.StringType)
+        .With(new TaintOrigin("Body"));
+    Interpreter.Assign(self, "mimetype", mimetype);
+
+    var mimetype_params = SemanticsApi
+        .CreateObjectDescriptor("<<mimetype_params>>")
+        .WithType(SemanticsApi.DictType)
+        .With(new TaintOrigin("Body"));
+    Interpreter.Assign(self, "mimetype_params", mimetype_params);
+
+    var path = SemanticsApi
+        .CreateObjectDescriptor("<<path>>")
+        .WithType(SemanticsApi.DictType)
+        .With(new TaintOrigin("Query"));
+    Interpreter.Assign(self, "path", path);
+
+    var query_string = SemanticsApi
+        .CreateObjectDescriptor("<<query_string>>")
+        .WithType(SemanticsApi.BytesType)
+        .With(new TaintOrigin("Query"));
+    Interpreter.Assign(self, "query_string", query_string);
+
+    var range = SemanticsApi
+        .CreateObjectDescriptor("<<range>>")
+        .WithType(SemanticsApi.ObjectType)
+        .With(new TaintOrigin("Header"));
+    Interpreter.Assign(self, "range", range);
+
+    var referrer = SemanticsApi
+        .CreateObjectDescriptor("<<referrer>>")
+        .WithType(SemanticsApi.ObjectType)
+        .With(new TaintOrigin("Header"));
+    Interpreter.Assign(self, "referrer", referrer);
+
+    var remote_addr = SemanticsApi
+        .CreateObjectDescriptor("<<remote_addr>>")
+        .WithType(SemanticsApi.ObjectType)
+        .With(new TaintOrigin("IP address"));
+    Interpreter.Assign(self, "remote_addr", remote_addr);
+
+    var remote_user = SemanticsApi
+        .CreateObjectDescriptor("<<remote_user>>")
+        .WithType(SemanticsApi.ObjectType)
+        .With(new TaintOrigin("Connection string item"));
+    Interpreter.Assign(self, "remote_user", remote_user);
+
+    var scheme = SemanticsApi
+        .CreateObjectDescriptor("<<scheme>>")
+        .WithType(SemanticsApi.ObjectType)
+        .With(new TaintOrigin("HTTP URI"));
+    Interpreter.Assign(self, "scheme", scheme);
+
+    var stream = SemanticsApi
+        .CreateObjectDescriptor("<<stream>>")
+        .WithType(SemanticsApi.BytesType)
+        .With(new TaintOrigin("Body"));
+    Interpreter.Assign(self, "stream", stream);
+
+    var url = SemanticsApi
+        .CreateObjectDescriptor("<<url>>")
+        .WithType(SemanticsApi.StringType)
+        .With(new TaintOrigin("HTTP URI"));
+    Interpreter.Assign(self, "url", url);
+
+    var url_root = SemanticsApi
+        .CreateObjectDescriptor("<<url_root>>")
+        .WithType(SemanticsApi.StringType)
+        .With(new TaintOrigin("HTTP URI"));
+    Interpreter.Assign(self, "url_root", url_root);
+
+    var user_agent = SemanticsApi
+        .CreateObjectDescriptor("<<user_agent>>")
+        .WithType(SemanticsApi.StringType)
+        .With(new TaintOrigin("Header"));
+    Interpreter.Assign(self, "user_agent", user_agent);
+
+    var values = SemanticsApi
+        .CreateObjectDescriptor("<<values>>")
+        .WithType(SemanticsApi.DictType)
+        .With(new TaintOrigin("Header"));
+    Interpreter.Assign(self, "values", values);
+
+    var view_args = SemanticsApi
+        .CreateObjectDescriptor("<<view_args>>")
+        .WithType(SemanticsApi.DictType)
+        .With(new TaintOrigin("Header"));
+    Interpreter.Assign(self, "view_args", view_args);
+
+    var want_form_data_parsed = SemanticsApi
+        .CreateObjectDescriptor("<<want_form_data_parsed>>")
+        .WithType(SemanticsApi.BoolType)
+        .With(new TaintOrigin("Body"));
+    Interpreter.Assign(self, "want_form_data_parsed", want_form_data_parsed);
+
+    var base_url = SemanticsApi
+        .CreateObjectDescriptor("<<base_url>>")
+        .WithType(SemanticsApi.DictType)
+        .With(new TaintOrigin("HTTP URI"));
+    Interpreter.Assign(self, "base_url", base_url);
+
+    var authorization = SemanticsApi
+        .CreateObjectDescriptor("<<authorization>>")
+        .WithType(SemanticsApi.ObjectType)
+        .With(new TaintOrigin("Connection string item"));
+    Interpreter.Assign(self, "authorization", authorization);
+
+    var date = SemanticsApi
+        .CreateObjectDescriptor("<<date>>")
+        .WithType(SemanticsApi.ObjectType)
+        .With(new TaintOrigin("Date"));
+    Interpreter.Assign(self, "date", date);
+
+    var blueprint = SemanticsApi
+        .CreateObjectDescriptor("<<blueprint>>")
+        .WithType(SemanticsApi.StringType);
+    Interpreter.Assign(self, "blueprint", blueprint);
+
+    var endpoint = SemanticsApi
+        .CreateObjectDescriptor("<<endpoint>>")
+        .WithType(SemanticsApi.ObjectType);
+    Interpreter.Assign(self, "endpoint", endpoint);
+
+    return CallHandlerResult.Processed(self);
+}
+ProcessorApi
+    .CreateFunctionBuilder("__init__")
+    .WithHandler(RequestInitHandler)
+    .WithArgumentsInfo(
+        new ArgumentsInfo(
+            argumentNames: ["self"],
+            argcount: 1,
+            hasVarArgs: false,
+            hasVarKeywords: false,
+            posonlyargcount: 0,
+            kwonlyargcount: 0))
+    .AssignTo(RequestClassDescription)
+    .BuildAndRegister();
+
+CallHandlerResult ApplicationHandler(Location location, FunctionCall functionCall)
+{
+    var result = SemanticsApi
+        .CreateObjectDescriptor("<<result>>")
+        .WithType(SemanticsApi.ObjectType);
+
+    return CallHandlerResult.Processed(result);
+}
+ProcessorApi
+    .CreateFunctionBuilder("application")
+    .WithHandler(ApplicationHandler)
+    .WithArgumentsInfo(
+        new ArgumentsInfo(
+            argumentNames: ["self"],
+            argcount: 1,
+            hasVarArgs: false,
+            hasVarKeywords: false,
+            posonlyargcount: 0,
+            kwonlyargcount: 0))
+    .AssignTo(RequestClassDescription)
+    .BuildAndRegister();
+
+CallHandlerResult CloseHandler(Location location, FunctionCall functionCall)
+{
+    return CallHandlerResult.Processed(SemanticsApi.None);
+}
+ProcessorApi
+    .CreateFunctionBuilder("close")
+    .WithHandler(CloseHandler)
+    .WithArgumentsInfo(
+        new ArgumentsInfo(
+            argumentNames: ["self"],
+            argcount: 1,
+            hasVarArgs: false,
+            hasVarKeywords: false,
+            posonlyargcount: 0,
+            kwonlyargcount: 0))
+    .AssignTo(RequestClassDescription)
+    .BuildAndRegister();
+
+CallHandlerResult GetDataHandler(Location location, FunctionCall functionCall)
+{
+    var args = ProcessorApi.ProcessKeywordArguments(functionCall);
+    args.TryGetValue("as_text", out var as_text);
+
+    var returnValueBuilder = Interpreter.CreateReturnedValuesBuilder();
+    var asTextCond = SemanticsApi.CreateCastToBoolOperator(as_text);
+    Interpreter.TryEnterBranch(asTextCond, out var asTextTrueBranchId);
+
+    var resultAsString = SemanticsApi
+        .CreateObjectDescriptor("<<result-as-string>>")
+        .WithType(SemanticsApi.StringType)
+        .With(new TaintOrigin("Body"));
+    returnValueBuilder.AddOption(asTextCond, resultAsString);
+
+    Interpreter.LeaveBranch(asTextTrueBranchId);
+
+    var asTextFalseCond = Interpreter
+        .InvokeFunction(
+            location,
+            SemanticsApi.NotDescriptor,
+            asTextCond);
+    Interpreter.TryEnterBranch(asTextFalseCond, out var asTextFalseBranchId);
+
+    var resultAsBytes = SemanticsApi
+        .CreateObjectDescriptor("<<result-as-bytes>>")
+        .WithType(SemanticsApi.BytesType)
+        .With(new TaintOrigin("Body"));
+    returnValueBuilder.AddOption(asTextFalseCond, resultAsBytes);
+
+    Interpreter.LeaveBranch(asTextFalseBranchId);
+
+    return CallHandlerResult.Processed(returnValueBuilder.ToConditional());
+}
+ProcessorApi
+    .CreateFunctionBuilder("get_data")
+    .WithHandler(GetDataHandler)
+    .WithArgumentsInfo(
+        new ArgumentsInfo(
+            argumentNames: ["self", "as_text"],
+            argcount: 2,
+            hasVarArgs: false,
+            hasVarKeywords: false,
+            posonlyargcount: 0,
+            kwonlyargcount: 0,
+            defaults: ImmutableSegment.Create<SymbolicExpression>(SemanticsApi.CreateLiteral(false))))
+    .AssignTo(RequestClassDescription)
+    .BuildAndRegister();
+
+CallHandlerResult GetJsonHandler(Location location, FunctionCall functionCall)
+{
+    var result = SemanticsApi
+        .CreateObjectDescriptor("<<result>>")
+        .WithType(SemanticsApi.ObjectType)
+        .With(new TaintOrigin("Body"));
+
+    return CallHandlerResult.Processed(result);
+}
+ProcessorApi
+    .CreateFunctionBuilder("get_json")
+    .WithHandler(GetJsonHandler)
+    .WithArgumentsInfo(
+        new ArgumentsInfo(
+            argumentNames: ["self"],
+            argcount: 1,
+            hasVarArgs: false,
+            hasVarKeywords: false,
+            posonlyargcount: 0,
+            kwonlyargcount: 0))
+    .AssignTo(RequestClassDescription)
+.BuildAndRegister();
+
+Interpreter.Assign(ModuleDescriptor, "Request", RequestClassDescription);
+PythonTypes.BuildClass(RequestClassDescription);
+
+var request = PythonTypes.CreateInstance(Location.Empty, RequestClassDescription, new ImmutableArray<SymbolicExpression>());
+Interpreter.Assign(ModuleDescriptor, "request", request);
+
+CallHandlerResult EscapeHandler(Location location, FunctionCall functionCall)
+{
+    var args = ProcessorApi.ProcessKeywordArguments(functionCall);
+    args.TryGetValue("data", out var data);
+
+    var escaped = data
+        .AddFilteredVulnerability((VulnerabilityType)"Cross-site Scripting")
+        .AddFilteredVulnerability((VulnerabilityType)"Server-Side Template Injection");
+
+    return CallHandlerResult.Processed(escaped);
+}
+ProcessorApi
+    .CreateFunctionBuilder("escape")
+    .WithHandler(EscapeHandler)
+    .WithArgumentsInfo(
+        new ArgumentsInfo(
+            ["data"],
+            1,
+            false,
+            false,
+            0,
+            0))
+    .AssignTo(ModuleDescriptor)
+    .BuildAndRegister();
+
+CallHandlerResult JsonifyHandler(Location location, FunctionCall functionCall)
+{
+    var result = SemanticsApi.CreateObjectDescriptor("<<result>>").WithType(SemanticsApi.ObjectType);
+    return CallHandlerResult.Processed(result);
+}
+ProcessorApi
+    .CreateFunctionBuilder("jsonify")
+    .WithHandler(JsonifyHandler)
+    .WithArgumentsInfo(
+        new ArgumentsInfo(
+            argumentNames: ["data"],
+            argcount: 1,
+            hasVarArgs: false,
+            hasVarKeywords: false,
+            posonlyargcount: 0,
+            kwonlyargcount: 0))
+    .AssignTo(ModuleDescriptor)
+    .BuildAndRegister();
+
+CallHandlerResult RedirectHandler(Location location, FunctionCall functionCall)
+{
+    var args = ProcessorApi.ProcessKeywordArguments(functionCall);
+    args.TryGetValue("url", out var url);
+    args.TryGetValue("response", out var response);
+    Detector.Detect(location, url, (VulnerabilityType)"Open redirect", new PvoArgumentGrammar("HTTP URI"));
+    Detector.Detect(location, response, (VulnerabilityType)"Cross-site Scripting", new PvoArgumentGrammar("HTTP URI"));
+
+    var result = SemanticsApi
+        .CreateObjectDescriptor("<<result>>")
+        .WithType(SemanticsApi.ObjectType);
+
+    return CallHandlerResult.Processed(result);
+}
+ProcessorApi
+    .CreateFunctionBuilder("redirect")
+    .WithHandler(RedirectHandler)
+    .WithArgumentsInfo(
+        new ArgumentsInfo(
+            ["url", "code", "response"],
+            3,
+            false,
+            false,
+            0,
+            0,
+            ImmutableSegment.Create<SymbolicExpression>(
+                SemanticsApi.CreateLiteral(302),
+                SemanticsApi.None)))
+    .AssignTo(ModuleDescriptor)
+    .BuildAndRegister();
+
+var flaskRouterDescr = ProcessorApi.CreateFunctionBuilder("route")
+        .AssignTo(FlaskClassDescriptor)
+        .WithHandler(RouteClassHandler)
+        .WithArgumentsInfo(new ArgumentsInfo(
+            argumentNames: new List<string>() { "self", "route", "options" },
+            argcount: 2,
+            hasVarArgs: false,
+            hasVarKeywords: true,
+            posonlyargcount: 0,
+            kwonlyargcount: 0))
+        .BuildAndRegister();
+
+Dictionary<SymbolicExpression, string> urls = new();
+
+CallHandlerResult RouteClassHandler(Location location, FunctionCall call)
+{
+    if (call.Arguments.Length < 2)
+    {
+        return CallHandlerResult.Unprocessed;
+    }
+
+    var args = ProcessorApi.ProcessKeywordArguments(call);
+    if (!(args.TryGetValue("route", out var routeArg) && routeArg.TryGetLiteralValue(out string ruleValue)))
+    {
+        return CallHandlerResult.Unprocessed;
+    }
+
+    var resultExpression = SemanticsApi.CreateObjectDescriptor($"<app_route_decor_{ruleValue}");
+    urls[resultExpression] = ruleValue;
+
+    ProcessorApi.AddCallHandler(resultExpression, ProcessAppRouteDecorator);
+
+    return CallHandlerResult.Processed(resultExpression);
+}
+
+CallHandlerResult ProcessAppRouteDecorator(Location location, FunctionCall call)
+{
+    var url = urls[call.Receiver];
+
+    var handlerDescriptor = (EntityDescriptor)call.Arguments[0];
+    if (ProcessViewFunction(location, handlerDescriptor, url, ["GET"]))
+    {
+        return CallHandlerResult.Processed(handlerDescriptor);
+    }
+
+    return CallHandlerResult.Unprocessed;
+}
+
+bool ProcessViewFunction(
+    Location location,
+    EntityDescriptor handlerDescriptor,
+    string urlRule,
+    ImmutableArray<string> methods)
+{
+    var httpMethod = GetNormalizedHttpMethod(methods);
+    var args = GetTaintedParams(location, urlRule);
+
+    if (!ProcessorApi.TryOrderKeywordArguments(handlerDescriptor, args, out var orderedArgs))
+    {
+        return false;
+    }
+
+    ProcessFrameworkEntryPoint(location, urlRule, httpMethod, forkedThis =>
+    {
+        var handlerResult = forkedThis.Interpreter.InvokeFunction(location, handlerDescriptor, orderedArgs);
+        Detector.Detect(location, handlerResult, VulnerabilityType.CrossSiteScripting, PvoArgumentGrammar.HtmlText);
+    });
+
+    return true;
+}
+
+HttpMethodType GetNormalizedHttpMethod(ImmutableArray<string> methods)
+{
+    HttpMethodType httpMethod;
+    if (methods.Contains("GET") && methods.Contains("POST")) { httpMethod = HttpMethodType.All; }
+    else if (methods.Contains("GET")) { httpMethod = HttpMethodType.Get; }
+    else if (methods.Contains("POST")) { httpMethod = HttpMethodType.Post; }
+    else { httpMethod = HttpMethodType.Unknown; }
+
+    return httpMethod;
+}
+
+ImmutableDictionary<string, SymbolicExpression> GetTaintedParams(Location location, string urlRule)
+{
+    var builder = ImmutableDictionary.CreateBuilder<string, SymbolicExpression>();
+    var pattern = @"<((?<type>string|int|float|path|uuid):)?(?<name>[^>]+)>";
+
+    foreach (Match match in Regex.Matches(urlRule, pattern))
+    {
+        var type = match.Groups["type"].Value;
+        var name = match.Groups["name"].Value;
+        var taintedParameter = SemanticsApi.CreateEntityDescriptor(name, SymbolicProperties.Default)
+            .With(HttpRequestTaintOrigin.NamedQueryParameter(name)).AddDataTraceLocation(location);
+
+        if (type.IsEmpty() || type.Equals("string") || type.Equals("path") || type.Equals("uuid"))
+        {
+            taintedParameter = taintedParameter.WithType(SemanticsApi.StringType);
+        }
+        else if (type.Equals("int")) { taintedParameter = taintedParameter.WithType(SemanticsApi.LongType); }
+        else if (type.Equals("float")) { taintedParameter = taintedParameter.WithType(SemanticsApi.FloatType); }
+
+        builder.Add(name, taintedParameter);
+    }
+
+    return builder.ToImmutable();
+}
+
+CallHandlerResult ProcessMakeResponse(Location location, FunctionCall functionCall)
+{
+    if (functionCall.Arguments.Length < 1) { return CallHandlerResult.Unprocessed; }
+
+    var responseReturnValue = functionCall.Arguments[0];
+    Detector.Detect(location, responseReturnValue, VulnerabilityType.CrossSiteScripting, PvoArgumentGrammar.HtmlText);
+    return default;
+}

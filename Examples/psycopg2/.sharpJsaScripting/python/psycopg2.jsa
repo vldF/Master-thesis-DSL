@@ -1,0 +1,33 @@
+#load "psycopg2.Cursor.jsa"
+#load "psycopg2.Connection.jsa"
+
+using JSA.PythonProvider.Utils;
+using JSA.PythonProvider.Semantics;
+using System.Collections.Immutable;
+using JSA.Contracts.Engine;
+
+CallHandlerResult connectHandler(Location location, FunctionCall functionCall)
+{
+    var callArgs = ProcessorApi.ProcessKeywordArguments(functionCall);
+    callArgs.TryGetValue("connection_string", out var connection_string);
+
+    return CallHandlerResult.Processed(
+        PythonTypes.CreateInstance(
+            Location.Empty,
+            connectionClassDescription,
+            new ImmutableArray<SymbolicExpression>()));
+}
+
+ProcessorApi
+       .CreateFunctionBuilder("connect")
+       .WithHandler(connectHandler)
+       .WithArgumentsInfo(
+            new ArgumentsInfo(
+                argumentNames: ["connection_string"],
+                argcount: 1,
+                hasVarArgs: false,
+                hasVarKeywords: false,
+                posonlyargcount: 0,
+                kwonlyargcount: 0))
+       .AssignTo(ModuleDescriptor)
+       .BuildAndRegister();

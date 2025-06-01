@@ -1,0 +1,34 @@
+#load "psycopg2.Cursor.jsa"
+
+using JSA.PythonProvider.Utils;
+using JSA.PythonProvider.Semantics;
+using System.Collections.Immutable;
+using JSA.Contracts.Engine;
+
+var connectionClassDescription = SemanticsApi.CreateClassObjectDescriptor("Connection");
+
+CallHandlerResult CursorHandler(Location location, FunctionCall functionCall)
+{
+    return CallHandlerResult.Processed(
+            PythonTypes.CreateInstance(
+                Location.Empty,
+                CursorClassDescription,
+                new ImmutableArray<SymbolicExpression>()));
+}
+
+var cursorMethodDescription = ProcessorApi
+    .CreateFunctionBuilder("cursor")
+    .WithHandler(CursorHandler)
+    .WithArgumentsInfo(
+        new ArgumentsInfo(
+            argumentNames: ["self"],
+            argcount: 1,
+            hasVarArgs: false,
+            hasVarKeywords: false,
+            posonlyargcount: 0,
+            kwonlyargcount: 0))
+    .AssignTo(connectionClassDescription)
+    .BuildAndRegister();
+
+Interpreter.Assign(ModuleDescriptor, "Connection", connectionClassDescription);
+PythonTypes.BuildClass(connectionClassDescription);
